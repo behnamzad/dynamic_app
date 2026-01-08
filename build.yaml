@@ -1,0 +1,87 @@
+targets:
+  $default:
+    builders:
+      injectable_generator|injectable_config_builder:
+        enabled: true
+        generate_for:
+          include:
+            - lib/di/injection_container.dart
+      injectable_generator:injectable_builder:
+        enabled: true
+        options:
+          cache_build: true
+
+            #          auto_register: true
+            # auto registers any class with a name matches the given pattern
+          #          class_name_pattern:
+          #                         "Service$|Repository$|Bloc$"
+          # auto registers any class inside a file with a
+          # name matches the given pattern
+      #          file_name_pattern: "_service$|_repository$|_bloc$"
+
+      auto_route_generator:auto_route_generator: # this for @RoutePage
+        options:
+          enable_cached_builds: true
+          generate_for:
+            - lib/feature/**_page.dart
+      auto_route_generator:auto_router_generator: # this for @AutoRouterConfig
+        options:
+          enable_cached_builds: true
+          generate_for:
+            - lib/core/presentation/route/app_router.dart
+
+      freezed:
+        enabled: true
+        options:
+          cache_build: true
+          #          experimental_skip_gen_run: true
+          #          use_equals_and_hash_code: false
+          #          generate_to: lib/generated
+          #          include_bloc_folders: true
+          #        generate_for:
+          exclude:
+            - test
+            - example
+#          include:
+#            - lib/**_bloc.dart
+#            - lib/**_event.dart
+#            - lib/**_state.dart
+#            - lib/**_state.dart
+#            - lib/**_model.dart
+#            - lib/**_response.dart
+#            - lib/**/bloc/*.dart
+#            - lib/**/blocs/*/*.dart
+#            - lib/**/model/*/*.dart
+#            - lib/**/model/*.dart
+#            - lib/**/models/*/*.dart
+#            - lib/**/models/*.dart
+
+#      json_serializable:
+#        enabled: true
+#        [ any_map, checked, constructor,
+#          create_factory, create_field_map,
+#          create_per_field_to_json,
+#          create_to_json, disallow_unrecognized_keys,
+#          explicit_to_json, field_rename,
+#          generic_argument_factories,
+#          ignore_unannotated, include_if_null ]
+
+#        options:
+#          explicit_to_json: false
+#          explicit_from_json: false
+#          include_if_null: true
+#          checked: false
+#          disallow_unrecognized_keys: false
+#          any_map: false
+#          checked_cast: true
+#          field_rename: none
+##        generate_for:
+##          include:
+##            - lib/**.g.dart
+##            - lib/codegen_folder/json_serializable/**.dart
+##            - lib/**.gen.dart
+#
+#global_options:
+#  auto_route_generator:auto_router_generator:
+#    runs_before:
+#      - build_resolvers:transitive_digests
