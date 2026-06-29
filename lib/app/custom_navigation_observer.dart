@@ -7,25 +7,29 @@ class CustomNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPop(Route route, Route? previousRoute) {
-    try{
+    try {
       if (previousRoute != null && previousRoute.settings.name != '') {
-        var isModal = route is ModalBottomSheetRoute ||  route is DialogRoute;
+        var isModal = route is ModalBottomSheetRoute || route is DialogRoute;
         if (!isModal) onScreenChange(previousRoute.settings.name ?? '');
       }
-    }catch(e){}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
 
     super.didPop(route, previousRoute);
   }
 
   @override
   void didPush(Route route, Route? previousRoute) {
-    try{
+    try {
       if (route.settings.name != null) {
         // if (route != null) {
-        var isModal = route is ModalBottomSheetRoute ||  route is DialogRoute;
+        var isModal = route is ModalBottomSheetRoute || route is DialogRoute;
         if (!isModal) onScreenChange(route.settings.name ?? '');
       }
-    }catch(e){}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
     super.didPush(route, previousRoute);
   }
 }

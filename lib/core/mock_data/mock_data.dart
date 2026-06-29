@@ -1,7 +1,7 @@
-import 'package:dynamic_app/data_provider/address/domain/entities/address_entity.dart';
+import 'package:dynamic_app/shared/address/domain/entities/address_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
-import 'package:dynamic_app/data_provider/product/domain/entities/product_in_cart_entity.dart';
-import 'package:dynamic_app/data_provider/user/domain/entities/user_entity.dart';
+import 'package:dynamic_app/shared/product/domain/entities/product_in_cart_entity.dart';
+import 'package:dynamic_app/shared/user/domain/entities/user_entity.dart';
 
 class MockData {
   List<ProductEntity> products() {

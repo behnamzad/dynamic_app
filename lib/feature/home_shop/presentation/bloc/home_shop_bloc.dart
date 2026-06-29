@@ -1,7 +1,7 @@
 // import 'dart:async';
 //
 // import 'package:dynamic_app/core/util/common_bloc_imports.dart';
-// import 'package:dynamic_app/data_provider/product/domain/repository/product_repo.dart';
+// import 'package:dynamic_app/data_provider/product/domain/repository/login_repo.dart';
 //
 // part 'home_shop_bloc.freezed.dart';
 // part 'cart_event.dart';

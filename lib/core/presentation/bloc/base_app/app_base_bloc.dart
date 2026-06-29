@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:dynamic_app/core/local/setting_manager.dart';
-import 'package:dynamic_app/di/injection_container.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dynamic_app/core/local/setting_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';

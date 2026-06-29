@@ -1,6 +1,5 @@
-import 'package:dynamic_app/core/presentation/widget/bz_gesture_detector.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
-import 'package:dynamic_app/data_provider/user/domain/entities/user_entity.dart';
+import 'package:dynamic_app/shared/user/domain/entities/user_entity.dart';
 
 class ProfileRowWidget extends StatelessWidget {
   final UserEntity entity;

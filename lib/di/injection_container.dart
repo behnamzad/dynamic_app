@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:dynamic_app/core/presentation/route/app_router.dart';
+import 'package:dynamic_app/app/route/app_router.dart';
 import 'package:dynamic_app/core/util/app_logger.dart';
 import 'package:dynamic_app/core/util/crypto/keystore_gcm_crypto_helper.dart';
 import 'package:dynamic_app/di/di_const.dart';
@@ -118,7 +118,9 @@ resetGetItInstanceObject(Object obj) async {
     // if (_getIt.isRegistered(instance: obj)) {
     _getIt.resetLazySingleton(instance: obj);
     // }
-  } catch (e) {}
+  } catch (e) {
+    debugPrint(e.toString());
+  }
 }
 
 unregisterFromGetIt<T extends Object>(obj) => _getIt.unregister<T>(instance: obj);

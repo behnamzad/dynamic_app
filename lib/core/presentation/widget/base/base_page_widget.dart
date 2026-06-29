@@ -128,7 +128,7 @@ class _BasePageWidgetState extends State<BasePageWidget> {
             widget.pageLoadingMode == PageLoadingMode.onScreenAndOverlay)
         ? BlocBuilder<AppBaseBloc, AppBaseState>(
             builder: (context, overlayLoadingState) {
-              print("overlayLoadingState  ${overlayLoadingState.overlayLoadingStatus}");
+              debugPrint('overlayLoadingState  ${overlayLoadingState.overlayLoadingStatus}');
               return Directionality(
                 textDirection: TextDirection.rtl,
                 child: LoadingOverlay(

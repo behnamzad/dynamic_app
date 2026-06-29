@@ -1,5 +1,6 @@
+import 'package:dynamic_app/app/route/app_router.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
-import 'package:dynamic_app/data_provider/product/domain/entities/product_in_cart_entity.dart';
+import 'package:dynamic_app/shared/product/domain/entities/product_in_cart_entity.dart';
 
 class ProductInCartWidget extends StatefulWidget {
   final ProductInCartEntity productInCartEntity;

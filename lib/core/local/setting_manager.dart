@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-
 import 'package:dynamic_app/core/local/user/enum/gender.dart';
 import 'package:dynamic_app/core/local/user/enum/user_register_status.dart';
 import 'package:dynamic_app/core/local/user/enum/user_status.dart';
@@ -14,7 +11,6 @@ class SettingsManager {
   final SharedPreferencesHelper prefs;
 
   SettingsManager(this.prefs);
-
 
   final String _userNicknameKey = 'user_N_N_K';
   final String _userNameKey = 'user_N_K';
@@ -53,7 +49,6 @@ class SettingsManager {
     return prefs.getEncryptedString(_userNameKey);
   }
 
-
   setPassword(String pass) {
     prefs.setStringAndEncrypt(_passwordKey, pass);
   }
@@ -77,6 +72,7 @@ class SettingsManager {
   getNationalCode() {
     return prefs.getEncryptedString(_nationalCodeKey);
   }
+
   setUserRegisterStatus(UserRegisterStatus userRegisterStatus) {
     prefs.setString(_userRegisterStatusKey, userRegisterStatus.name);
   }
@@ -84,18 +80,19 @@ class SettingsManager {
   getUserRegisterStatus() {
     return UserRegisterStatus.values.byName(prefs.getString(_userRegisterStatusKey));
   }
-  setUserStatus(UserStatus userStatus,{String? callFrom}) {
+
+  setUserStatus(UserStatus userStatus, {String? callFrom}) {
     try {
-      if(callFrom!=null) {
+      if (callFrom != null) {
         AppLogger.debugLog('callFrom : $callFrom and new userStatus is:${userStatus.name}');
       }
-    }catch(_){}
+    } catch (_) {}
 
     prefs.setString(_userStatusKey, userStatus.name);
 
     try {
       AppLogger.debugLog('getUserStatus : ${(prefs.getString(_userStatusKey))}');
-    }catch(_){}
+    } catch (_) {}
   }
 
   getUserStatus() {

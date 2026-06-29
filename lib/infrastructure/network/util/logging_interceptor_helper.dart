@@ -4,17 +4,17 @@ import 'package:flutter/foundation.dart';
 class LoggingInterceptorHelper {
   static void requestLogger(RequestOptions options) async {
     if (kDebugMode) {
-      print(
+      debugPrint(
           '┝╺ ${options.method != null ? options.method.toUpperCase() : 'METHOD'} ${'${options.baseUrl}${options.path}'}');
 
-      print('┝╺ Headers:');
-      options.headers.forEach((k, v) => print('$k: $v'));
+      debugPrint('┝╺ Headers:');
+      options.headers.forEach((k, v) => debugPrint('$k: $v'));
       if (options.queryParameters != null) {
-        print('┝╺ queryParameters:');
-        options.queryParameters.forEach((k, v) => print('$k: $v'));
+        debugPrint('┝╺ queryParameters:');
+        options.queryParameters.forEach((k, v) => debugPrint('$k: $v'));
       }
       if (options.data != null) {
-        print('┝╺ Body: ${options.data}');
+        debugPrint('┝╺ Body: ${options.data}');
       }
       print('└ ─────────────── END ${options.method != null ? options.method.toUpperCase() : 'METHOD'}─────────────────────────────────────');
     }
@@ -25,7 +25,7 @@ class LoggingInterceptorHelper {
       print(
           '<-- ${options.statusCode} ${(options.requestOptions != null ? (options.requestOptions.baseUrl + options.requestOptions.path) : 'URL')}');
       print('Headers:');
-      options.headers.forEach((k, v) => print('$k: $v'));
+      options.headers.forEach((k, v) => debugPrint('$k: $v'));
       print('Response: ${options.data}');
       print('<-- END HTTP');
     }

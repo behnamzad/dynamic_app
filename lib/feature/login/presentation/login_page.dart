@@ -1,5 +1,3 @@
-import 'package:dynamic_app/core/presentation/widget/bz_gesture_detector.dart';
-import 'package:dynamic_app/core/presentation/widget/bz_text_currency.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
@@ -71,7 +69,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _productHeaders(BuildContext context) {
+  Widget _productHeaders(
+    BuildContext context,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(

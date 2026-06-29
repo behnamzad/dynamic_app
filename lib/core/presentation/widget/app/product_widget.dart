@@ -1,6 +1,4 @@
-import 'package:dynamic_app/core/presentation/widget/bz_divider.dart';
-import 'package:dynamic_app/core/presentation/widget/bz_gesture_detector.dart';
-import 'package:dynamic_app/core/presentation/widget/bz_text_currency.dart';
+import 'package:dynamic_app/app/route/app_router.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
@@ -26,7 +24,9 @@ class _ProductWidgetState extends State<ProductWidget> {
 
   _card(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(
+        8.0,
+      ),
       child: SizedBox(
         height: Dimen.productCardHeight,
         width: Dimen.productCardWidth,

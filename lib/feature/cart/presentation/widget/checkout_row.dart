@@ -1,5 +1,4 @@
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
-import 'package:dynamic_app/data_provider/address/domain/entities/address_entity.dart';
 
 class CheckoutRow extends StatelessWidget {
   final String title;
@@ -48,8 +47,9 @@ class CheckoutRow extends StatelessWidget {
           const Spacer(),
           if (endIcon != null)
             BzGestureDetector(
-              inkwellPadding: const EdgeInsets.all(8),
-                onTap: () => onTapEndIcon != null ? onTapEndIcon!.call() : {}, child: Icon(endIcon, size: 22))
+                inkwellPadding: const EdgeInsets.all(8),
+                onTap: () => onTapEndIcon != null ? onTapEndIcon!.call() : {},
+                child: Icon(endIcon, size: 22))
         ],
       ),
     );

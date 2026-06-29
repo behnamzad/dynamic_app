@@ -4,5 +4,5 @@ class Strings {
   static const String paymentTimeOutError =
       'خطا در انجام تراکنش! لطفا قبل از تکرار تراکنش، موجودی حساب خود را بررسی نمایید';
   static const String timeOutException = 'پاسخی در زمان مناسب از سمت سرور دریافت نشد';
-  static const String serverErrorConnection = "خطا،ارتباط با سرور بسته شد!";
+  static const String serverErrorConnection = 'خطا،ارتباط با سرور بسته شد!';
 }

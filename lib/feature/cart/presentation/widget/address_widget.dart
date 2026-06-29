@@ -1,5 +1,5 @@
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
-import 'package:dynamic_app/data_provider/address/domain/entities/address_entity.dart';
+import 'package:dynamic_app/shared/address/domain/entities/address_entity.dart';
 
 class AddressWidget extends StatelessWidget {
   final AddressEntity entity;

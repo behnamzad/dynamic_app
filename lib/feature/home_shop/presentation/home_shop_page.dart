@@ -1,11 +1,9 @@
 import 'package:dynamic_app/core/mock_data/mock_data.dart';
-import 'package:dynamic_app/core/presentation/widget/app/profile_row_widget.dart';
-import 'package:dynamic_app/core/presentation/widget/bz_gesture_detector.dart';
-import 'package:dynamic_app/core/presentation/widget/bz_slider_widget.dart';
 import 'package:dynamic_app/core/presentation/widget/app/product_widget.dart';
+import 'package:dynamic_app/core/presentation/widget/app/profile_row_widget.dart';
+import 'package:dynamic_app/core/presentation/widget/bz_slider_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
-import 'package:dynamic_app/data_provider/user/domain/entities/user_entity.dart';
 
 @RoutePage()
 class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {

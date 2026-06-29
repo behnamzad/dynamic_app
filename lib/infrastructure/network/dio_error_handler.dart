@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:dynamic_app/infrastructure/network/model/api_error.dart';
 import 'package:dynamic_app/infrastructure/network/model/error_model.dart';
 import 'package:dynamic_app/infrastructure/network/model/third_party_error_model.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'config/strings.dart';
 
@@ -53,7 +54,9 @@ ApiError handleDioError({DioException? dioException, Response? response}) {
         response.data['error_code'] = thirdPartyErrorCode;
         response.data['error_message'] = thirdPartyErrorMessage;
       }
-    } catch (e) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
 
     final errorModel = ErrorModel.fromJson(data);
     if (errorModel.code != null && errorModel.code!.isNotEmpty && errorModel.code != 'null') {
@@ -95,7 +98,9 @@ ApiError handleDioError({DioException? dioException, Response? response}) {
           if (errorModel.message.isNotEmpty && errorModel.message != 'null') {
             errMsg = errorModel.message;
           }
-        } catch (e) {}
+        } catch (e) {
+          debugPrint(e.toString());
+        }
 
         return ServerError(errMsg, '500', httpCode: 500);
 

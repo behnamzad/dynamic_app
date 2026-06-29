@@ -8,7 +8,7 @@ export 'package:dynamic_app/core/presentation/widget/base/base_state.dart';
 export 'package:dynamic_app/core/presentation/widget/base/base_page_widget.dart';
 export 'package:dynamic_app/core/config/assets/assets.dart';
 export 'package:dynamic_app/core/config/strings.dart';
-export 'package:dynamic_app/core/presentation/route/app_router.dart';
+export 'package:dynamic_app/app/route/app_router.dart';
 export 'package:dynamic_app/core/presentation/widget/bz_appbar.dart';
 export 'package:dynamic_app/core/util/extension/context_ext.dart';
 export 'package:dynamic_app/core/config/dimen.dart';

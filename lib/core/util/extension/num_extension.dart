@@ -8,18 +8,18 @@ extension NumberExt on num {
   }
 
   String commaSeparate() {
-    final f = intl.NumberFormat("###,###,###,###");
+    final f = intl.NumberFormat('###,###,###,###');
     return f.format(this);
   }
 }
 
 extension IntExt on int {
   String convert2Rial() {
-    return "${commaSeparate()}\u200cریال";
+    return '${commaSeparate()}\u200cریال';
   }
 
   String convert2RialWithSpace() {
-    return "${commaSeparate()} ریال ";
+    return '${commaSeparate()} ریال ';
   }
 
   String second2Timer() {
@@ -31,31 +31,31 @@ extension IntExt on int {
   }
 
   convert2TomanWord() {
-    return "${_convert(this ~/ 10).trim()}تومان ";
+    return '${_convert(this ~/ 10).trim()}تومان ';
   }
 
   convert2Toman() {
-    return "${commaSeparate()} تومان";
+    return '${commaSeparate()} تومان';
   }
 
   String convert2TomanNumber() {
-    String strAnd = " و ";
+    String strAnd = ' و ';
     var n = this ~/ 10;
 
     var million = (n ~/ 1000000);
     var thousand = (n % 1000000 ~/ 1000);
     var hundred = (n % 1000000 % 1000 ~/ 100);
 
-    var millionDisplay = million > 0 ? "$million میلیون" : "";
-    var thousandDisplay = thousand > 0 ? "$thousand هزار" : "";
-    var hundredDisplay = hundred > 0 ? "$hundred صد" : "";
+    var millionDisplay = million > 0 ? '$million میلیون' : '';
+    var thousandDisplay = thousand > 0 ? '$thousand هزار' : '';
+    var hundredDisplay = hundred > 0 ? '$hundred صد' : '';
     var s = millionDisplay +
-        (millionDisplay.isNotEmpty ? strAnd : "") +
+        (millionDisplay.isNotEmpty ? strAnd : '') +
         thousandDisplay +
-        (thousandDisplay.isNotEmpty ? strAnd : "") +
+        (thousandDisplay.isNotEmpty ? strAnd : '') +
         hundredDisplay +
-        (hundredDisplay.isNotEmpty ? strAnd : "");
-    return "${s.substring(0, s.length - 2)}تومان";
+        (hundredDisplay.isNotEmpty ? strAnd : '');
+    return '${s.substring(0, s.length - 2)}تومان';
   }
 
   String toDurationString() {
@@ -63,9 +63,9 @@ extension IntExt on int {
     var months = (this % 365 ~/ 30);
     var days = (this % 365 % 30).floor();
 
-    var yearsDisplay = years > 0 ? "$years ساله" : "";
-    var monthsDisplay = months > 0 ? "$months ماه" : "";
-    var daysDisplay = days > 0 ? "$months روز" : "";
+    var yearsDisplay = years > 0 ? '$years ساله' : '';
+    var monthsDisplay = months > 0 ? '$months ماه' : '';
+    var daysDisplay = days > 0 ? '$months روز' : '';
     return yearsDisplay + monthsDisplay + daysDisplay;
   }
 
@@ -85,72 +85,72 @@ extension IntExt on int {
   }
 
   String _convert(int i) {
-    String strAnd = " و ";
+    String strAnd = ' و ';
 
     if (i < 20) return _units[i];
     if (i < 100) {
-      return _decimals[i ~/ 10] + ((i % 10 > 0) ? strAnd + _convert(i % 10) : "");
+      return _decimals[i ~/ 10] + ((i % 10 > 0) ? strAnd + _convert(i % 10) : '');
     }
     if (i < 1000) {
-      return _hundreds[(i ~/ 100)] + ((i % 100 > 0) ? strAnd + _convert(i % 100) : "");
+      return _hundreds[(i ~/ 100)] + ((i % 100 > 0) ? strAnd + _convert(i % 100) : '');
     }
     if (i < 1000000) {
-      return _convert(i ~/ 1000) + _stepsString(_steps[0]) + ((i % 1000 > 0) ? strAnd + _convert(i % 1000) : "");
+      return _convert(i ~/ 1000) + _stepsString(_steps[0]) + ((i % 1000 > 0) ? strAnd + _convert(i % 1000) : '');
     }
     if (i < 1000000000) {
       return _convert(i ~/ 1000000) +
           _stepsString(_steps[1]) +
-          ((i % 1000000 > 0) ? strAnd + _convert(i % 1000000) : "");
+          ((i % 1000000 > 0) ? strAnd + _convert(i % 1000000) : '');
     }
     return _convert(i ~/ 1000000000) +
         _stepsString(_steps[2]) +
-        ((i % 1000000000 > 0) ? strAnd + _convert(i % 1000000000) : "");
+        ((i % 1000000000 > 0) ? strAnd + _convert(i % 1000000000) : '');
   }
 
   _stepsString(String step) {
-    return " $step ";
+    return ' $step ';
   }
 }
 
 const _units = [
-  "صفر",
-  "یک",
-  "دو",
-  "سه",
-  "چهار",
-  "پنج",
-  "شش",
-  "هفت",
-  "هشت",
-  "نه",
-  "ده",
-  "یازده",
-  "دوازده",
-  "سیزده",
-  "چهارده",
-  "پانزده",
-  "شانزده",
-  "هفده",
-  "هجده",
-  "نوزده"
+  'صفر',
+  'یک',
+  'دو',
+  'سه',
+  'چهار',
+  'پنج',
+  'شش',
+  'هفت',
+  'هشت',
+  'نه',
+  'ده',
+  'یازده',
+  'دوازده',
+  'سیزده',
+  'چهارده',
+  'پانزده',
+  'شانزده',
+  'هفده',
+  'هجده',
+  'نوزده'
 ];
 
-const _decimals = ["", "", "بیست", "سی", "چهل", "پنجاه", "شصت", "هفتاد", "هشتاد", "نود"];
+const _decimals = ['', '', 'بیست', 'سی', 'چهل', 'پنجاه', 'شصت', 'هفتاد', 'هشتاد', 'نود'];
 
-const _hundreds = ["", "یکصد", "دویست", "سیصد", "چهارصد", "پانصد", "ششصد", "هفتصد", "هشتصد", "نهصد"];
+const _hundreds = ['', 'یکصد', 'دویست', 'سیصد', 'چهارصد', 'پانصد', 'ششصد', 'هفتصد', 'هشتصد', 'نهصد'];
 
 const _steps = [
-  "هزار",
-  "میلیون",
-  "میلیارد",
-  "تریلیون",
-  "کادریلیون",
-  "کوینتریلیون",
-  "سکستریلیون",
-  "سپتریلیون",
-  "اکتریلیون",
-  "نونیلیون",
-  "دسیلیون"
+  'هزار',
+  'میلیون',
+  'میلیارد',
+  'تریلیون',
+  'کادریلیون',
+  'کوینتریلیون',
+  'سکستریلیون',
+  'سپتریلیون',
+  'اکتریلیون',
+  'نونیلیون',
+  'دسیلیون'
 ];
 
 extension NumDurationExtensions on num {

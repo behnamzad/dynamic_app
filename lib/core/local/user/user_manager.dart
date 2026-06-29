@@ -3,6 +3,7 @@ import 'package:dynamic_app/core/local/user/enum/user_register_status.dart';
 import 'package:dynamic_app/core/local/user/enum/user_status.dart';
 import 'package:dynamic_app/core/local/user/user.dart';
 import 'package:dynamic_app/core/util/extension/string_ext.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
@@ -47,7 +48,6 @@ class UserManager {
       activateUser(user);
       return true;
     }
-    return false;
   }
 
   bool _tryLogin() {
@@ -59,7 +59,6 @@ class UserManager {
     }
     return false;
   }
-
 
   login(User user) {
     settingsManager.setUserName(user.username ?? '');
@@ -74,7 +73,6 @@ class UserManager {
     }
   }
 
-
   notifyOnChangeUsername(User user) {
     settingsManager.setUserName(user.username ?? '');
     _currentUser = user;
@@ -88,13 +86,14 @@ class UserManager {
       settingsManager.setUserStatus(user.userStatus);
       settingsManager.setUserNickname(user.userNickname);
       settingsManager.setUserGender(user.userGender);
-    } catch (e) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
     if (user.username != null) settingsManager.setUserName(user.username!);
 
-
-    try {
-
-    } catch (e) {}
+    try {} catch (e) {
+      debugPrint(e.toString());
+    }
     _currentUser = user;
   }
 
@@ -121,7 +120,6 @@ class UserManager {
     settingsManager.setUserNickname(user.userNickname);
     // settingsManager.setUserGender(user.userGender);
 
-
     _currentUser = user;
   }
 
@@ -147,11 +145,8 @@ class UserManager {
     }
   }
 
-
   bool isAcceptedAgreement() {
     bool isAcceptedAgreement = settingsManager.isAcceptedAgreement();
     return isAcceptedAgreement;
   }
-
-
 }
