@@ -1,11 +1,12 @@
 import 'package:dynamic_app/core/config/dimen.dart';
-import 'package:dynamic_app/core/presentation/widget/ada_text.dart';
+import 'package:dynamic_app/core/presentation/widget/bz_text.dart';
 import 'package:dynamic_app/core/style/app_theme.dart';
+import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/core/util/extension/context_ext.dart';
 import 'package:flutter/material.dart';
 
-class AdaAppBar extends StatelessWidget {
-  const AdaAppBar(
+class BzAppBar extends StatelessWidget {
+  const BzAppBar(
       {super.key,
       this.title = '',
       this.showBackButton = true,
@@ -60,7 +61,7 @@ class AdaAppBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100),
                     onTap: onBackPress ??
                         () {
-                          Navigator.of(context).pop();
+                          context.maybePop();
                         },
                     child: SizedBox(
                         width: Dimen.appBarHeight,
@@ -83,7 +84,7 @@ class AdaAppBar extends StatelessWidget {
           Positioned.fill(
             child: Center(
               child:
-                  titleWidget ?? AdaText(title, style: context.title1Bold.copyWith(color: context.scheme().titleText)),
+                  titleWidget ?? BzText(title, style: context.title1Bold.copyWith(color: context.scheme().titleText)),
             ),
           ),
           Positioned(

@@ -13,16 +13,16 @@ class AppColor {
 class AppColors {
   /// Main ///
 
-  AppColor get primary => const AppColor(light: Color(0xFFF0B800), dark: Color(0xFFE0C15A));
+  AppColor get primary => const AppColor(light: Color(0xFF4D42BD), dark: Color(0xFF908CE5));
 
 
-  AppColor get primary16 => const AppColor(light: Color(0xFFFCF3D6), dark: Color(0xFF3E3929));
+  AppColor get primary16 => const AppColor(light: Color(0xFFE9E9EC), dark: Color(0xFF827F9F));
 
   AppColor get primary20 => const AppColor(light: Color(0xFFFCF1CC), dark: Color(0xFF443D27));
 
   AppColor get primary24 => const AppColor(light: Color(0xFFFCEEC2), dark: Color(0xFF443D27));
 
-  AppColor get primaryBold => const AppColor(light: Color(0xFFD29100), dark: Color(0xFFFFDD6F));
+  AppColor get primaryBold => const AppColor(light: Color(0xFF5244C9), dark: Color(0xFFA396D0));
 
   AppColor get secondary => const AppColor(light: Color(0xFF000000), dark: Color(0xFFEDEDED));
 

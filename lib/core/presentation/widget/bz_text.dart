@@ -1,10 +1,10 @@
 import 'package:dynamic_app/core/util/string_helper.dart';
 import 'package:flutter/material.dart';
 
-class AdaText extends Text {
+class BzText extends Text {
   final String text;
 
-  AdaText(
+  BzText(
     this.text, {
     super.key,
     super.style,

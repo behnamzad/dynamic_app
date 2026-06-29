@@ -23,14 +23,14 @@ class HomeExitBottomSheetContentWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 26),
-        AdaText('ss.exitDes', style: context.title2Medium.copyWith(color: context.scheme().mainText)),
+        BzText('ss.exitDes', style: context.title2Medium.copyWith(color: context.scheme().mainText)),
         const SizedBox(height: 36),
         SizedBox(
           height: 50,
           child: Row(
             children: [
               Expanded(
-                child: AdaButton.outline(
+                child: BzButton.outline(
                   text: ss.no,
                   onPressed: () => Navigator.pop(context),
                   borderColor: context.scheme().buttonBorder2,
@@ -39,7 +39,7 @@ class HomeExitBottomSheetContentWidget extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: AdaButton.submit(
+                child: BzButton.submit(
                   text: ss.yes,
                   onPressed: () {
                     _closeApp();

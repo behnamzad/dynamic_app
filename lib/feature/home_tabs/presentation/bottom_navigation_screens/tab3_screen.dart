@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:dynamic_app/core/util/common_ui_imports.dart';
+import 'package:dynamic_app/feature/cart/presentation/cart_page.dart';
+
 @RoutePage()
 class Tab3Screen extends StatelessWidget {
   const Tab3Screen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
+    return const CartPage().wrappedRoute(context);
   }
 }

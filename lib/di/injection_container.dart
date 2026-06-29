@@ -55,15 +55,15 @@ abstract class NetworkModule {
   PrettyDioLogger get prettyDioLogger =>
       PrettyDioLogger(requestHeader: true, requestBody: true, logPrint: _defaultLogPrint);
 
-  @Named(DiConst.dioNamedDigikala)
+  @Named(DiConst.dioNamedProduct)
   @lazySingleton
   Dio provideIranCellDio(PrettyDioLogger prettyDioLogger) => provideDio(
         baseUrl: 'digikala_api',
       );
 
-  @Named(DiConst.dioNamedDigikala)
+  @Named(DiConst.dioNamedProduct)
   @lazySingleton
-  DioCaller provideCryptoDioCaller(@Named(DiConst.dioNamedDigikala) Dio dio) => DioCaller(dio: dio);
+  DioCaller provideCryptoDioCaller(@Named(DiConst.dioNamedProduct) Dio dio) => DioCaller(dio: dio);
 }
 
 @module

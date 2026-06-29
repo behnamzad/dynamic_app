@@ -17,11 +17,11 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return BasePageWidget(
-      appBar: AdaAppBar(
+      appBar: BzAppBar(
         title: 'Dynamic App',
-        onBackPress: () => context.router.push(const PageOneRoute()),
+        onBackPress: () => context.replaceRoute(HomePageRoute()),
       ),
-      child: AdaText(
+      child: BzText(
         'test',
         style: context.body1Regular.copyWith(color: context.scheme().titleText),
       ),

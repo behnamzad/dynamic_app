@@ -262,7 +262,7 @@ extension ColorSchemeExtension on ColorScheme {
 
   Color get primaryBold => brightness == Brightness.light ? acs.primaryBold.light : acs.primaryBold.dark;
 
-  Color get primary16 => brightness == Brightness.light ? acs.primary16.light : acs.primary16.dark;
+  Color get primary2 => brightness == Brightness.light ? acs.primary16.light : acs.primary16.dark;
 
   Color get primary20 => brightness == Brightness.light ? acs.primary20.light : acs.primary20.dark;
 

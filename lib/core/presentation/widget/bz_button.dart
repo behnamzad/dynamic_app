@@ -1,5 +1,5 @@
 import 'package:dynamic_app/core/config/dimen.dart';
-import 'package:dynamic_app/core/presentation/widget/ada_text.dart';
+import 'package:dynamic_app/core/presentation/widget/bz_text.dart';
 import 'package:dynamic_app/core/presentation/widget/sized_circular_progress_indicator.dart';
 import 'package:dynamic_app/core/style/app_theme.dart';
 import 'package:dynamic_app/core/util/extension/context_ext.dart';
@@ -17,8 +17,8 @@ enum ButtonType {
   bool get isOutline => this == ButtonType.outline;
 }
 
-class AdaButton extends StatefulWidget {
-  const AdaButton.submit({
+class BzButton extends StatefulWidget {
+  const BzButton.submit({
     super.key,
     required this.text,
     this.backgroundColor,
@@ -45,7 +45,7 @@ class AdaButton extends StatefulWidget {
   })  : _buttonType = ButtonType.submit,
         borderColor = null;
 
-  const AdaButton.cancel({
+  const BzButton.cancel({
     super.key,
     required this.text,
     this.backgroundColor,
@@ -72,7 +72,7 @@ class AdaButton extends StatefulWidget {
         leftArrow = false,
         rightArrow = false;
 
-  const AdaButton.outline({
+  const BzButton.outline({
     super.key,
     required this.text,
     this.textColor,
@@ -125,10 +125,10 @@ class AdaButton extends StatefulWidget {
   final double? arrowIconSize;
 
   @override
-  State<AdaButton> createState() => _AdaButtonState();
+  State<BzButton> createState() => _BzButtonState();
 }
 
-class _AdaButtonState extends State<AdaButton> {
+class _BzButtonState extends State<BzButton> {
   @override
   Widget build(BuildContext context) {
     Widget button = Container(
@@ -168,7 +168,7 @@ class _AdaButtonState extends State<AdaButton> {
                         alignment: Alignment.center,
                         children: [
                           Center(
-                            child: AdaText(
+                            child: BzText(
                               widget.text,
                               textAlign: TextAlign.center,
                               style: widget.textStyle != null

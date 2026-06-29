@@ -1,9 +1,9 @@
 import 'package:dynamic_app/core/config/dimen.dart';
 import 'package:dynamic_app/core/config/strings.dart';
 import 'package:dynamic_app/core/presentation/bloc/base_app/app_base_bloc.dart';
-import 'package:dynamic_app/core/presentation/widget/ada_overlay_loading_widget.dart';
-import 'package:dynamic_app/core/presentation/widget/ada_retry_widget.dart';
-import 'package:dynamic_app/core/presentation/widget/ada_text.dart';
+import 'package:dynamic_app/core/presentation/widget/bz_overlay_loading_widget.dart';
+import 'package:dynamic_app/core/presentation/widget/bz_retry_widget.dart';
+import 'package:dynamic_app/core/presentation/widget/bz_text.dart';
 import 'package:dynamic_app/core/style/app_theme.dart';
 import 'package:dynamic_app/core/util/extension/context_ext.dart';
 import 'package:flutter/material.dart';
@@ -134,7 +134,7 @@ class _BasePageWidgetState extends State<BasePageWidget> {
                 child: LoadingOverlay(
                   color: context.scheme().dialogShadow.withOpacity(0.9),
                   isLoading: overlayLoadingState.overlayLoadingStatus.isStartLoading,
-                  progressIndicator: OverLayLoadingWidget(message: overlayLoadingState.loadingMessage),
+                  progressIndicator: BzOverLayLoadingWidget(message: overlayLoadingState.loadingMessage),
                   child: getScaffold(),
                 ),
               );
@@ -216,7 +216,7 @@ class _BasePageWidgetState extends State<BasePageWidget> {
               SizedBox(height: widget.topLoadingMargin),
               const CircularProgressIndicator(),
               const SizedBox(height: 24),
-              AdaText(
+              BzText(
                 widget.onScreenLoadingModeDescription ?? ss.fetchingData,
                 style: context.body1Regular.copyWith(
                   color: context.scheme().mainText,
@@ -228,7 +228,7 @@ class _BasePageWidgetState extends State<BasePageWidget> {
           ),
         );
       } else if (widget.onScreenLoadingModeShowFailureByState == true) {
-        return AdaRetryWidget(
+        return BzRetryWidget(
             message: widget.failureMessage,
             onRetryClick: () {
               if (widget.onScreenLoadingOnTryAgainCLick != null) widget.onScreenLoadingOnTryAgainCLick!();

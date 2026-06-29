@@ -1,4 +1,4 @@
-import 'package:dynamic_app/core/presentation/app.dart';
+import 'package:dynamic_app/app/app.dart';
 import 'package:dynamic_app/di/injection_container.dart';
 import 'package:dynamic_app/flavors.dart';
 import 'package:flutter/material.dart';

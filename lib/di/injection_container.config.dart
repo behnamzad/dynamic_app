@@ -33,9 +33,19 @@ import 'package:dynamic_app/core/util/crypto/keystore_gcm_crypto_helper.dart'
     as _i937;
 import 'package:dynamic_app/core/util/currency_manager.dart' as _i432;
 import 'package:dynamic_app/core/util/shared_preferences_helper.dart' as _i508;
+import 'package:dynamic_app/data_provider/product/data/datasource/product_date_source.dart'
+    as _i297;
+import 'package:dynamic_app/data_provider/product/data/datasource/product_source_impl.dart'
+    as _i699;
+import 'package:dynamic_app/data_provider/product/data/repository/product_repo_impl.dart'
+    as _i401;
+import 'package:dynamic_app/data_provider/product/domain/repository/product_repo.dart'
+    as _i545;
 import 'package:dynamic_app/di/injection_container.dart' as _i244;
 import 'package:dynamic_app/feature/home_tabs/presentation/bloc/home_bloc.dart'
     as _i634;
+import 'package:dynamic_app/feature/login/presentation/bloc/login_bloc.dart'
+    as _i701;
 import 'package:dynamic_app/infrastructure/broadcast/broadcast_manager.dart'
     as _i806;
 import 'package:dynamic_app/infrastructure/network/dio_caller.dart' as _i1054;
@@ -95,23 +105,25 @@ extension GetItInjectableX on _i174.GetIt {
               encryptHelper: gh<_i719.EncryptHelper>(),
               sharePrefs: gh<_i460.SharedPreferences>(),
             ));
+    gh.lazySingleton<_i361.Dio>(
+      () => networkModule.provideIranCellDio(gh<_i528.PrettyDioLogger>()),
+      instanceName: 'dioNamedProduct',
+    );
     gh.factory<_i906.SettingsManager>(
         () => _i906.SettingsManager(gh<_i508.SharedPreferencesHelper>()));
     gh.factory<_i87.ThemeService>(
         () => _i87.ThemeService(gh<_i906.SettingsManager>()));
-    gh.lazySingleton<_i361.Dio>(
-      () => networkModule.provideIranCellDio(gh<_i528.PrettyDioLogger>()),
-      instanceName: 'digikala',
-    );
     gh.lazySingleton<_i168.BlocObserverLogger>(
         () => _i168.BlocObserverLogger(logger: gh<_i974.Logger>()));
     gh.lazySingleton<_i593.NavigatorObserverLogger>(
         () => _i593.NavigatorObserverLogger(logger: gh<_i974.Logger>()));
     gh.lazySingleton<_i1054.DioCaller>(
-      () => networkModule
-          .provideCryptoDioCaller(gh<_i361.Dio>(instanceName: 'digikala')),
-      instanceName: 'digikala',
+      () => networkModule.provideCryptoDioCaller(
+          gh<_i361.Dio>(instanceName: 'dioNamedProduct')),
+      instanceName: 'dioNamedProduct',
     );
+    gh.factory<_i297.ProductDateSource>(() => _i699.ProductDateSourceImpl(
+        dioCaller: gh<_i1054.DioCaller>(instanceName: 'dioNamedProduct')));
     gh.lazySingleton<_i537.UserManager>(
         () => _i537.UserManager(gh<_i906.SettingsManager>()));
     gh.lazySingleton<_i179.AppBaseBloc>(
@@ -123,11 +135,14 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i655.PackageInfo>(),
           gh<_i906.SettingsManager>(),
         ));
+    gh.factory<_i545.ProductRepo>(
+        () => _i401.ProductRepoImpl(gh<_i297.ProductDateSource>()));
     gh.factory<_i659.InitialNavigationManager>(
         () => _i659.InitialNavigationManager(
               gh<_i658.AppRouter>(),
               gh<_i537.UserManager>(),
             ));
+    gh.factory<_i701.LoginBloc>(() => _i701.LoginBloc(gh<_i545.ProductRepo>()));
     gh.lazySingleton<_i905.NetworkUtils>(
       () => _i905.NetworkUtils(
         gh<_i21.AppDeviceInfoUtil>(),

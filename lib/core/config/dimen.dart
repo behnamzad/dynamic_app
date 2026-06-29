@@ -1,7 +1,7 @@
 import 'package:dynamic_app/di/injection_container.dart';
 import 'package:flutter/material.dart';
 
- class Dimen {
+class Dimen {
   static const double buttonMinHeight = 50;
   static const double dialogButtonHeight = 46;
   static const double cardHeight = 205;
@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
   static const double fabHeight = 55;
 
   static const double defaultRadius = 16;
-  static const double buttonRadius = 12;
+  static const double buttonRadius = 50;
   static const double multiInputRadius = 12;
   static const double inputRadius = 12;
   static const double popupRadius = 12.0;
@@ -49,8 +49,31 @@ import 'package:flutter/material.dart';
 
   double get tabBarHeight => 54;
 
-
   static const double dailyCardHeight = 184;
+
+//region product
+  //todo adaptive this size later
+  //card
+  static const double productCardHeight = 208;
+  static const double productCardWidth = 160;
+
+  static const double productCardImgHeight = 140;
+
+  //row
+  static const double productRowHeight = 140;
+  static const double productRowImgHeight = 110;
+
+  //in cart
+  static const double productInCartRowHeight = 190;
+  static const double productInCartRowImgHeight = 110;
+
+  //endregion
+
+  static const double productInfoImageHeight = 400;
+
+  static BorderRadius get defaultBorderRadius => BorderRadius.circular(defaultRadius);
+
+  static BorderRadius get circularBorderRadius => BorderRadius.circular(100);
 }
 
 Dimen dimen = inject<Dimen>();

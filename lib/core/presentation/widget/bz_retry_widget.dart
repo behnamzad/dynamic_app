@@ -1,12 +1,12 @@
 
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 
-class AdaRetryWidget extends StatelessWidget {
+class BzRetryWidget extends StatelessWidget {
   final String? message;
   final String? labelButton;
   final Function() onRetryClick;
 
-  const AdaRetryWidget({
+  const BzRetryWidget({
     super.key,
     this.message,
     required this.onRetryClick,
@@ -21,7 +21,7 @@ class AdaRetryWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
-          AdaButton.submit(
+          BzButton.submit(
             text: labelButton ?? ss.tryAgain,
             textFontSize: 15,
             horizontalPadding: 16,
@@ -32,7 +32,7 @@ class AdaRetryWidget extends StatelessWidget {
           const SizedBox(height: 18),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 48),
-            child: AdaText(
+            child: BzText(
               message ?? ss.errorFetchInformation,
               style: context.title1Bold.copyWith(color: context.scheme().titleText, height: 1.3),
               textAlign: TextAlign.center,
@@ -41,7 +41,7 @@ class AdaRetryWidget extends StatelessWidget {
           const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 48),
-            child: AdaText(
+            child: BzText(
               ss.retryMessage,
               style: context.body3Regular.copyWith(color: context.scheme().hint, height: 1.3),
               textAlign: TextAlign.center,

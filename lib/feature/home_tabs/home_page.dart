@@ -1,6 +1,5 @@
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/feature/home_tabs/presentation/bloc/home_bloc.dart';
-import 'package:flutter/scheduler.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget implements AutoRouteWrapper {
@@ -20,10 +19,14 @@ class HomePage extends StatefulWidget implements AutoRouteWrapper {
 class _HomePageState extends BaseState<HomePage> {
   late final ValueNotifier<bool> _hideTabsValueNotifier;
   late TabsRouter tabsRouter;
-  var homeTabIndex = 1;
+  int homeTabIndex = 3;
+  int searchTabIndex = 2;
+  int cartTabIndex = 1;
+  int meTabIndex = 0;
 
   @override
   void initState() {
+    _hideTabsValueNotifier = ValueNotifier(false);
     super.initState();
   }
 
@@ -38,11 +41,10 @@ class _HomePageState extends BaseState<HomePage> {
       builder: (context, state) {
         return AutoTabsRouter(
           routes: const [
-            // todo active this
-            // Tab1ScreenRoute(),
-            // Tab2ScreenRoute(),
-            // Tab3ScreenRoute(),
-            // Tab4ScreenRoute(),
+            Tab1ScreenRoute(),
+            Tab2ScreenRoute(),
+            Tab3ScreenRoute(),
+            Tab4ScreenRoute(),
           ],
           transitionBuilder: (context, child, animation) => FadeTransition(
             opacity: animation,
@@ -74,60 +76,45 @@ class _HomePageState extends BaseState<HomePage> {
           Divider(thickness: 0.4, height: 0, color: context.scheme().divider),
           NavigationBarTheme(
             data: NavigationBarThemeData(
-              indicatorColor: context.scheme().primary16,
               labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>(
                 (Set<MaterialState> states) => states.contains(MaterialState.selected)
-                    ? context.body2Medium.copyWith(color: context.scheme().primaryBold)
+                    ? context.body2Bold.copyWith(color: context.scheme().primaryBold)
                     : context.body2Regular.copyWith(color: context.scheme().mainText),
               ),
             ),
             child: NavigationBar(
-              backgroundColor: context.scheme().mainBackground1,
+              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+              backgroundColor: context.scheme().mainBackground2,
               selectedIndex: tabsRouter.activeIndex,
-              animationDuration: const Duration(milliseconds: 500),
+              animationDuration: const Duration(milliseconds: 1500),
+              height: 65,
+              indicatorColor: context.scheme().primary2,
               onDestinationSelected: (index) {
                 tabsRouter.setActiveIndex(index);
               },
               destinations: [
                 NavigationDestination(
-                  icon: _navigationBarIcon(
-                    showBadge: isShowBadge(navigationBarBadgesList: navigationBarBadgesList, navigationItemId: 0),
-                    selectedIcon: Icons.storefront_rounded,
-                    icon: Icons.storefront_outlined,
-                    isSelected: false,
-                    height: 7,
-                  ),
-                  label: 'store',
+                  icon: _navigationBarIcon(icon: Icons.person_rounded, isSelected: tabsRouter.activeIndex == meTabIndex),
+                  tooltip: ss.personal,
+                  label: ss.personal,
                 ),
                 NavigationDestination(
                   icon: _navigationBarIcon(
-                    showBadge: isShowBadge(navigationBarBadgesList: navigationBarBadgesList, navigationItemId: 0),
-                    selectedIcon: Icons.storefront_rounded,
-                    icon: Icons.storefront_outlined,
-                    isSelected: false,
-                    height: 7,
-                  ),
-                  label: 'store',
+                      icon: Icons.shopping_bag_rounded, isSelected: tabsRouter.activeIndex == cartTabIndex),
+                  tooltip: ss.cart,
+                  label: ss.cart,
                 ),
                 NavigationDestination(
                   icon: _navigationBarIcon(
-                    showBadge: isShowBadge(navigationBarBadgesList: navigationBarBadgesList, navigationItemId: 0),
-                    selectedIcon: Icons.storefront_rounded,
-                    icon: Icons.storefront_outlined,
-                    isSelected: false,
-                    height: 7,
-                  ),
-                  label: 'store',
+                      icon: Icons.search_rounded, isSelected: tabsRouter.activeIndex == searchTabIndex),
+                  tooltip: ss.search,
+                  label: ss.search,
                 ),
                 NavigationDestination(
-                  icon: _navigationBarIcon(
-                    showBadge: isShowBadge(navigationBarBadgesList: navigationBarBadgesList, navigationItemId: 0),
-                    selectedIcon: Icons.storefront_rounded,
-                    icon: Icons.storefront_outlined,
-                    isSelected: false,
-                    height: 7,
-                  ),
-                  label: 'store',
+                  icon:
+                      _navigationBarIcon(icon: Icons.home_rounded, isSelected: tabsRouter.activeIndex == homeTabIndex),
+                  tooltip: ss.home,
+                  label: ss.home,
                 ),
               ],
             ),
@@ -138,41 +125,20 @@ class _HomePageState extends BaseState<HomePage> {
   }
 
   Widget _navigationBarIcon({
-    required IconData selectedIcon,
     required IconData icon,
     required bool isSelected,
-    required double height,
-    required bool showBadge,
-    Widget? selectedSvgIcon,
-    Widget? svgIcon,
   }) {
     return Stack(
       alignment: Alignment.center,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 6, right: 6),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: height),
-              if (svgIcon != null && selectedSvgIcon != null) isSelected ? selectedSvgIcon : svgIcon,
-              if (svgIcon == null && selectedSvgIcon == null)
-                Icon(
-                  isSelected ? selectedIcon : icon,
-                  color: isSelected ? context.scheme().primaryBold : context.scheme().mainText,
-                  size: 24,
-                ),
-              SizedBox(height: height),
-            ],
+          child: Icon(
+            icon,
+            color: isSelected ? context.scheme().primaryBold : context.scheme().mainText,
+            size: 28,
           ),
         ),
-        if (showBadge)
-          Positioned(
-            left: 0,
-            top: 0,
-            child: redCircleBadgeWidget(),
-          )
       ],
     );
   }
@@ -189,26 +155,4 @@ class _HomePageState extends BaseState<HomePage> {
     );
   }
 
-  bool isShowBadge({required List<int>? navigationBarBadgesList, required int navigationItemId}) {
-    if (navigationBarBadgesList != null) {
-      return navigationBarBadgesList.contains(navigationItemId);
-    } else {
-      return false;
-    }
-  }
-
-// saveClickedBadgeItem(
-//     {required BuildContext context, required List<int>? navigationBarBadgesList, required int navigationItemId}) {
-//   if (navigationBarBadgesList != null && navigationBarBadgesList.isNotEmpty) {
-//     if (navigationBarBadgesList.contains(navigationItemId)) {
-//       List<String> savedBadgeClickedList = List.from(inject<SettingsManager>().getNavigationBarBadgesClickedList());
-//       List<String> badgeClickedList = List.from(savedBadgeClickedList);
-//       if (!savedBadgeClickedList.contains(navigationItemId.toString())) {
-//         badgeClickedList.add(navigationItemId.toString());
-//         inject<SettingsManager>().setNavigationBarBadgesClickedList(badgeClickedList);
-//         context.read<HomeBloc>().add(const HomeEvent.reloadNavigationBarBadgeList());
-//       }
-//     }
-//   }
-// }
 }

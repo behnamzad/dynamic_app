@@ -1,6 +1,7 @@
+import 'package:dynamic_app/app/custom_navigation_observer.dart';
+import 'package:dynamic_app/app/route/app_router.dart';
+import 'package:dynamic_app/app/route/navigator_observer_logger.dart';
 import 'package:dynamic_app/core/presentation/bloc/base_app/app_base_bloc.dart';
-import 'package:dynamic_app/core/presentation/custom_navigation_observer.dart';
-import 'package:dynamic_app/core/presentation/route/navigator_observer_logger.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:logger/logger.dart';
 import 'package:overlay_support/overlay_support.dart';

@@ -1,14 +1,14 @@
 import 'package:dynamic_app/core/config/dimen.dart';
 import 'package:dynamic_app/core/config/strings.dart';
-import 'package:dynamic_app/core/presentation/widget/ada_text.dart';
+import 'package:dynamic_app/core/presentation/widget/bz_text.dart';
 import 'package:dynamic_app/core/util/extension/context_ext.dart';
 import 'package:dynamic_app/core/style/app_theme.dart';
 import 'package:flutter/material.dart';
 
-class OverLayLoadingWidget extends StatelessWidget {
+class BzOverLayLoadingWidget extends StatelessWidget {
   final String? message;
 
-  const OverLayLoadingWidget({this.message, Key? key}) : super(key: key);
+  const BzOverLayLoadingWidget({this.message, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class OverLayLoadingWidget extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: AdaText(
+                  child: BzText(
                     message ?? ss.pleaseWait,
                     textAlign: TextAlign.right,
                     overflow: TextOverflow.fade,

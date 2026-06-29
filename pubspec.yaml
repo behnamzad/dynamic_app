@@ -20,7 +20,7 @@ dependencies:
   syncfusion_flutter_charts: ^29.1.38
   bloc_test:
   overlay_support:
-  flutter_svg: ^2.0.9
+  flutter_svg: ^1.1.4
   share_plus: "7.2.2"
   db_viewer:
   freezed_annotation: ^2.4.4
@@ -34,11 +34,16 @@ dependencies:
   dio:
   pretty_dio_logger:
   logger:
-  device_info_plus: 8.2.2
+  device_info_plus:
   equatable:
-  package_info_plus: 3.1.2
+  package_info_plus:
   auto_route: 9.2.0
   loading_overlay: ^0.4.3
+  sprintf: ^7.0.0
+  flutter_toast:
+    git:
+      url: https://flutter:flutter78@gitlab.asredanesh.com/mobilebanking/flutter-toast.git
+      ref: development-ff-mehr
 
 
 dev_dependencies:
