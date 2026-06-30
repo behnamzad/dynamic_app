@@ -47,7 +47,7 @@ class KeystoreGcmCryptoHelper {
   }
 
   String encrypt(String data) {
-    if (data == null || data == '') return '';
+    if (data == '') return '';
     // if (data.isEmpty) throw Exception('Input data is empty.');
     if (_key == null || _iv == null) throw Exception('Key or IV not initialized.');
 

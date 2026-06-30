@@ -14,10 +14,10 @@ abstract class DioCaller {
       data,
       Options? options,
       CancelToken? cancelToken,
-      ProgressCallback? onSendProgress});
+      ProgressCallback? onSendProgress,});
 
   Future<ApiResponse<D>> get<D>(String path,
-      {required Function? fromJson, Map<String, dynamic>? queryParameters, Options? options});
+      {required Function? fromJson, Map<String, dynamic>? queryParameters, Options? options,});
 
   Future<ApiResponse<D>> put<D>(String path, {required Function fromJson, data, Options? options});
 
@@ -43,7 +43,7 @@ class _DioCallerStandardImpl implements DioCaller {
       return _isSuccessfulStatusCode(response.statusCode)
           ? ApiResponse.completed(data: fromJson!.call(response.data), statusCode: response.statusCode)
           : ApiResponse.error(apiError: handleDioError(response: response));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return ApiResponse.error(apiError: handleDioError(dioException: e, response: e.response));
     } catch (e) {
       return ApiResponse.error(apiError: handleDioError());
@@ -52,13 +52,13 @@ class _DioCallerStandardImpl implements DioCaller {
 
   @override
   Future<ApiResponse<D>> post<D>(String path,
-      {required Function? fromJson, data, Options? options, queryParameters}) async {
+      {required Function? fromJson, data, Options? options, queryParameters,}) async {
     try {
       final response = await dio.post(path, data: data, options: options, queryParameters: queryParameters);
       return _isSuccessfulStatusCode(response.statusCode)
           ? ApiResponse<D>.completed(data: fromJson?.call(response.data), statusCode: response.statusCode)
           : ApiResponse<D>.error(apiError: handleDioError(response: response));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       ApiError error = handleDioError(dioException: e, response: e.response);
 
       if (error is SessionExpiredAndRecallService || error is TokenExpiredAndRecallService) {
@@ -85,7 +85,7 @@ class _DioCallerStandardImpl implements DioCaller {
       return _isSuccessfulStatusCode(response.statusCode)
           ? ApiResponse.completed(data: fromJson.call(response.data), statusCode: response.statusCode)
           : ApiResponse.error(apiError: handleDioError(response: response));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return ApiResponse.error(apiError: handleDioError(dioException: e, response: e.response));
     } catch (e) {
       return ApiResponse.error(apiError: handleDioError());
@@ -105,7 +105,7 @@ class _DioCallerStandardImpl implements DioCaller {
       return _isSuccessfulStatusCode(response.statusCode)
           ? ApiResponse.completed(data: fromJson.call(response.data), statusCode: response.statusCode)
           : ApiResponse.error(apiError: handleDioError(response: response));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return ApiResponse.error(apiError: handleDioError(dioException: e, response: e.response));
     } catch (e) {
       return ApiResponse.error(apiError: handleDioError());
@@ -125,7 +125,7 @@ class _DioCallerStandardImpl implements DioCaller {
       return _isSuccessfulStatusCode(response.statusCode)
           ? ApiResponse.completed(data: fromJson.call(response.data), statusCode: response.statusCode)
           : ApiResponse.error(apiError: handleDioError(response: response));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return ApiResponse.error(apiError: handleDioError(dioException: e, response: e.response));
     } catch (e) {
       return ApiResponse.error(apiError: handleDioError());
@@ -141,7 +141,7 @@ class _DioCallerStandardImpl implements DioCaller {
       data,
       Options? options,
       CancelToken? cancelToken,
-      ProgressCallback? onSendProgress}) async {
+      ProgressCallback? onSendProgress,}) async {
     try {
       final response =
           await dio.post(path, data: data, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress);
@@ -149,7 +149,7 @@ class _DioCallerStandardImpl implements DioCaller {
       return _isSuccessfulStatusCode(response.statusCode)
           ? ApiResponse<D>.completed(data: fromJson?.call(response.data), statusCode: response.statusCode)
           : ApiResponse<D>.error(apiError: handleDioError(response: response));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return ApiResponse<D>.error(apiError: handleDioError(dioException: e, response: e.response));
     } catch (e) {
       return ApiResponse<D>.error(apiError: handleDioError());

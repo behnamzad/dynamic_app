@@ -71,7 +71,7 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
                         child: BzText(
                           ss.seeMore,
                           style: context.title2Bold,
-                        )),
+                        ),),
                   ],
                 ),
               ),
@@ -85,7 +85,7 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
                     itemBuilder: (context, index) {
                       ProductEntity entity = MockData().products()[index];
                       return ProductWidget.card(entity: entity);
-                    }),
+                    },),
               ),
             ],
           ),

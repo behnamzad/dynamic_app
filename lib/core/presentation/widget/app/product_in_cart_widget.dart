@@ -1,4 +1,3 @@
-import 'package:dynamic_app/app/route/app_router.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_in_cart_entity.dart';
 
@@ -8,7 +7,7 @@ class ProductInCartWidget extends StatefulWidget {
   final VoidCallback decreaseCount;
 
   const ProductInCartWidget(
-      {super.key, required this.productInCartEntity, required this.increaseCount, required this.decreaseCount});
+      {super.key, required this.productInCartEntity, required this.increaseCount, required this.decreaseCount,});
 
   @override
   State<ProductInCartWidget> createState() => _ProductInCartWidgetState();
@@ -55,7 +54,7 @@ class _ProductInCartWidgetState extends State<ProductInCartWidget> {
                         height: Dimen.productInCartRowImgHeight,
                         child: Image.network(_entity.productEntity.imageUrl),
                       ),
-                      VGap(24),
+                      const VGap(24),
                       _incDecWidget(context),
                     ],
                   ),
@@ -90,7 +89,7 @@ class _ProductInCartWidgetState extends State<ProductInCartWidget> {
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -108,7 +107,7 @@ class _ProductInCartWidgetState extends State<ProductInCartWidget> {
             color: context.scheme().primary2,
             width: 2,
           ),
-          borderRadius: Dimen.defaultBorderRadius),
+          borderRadius: Dimen.defaultBorderRadius,),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
@@ -120,7 +119,7 @@ class _ProductInCartWidgetState extends State<ProductInCartWidget> {
             const HGap(8),
             BzText(_entity.selectedCount.toString(), style: context.body1Bold),
             const HGap(8),
-            BzGestureDetector(onTap: () => widget.increaseCount.call(), child: const Icon(Icons.add, size: 24))
+            BzGestureDetector(onTap: () => widget.increaseCount.call(), child: const Icon(Icons.add, size: 24)),
           ],
         ),
       ),

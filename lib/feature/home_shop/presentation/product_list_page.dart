@@ -23,7 +23,7 @@ class ProductListPage extends StatelessWidget implements AutoRouteWrapper {
         appBar: const BzAppBar(
           title: 'category name',
         ),
-        child: _body(context));
+        child: _body(context),);
   }
 
 //region Widgets
@@ -45,7 +45,7 @@ class ProductListPage extends StatelessWidget implements AutoRouteWrapper {
           itemBuilder: (context, index) {
             ProductEntity entity = products[index];
             return ProductWidget.row(entity: entity);
-          }),
+          },),
     );
   }
 

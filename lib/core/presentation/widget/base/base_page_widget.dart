@@ -32,7 +32,7 @@ class BasePageWidget extends StatefulWidget {
       this.resizeToAvoidBottomInset = true,
       this.floatingActionButton,
       this.topLoadingMargin = 0,
-      this.appBarAreaHeight})
+      this.appBarAreaHeight,})
       : pageLoadingMode = PageLoadingMode.none;
 
   const BasePageWidget.withOverlayLoading(
@@ -53,7 +53,7 @@ class BasePageWidget extends StatefulWidget {
       this.resizeToAvoidBottomInset = true,
       this.floatingActionButton,
       this.topLoadingMargin = 0,
-      this.appBarAreaHeight})
+      this.appBarAreaHeight,})
       : pageLoadingMode = PageLoadingMode.overlay;
 
   const BasePageWidget.withOnScreenLoading(
@@ -74,7 +74,7 @@ class BasePageWidget extends StatefulWidget {
       this.resizeToAvoidBottomInset = true,
       this.floatingActionButton,
       this.topLoadingMargin = 0,
-      this.appBarAreaHeight})
+      this.appBarAreaHeight,})
       : pageLoadingMode = PageLoadingMode.onScreen;
 
   const BasePageWidget.withOnScreenAndOverLayLoading(
@@ -95,7 +95,7 @@ class BasePageWidget extends StatefulWidget {
       this.resizeToAvoidBottomInset = true,
       this.floatingActionButton,
       this.topLoadingMargin = 0,
-      this.appBarAreaHeight})
+      this.appBarAreaHeight,})
       : pageLoadingMode = PageLoadingMode.onScreenAndOverlay;
 
   final Widget child;
@@ -232,7 +232,7 @@ class _BasePageWidgetState extends State<BasePageWidget> {
             message: widget.failureMessage,
             onRetryClick: () {
               if (widget.onScreenLoadingOnTryAgainCLick != null) widget.onScreenLoadingOnTryAgainCLick!();
-            });
+            },);
       } else {
         return widget.child;
       }

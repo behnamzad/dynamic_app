@@ -60,7 +60,7 @@ class _HomePageState extends BaseState<HomePage> {
                   builder: (BuildContext context, bool value, Widget? child) {
                     return value ? const SizedBox() : buildBottomNavigationBar(context, tabsRouter, [0]);
                   },
-                ));
+                ),);
           },
         );
       },
@@ -100,13 +100,13 @@ class _HomePageState extends BaseState<HomePage> {
                 ),
                 NavigationDestination(
                   icon: _navigationBarIcon(
-                      icon: Icons.shopping_bag_rounded, isSelected: tabsRouter.activeIndex == cartTabIndex),
+                      icon: Icons.shopping_bag_rounded, isSelected: tabsRouter.activeIndex == cartTabIndex,),
                   tooltip: ss.cart,
                   label: ss.cart,
                 ),
                 NavigationDestination(
                   icon: _navigationBarIcon(
-                      icon: Icons.search_rounded, isSelected: tabsRouter.activeIndex == searchTabIndex),
+                      icon: Icons.search_rounded, isSelected: tabsRouter.activeIndex == searchTabIndex,),
                   tooltip: ss.search,
                   label: ss.search,
                 ),
@@ -151,7 +151,7 @@ class _HomePageState extends BaseState<HomePage> {
           color: context.scheme().error,
           borderRadius: BorderRadius.circular(100),
           border: Border.all(
-              strokeAlign: BorderSide.strokeAlignOutside, color: context.scheme().mainBackground1, width: 2)),
+              strokeAlign: BorderSide.strokeAlignOutside, color: context.scheme().mainBackground1, width: 2,),),
     );
   }
 

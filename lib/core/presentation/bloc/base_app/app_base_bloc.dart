@@ -26,7 +26,7 @@ class AppBaseBloc extends Bloc<AppBaseEvent, AppBaseState> {
   Future<void> _onChangeLoading(_ChangeLoading event, Emitter<AppBaseState> emit) async {
     if (event.isStartLoading) {
       emit(state.copyWith(
-          overlayLoadingStatus: OverlayLoadingStatus.startLoading, loadingMessage: event.loadingMessage));
+          overlayLoadingStatus: OverlayLoadingStatus.startLoading, loadingMessage: event.loadingMessage,),);
     } else {
       emit(state.copyWith(overlayLoadingStatus: OverlayLoadingStatus.stopLoading));
     }
@@ -36,7 +36,7 @@ class AppBaseBloc extends Bloc<AppBaseEvent, AppBaseState> {
     if (event.isStartLoading) {
       emit(state.copyWith(
           overlayLoadingStatus: OverlayLoadingStatus.startLoadingOverBottomSheet,
-          loadingMessage: event.loadingMessage));
+          loadingMessage: event.loadingMessage,),);
     } else {
       emit(state.copyWith(overlayLoadingStatus: OverlayLoadingStatus.stopLoadingOverBottomSheet));
     }
@@ -47,6 +47,6 @@ class AppBaseBloc extends Bloc<AppBaseEvent, AppBaseState> {
     emit(state.copyWith(
         themeStatus: ThemeStatus.changeThemeDone,
         themeMode: event.themeMode,
-        salt: DateTime.now().millisecondsSinceEpoch));
+        salt: DateTime.now().millisecondsSinceEpoch,),);
   }
 }

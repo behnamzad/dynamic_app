@@ -1,7 +1,6 @@
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 
 const Duration _kUnconfirmedSplashDuration = Duration(milliseconds: 500);
@@ -120,8 +119,7 @@ class CustomInkWellSplash extends InteractiveInkFeature {
     ShapeBorder? customBorder,
     double? radius,
     super.onRemoved,
-  }) : assert(textDirection != null),
-        _position = position,
+  }) : _position = position,
         _borderRadius = borderRadius ?? BorderRadius.zero,
         _customBorder = customBorder,
         _targetRadius = radius ?? _getTargetRadius(referenceBox, containedInkWell, rectCallback, position!),
@@ -129,21 +127,20 @@ class CustomInkWellSplash extends InteractiveInkFeature {
         _repositionToReferenceBox = !containedInkWell,
         _textDirection = textDirection,
         super(controller: controller, color: color) {
-    assert(_borderRadius != null);
     _radiusController = AnimationController(duration: _kUnconfirmedSplashDuration, vsync: controller.vsync)
       ..addListener(controller.markNeedsPaint)
       ..forward();
     _radius = _radiusController.drive(Tween<double>(
       begin: _kSplashInitialSize,
       end: _targetRadius,
-    ));
+    ),);
     _alphaController = AnimationController(duration: _kSplashFadeDuration, vsync: controller.vsync)
       ..addListener(controller.markNeedsPaint)
       ..addStatusListener(_handleAlphaStatusChanged);
     _alpha = _alphaController!.drive(IntTween(
       begin: color.alpha,
       end: 0,
-    ));
+    ),);
 
     controller.addInkFeature(this);
   }

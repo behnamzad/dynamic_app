@@ -27,7 +27,7 @@ class AppTheme {
       scaffoldBackgroundColor: appColors.mainBackground1.light,
       fontFamily: Assets.fontFamily,
       colorScheme: defaultTheme.colorScheme.copyWith(
-          primary: appColors.primary.light, secondary: appColors.secondary.light, error: appColors.error.light),
+          primary: appColors.primary.light, secondary: appColors.secondary.light, error: appColors.error.light,),
       bottomSheetTheme: defaultTheme.bottomSheetTheme.copyWith(backgroundColor: appColors.dialogBackground.light),
       floatingActionButtonTheme: defaultTheme.floatingActionButtonTheme.copyWith(
         backgroundColor: appColors.floatButtonBackground.light,
@@ -59,13 +59,13 @@ class AppTheme {
       inputDecorationTheme: defaultTheme.inputDecorationTheme.copyWith(
         border: OutlineInputBorder(
             borderSide: BorderSide(color: appColors.inputBorder.light, width: Dimen.borderWidth),
-            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius))),
+            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius)),),
         disabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: appColors.inputBorder.light, width: Dimen.borderWidth),
-            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius))),
+            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius)),),
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: appColors.primary.light, width: Dimen.borderWidth),
-            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius))),
+            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius)),),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: appColors.primary.light, width: Dimen.borderWidth),
           borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius)),
@@ -140,13 +140,13 @@ class AppTheme {
       inputDecorationTheme: defaultTheme.inputDecorationTheme.copyWith(
         border: OutlineInputBorder(
             borderSide: BorderSide(color: appColors.inputBorder.dark, width: Dimen.borderWidth),
-            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius))),
+            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius)),),
         disabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: appColors.inputBorder.dark, width: Dimen.borderWidth),
-            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius))),
+            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius)),),
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: appColors.primary.dark, width: Dimen.borderWidth),
-            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius))),
+            borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius)),),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: appColors.primary.dark, width: Dimen.borderWidth),
           borderRadius: const BorderRadius.all(Radius.circular(Dimen.multiInputRadius)),

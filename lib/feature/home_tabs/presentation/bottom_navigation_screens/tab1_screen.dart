@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 @RoutePage()
 class Tab1Screen extends StatelessWidget {
-  const Tab1Screen({Key? key}) : super(key: key);
+  const Tab1Screen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +13,6 @@ class Tab1Screen extends StatelessWidget {
         appBar: BzAppBar(
           title: 'profile',
         ),
-        child: SizedBox());
+        child: SizedBox(),);
   }
 }

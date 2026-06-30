@@ -1,5 +1,4 @@
 import 'package:dynamic_app/app/custom_navigation_observer.dart';
-import 'package:dynamic_app/app/route/app_router.dart';
 import 'package:dynamic_app/app/route/navigator_observer_logger.dart';
 import 'package:dynamic_app/core/presentation/bloc/base_app/app_base_bloc.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
@@ -18,7 +17,7 @@ class App extends StatelessWidget {
       required this.appTheme,
       required this.themeService,
       required this.appRouter,
-      required this.navigatorObserverLogger});
+      required this.navigatorObserverLogger,});
 
   ThemeMode? themeMode;
   ValueNotifier<bool> isThemeChangeNotify = ValueNotifier(false);
@@ -48,8 +47,8 @@ class App extends StatelessWidget {
                 routerDelegate: appRouter.delegate(
                     navigatorObservers: () => [
                           CustomNavigatorObserver(onScreenChange: (routeName) {}),
-                          NavigatorObserverLogger(logger: inject<Logger>())
-                        ]),
+                          NavigatorObserverLogger(logger: inject<Logger>()),
+                        ],),
                 routeInformationProvider: appRouter.routeInfoProvider(),
                 routeInformationParser: appRouter.defaultRouteParser(),
               );

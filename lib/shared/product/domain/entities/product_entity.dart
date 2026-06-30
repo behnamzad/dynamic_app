@@ -14,5 +14,5 @@ class ProductEntity {
       required this.amount,
       required this.rate,
       required this.reviewCount,
-      required this.description});
+      required this.description,});
 }

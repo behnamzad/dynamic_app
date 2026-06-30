@@ -1,4 +1,3 @@
-import 'package:dynamic_app/app/route/app_router.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
@@ -47,7 +46,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(Dimen.defaultRadius),
-                          topLeft: Radius.circular(Dimen.defaultRadius)),
+                          topLeft: Radius.circular(Dimen.defaultRadius),),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(top: 2.0, bottom: 2),
@@ -59,7 +58,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(
                           bottomRight: Radius.circular(Dimen.defaultRadius),
-                          bottomLeft: Radius.circular(Dimen.defaultRadius)),
+                          bottomLeft: Radius.circular(Dimen.defaultRadius),),
                       color: context.scheme().mainBackground2,
                     ),
                     child: Padding(
@@ -78,7 +77,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
               //fav Icon
@@ -88,7 +87,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                   size: 24,
                   color: context.scheme().dialogIcon.withOpacity(0.8),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -144,7 +143,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                                     children: [
                                       const Icon(Icons.star, size: 14, color: Colors.amberAccent),
                                       BzText(widget.entity.rate,
-                                          style: context.body4Regular.copyWith(color: context.scheme().mainText))
+                                          style: context.body4Regular.copyWith(color: context.scheme().mainText),),
                                     ],
                                   ),
                                   //amount
@@ -159,7 +158,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -167,7 +166,7 @@ class _ProductWidgetState extends State<ProductWidget> {
           const Padding(
             padding: EdgeInsets.only(right: 100.0, top: 4, bottom: 4),
             child: BzDivider(),
-          )
+          ),
         ],
       ),
     );

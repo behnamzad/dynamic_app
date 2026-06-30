@@ -1,5 +1,3 @@
-import 'package:dynamic_app/core/presentation/widget/bz_gesture_detector.dart';
-import 'package:dynamic_app/core/presentation/widget/bz_text_currency.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
@@ -48,7 +46,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
                   Icons.favorite_border_outlined,
                   color: context.scheme().profileIcon,
                   size: 32,
-                ))),
+                ),),),
         Positioned(
             top: 18,
             right: 12,
@@ -59,7 +57,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
                   Icons.arrow_back_rounded,
                   color: context.scheme().profileIcon,
                   size: 32,
-                ))),
+                ),),),
       ],
     );
   }
@@ -115,7 +113,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
               textAlign: TextAlign.justify,
             ),
           ],
-        ));
+        ),);
   }
 
   Widget _rateProduct(BuildContext context) {
@@ -126,7 +124,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
         BzText(widget.product.rate, style: context.body1Medium.copyWith(color: context.scheme().titleText)),
         const HGap(4),
         BzText('(${widget.product.reviewCount.toString()} ${ss.reviewCount})',
-            style: context.body2Medium.copyWith(color: context.scheme().subText))
+            style: context.body2Medium.copyWith(color: context.scheme().subText),),
       ],
     );
   }
@@ -155,6 +153,6 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
               ),
             ],
           ),
-        ));
+        ),);
   }
 }

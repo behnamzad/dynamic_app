@@ -3,7 +3,7 @@ import 'package:dynamic_app/feature/cart/presentation/cart_page.dart';
 
 @RoutePage()
 class Tab3Screen extends StatelessWidget {
-  const Tab3Screen({Key? key}) : super(key: key);
+  const Tab3Screen({super.key});
 
   @override
   Widget build(BuildContext context) {

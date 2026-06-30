@@ -19,7 +19,7 @@ class BzOverLayLoadingWidget extends StatelessWidget {
         height: 80,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Dimen.popupRadius),
-            color: context.scheme().mainBackground1),
+            color: context.scheme().mainBackground1,),
         child: Padding(
           padding: const EdgeInsets.only(left: 24, right: 16),
           child: Material(

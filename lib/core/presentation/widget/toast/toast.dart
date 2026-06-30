@@ -33,7 +33,7 @@ showToast(
       animationDuration: animationDuration,
       duration: duration,
       actionWidget: actionWidget,
-      isDark: false);
+      isDark: false,);
 }
 
 showToastCopy(
@@ -50,7 +50,7 @@ showToastCopy(
     Color? textColor,
     Color? iconColor,
     int? animationDuration, // in millis
-    int? duration}) {
+    int? duration,}) {
   // in millis
   toast.showToastCopy(
       text: text,
@@ -67,7 +67,7 @@ showToastCopy(
       iconColor: iconColor,
       animationDuration: animationDuration,
       duration: duration,
-      isDark: false);
+      isDark: false,);
 }
 
 showToastError(String text,
@@ -81,7 +81,7 @@ showToastError(String text,
     double? iconPadding,
     int? animationDuration,
     Widget? actionWidget, // in millis
-    int? duration}) {
+    int? duration,}) {
   toast.showToastError(text,
       icon: icon,
       iconSize: iconSize,
@@ -94,7 +94,7 @@ showToastError(String text,
       animationDuration: animationDuration,
       duration: duration,
       actionWidget: actionWidget,
-      isDark: false);
+      isDark: false,);
 }
 
 showToastSuccess(
@@ -123,7 +123,7 @@ showToastSuccess(
       animationDuration: animationDuration,
       duration: duration,
       actionWidget: actionWidget,
-      isDark: false);
+      isDark: false,);
 }
 
 showToastWarning(
@@ -152,5 +152,5 @@ showToastWarning(
       animationDuration: animationDuration,
       duration: duration,
       actionWidget: actionWidget,
-      isDark: false);
+      isDark: false,);
 }

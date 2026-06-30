@@ -31,5 +31,5 @@ class AppBaseState with _$AppBaseState {
       @Default(ThemeStatus.initialDefaultTheme) ThemeStatus themeStatus,
       String? loadingMessage,
       int? salt,
-      @Default(ThemeMode.system) ThemeMode themeMode}) = _AppBaseState;
+      @Default(ThemeMode.system) ThemeMode themeMode,}) = _AppBaseState;
 }

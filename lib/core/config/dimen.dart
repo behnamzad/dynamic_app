@@ -1,4 +1,3 @@
-import 'package:dynamic_app/di/injection_container.dart';
 import 'package:flutter/material.dart';
 
 class Dimen {
@@ -39,19 +38,19 @@ class Dimen {
 
   static double bottomToastKeyBoardPadding(BuildContext ctx) => MediaQuery.of(ctx).viewInsets.bottom + 76;
 
-  double get bankHeaderLogoWidth => 126;
+  double get headerLogoWidth => 126;
 
-  double get bankHeaderLogoHeight => 42;
+  double get headerLogoHeight => 42;
 
-  double get bankHeaderLogoAppBarWidth => 72;
+  double get headerLogoAppBarWidth => 72;
 
-  double get bankHeaderLogoAppBarHeight => 12;
+  double get headerLogoAppBarHeight => 12;
 
   double get tabBarHeight => 54;
 
   static const double dailyCardHeight = 184;
 
-//region product
+  //region product
   //todo adaptive this size later
   //card
   static const double productCardHeight = 208;
@@ -75,5 +74,3 @@ class Dimen {
 
   static BorderRadius get circularBorderRadius => BorderRadius.circular(100);
 }
-
-Dimen dimen = inject<Dimen>();

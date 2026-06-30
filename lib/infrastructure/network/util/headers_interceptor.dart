@@ -31,7 +31,7 @@ class HeadersInterceptor extends Interceptor {
   }
 
   @override
-  Future<void> onError(DioError dioError, ErrorInterceptorHandler handler) async {
+  Future<void> onError(DioException dioError, ErrorInterceptorHandler handler) async {
     handler.next(dioError);
   }
 }

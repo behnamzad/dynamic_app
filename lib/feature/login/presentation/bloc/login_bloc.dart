@@ -12,7 +12,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginRepo _repo;
 
   LoginBloc(this._repo) : super(LoginState.initial()) {
-    // on<_Init>(_onInit);
+    on<_Init>(_onInit);
   }
 
   FutureOr<void> _onInit(_Init event, Emitter<LoginState> emit) {}

@@ -4,7 +4,8 @@ enum Status {
   initial,
   loading,
   success,
-  error;
+  error,
+  invalidInput;
 
   bool get isInitial => this == Status.initial;
 
@@ -13,6 +14,8 @@ enum Status {
   bool get isSuccess => this == Status.success;
 
   bool get isError => this == Status.error;
+
+  bool get isInvalidInput => this == Status.invalidInput;
 }
 
 @freezed

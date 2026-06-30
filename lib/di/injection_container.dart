@@ -55,15 +55,25 @@ abstract class NetworkModule {
   PrettyDioLogger get prettyDioLogger =>
       PrettyDioLogger(requestHeader: true, requestBody: true, logPrint: _defaultLogPrint);
 
-  @Named(DiConst.dioNamedProduct)
+  @Named(DiConst.dioNamedStore)
   @lazySingleton
-  Dio provideIranCellDio(PrettyDioLogger prettyDioLogger) => provideDio(
-        baseUrl: 'digikala_api',
+  Dio provideStoreDio(PrettyDioLogger prettyDioLogger) => provideDio(
+        baseUrl: 'https://digikala_api/',
       );
 
-  @Named(DiConst.dioNamedProduct)
+  @Named(DiConst.dioNamedStore)
   @lazySingleton
-  DioCaller provideCryptoDioCaller(@Named(DiConst.dioNamedProduct) Dio dio) => DioCaller(dio: dio);
+  DioCaller provideStoreCaller(@Named(DiConst.dioNamedStore) Dio dio) => DioCaller(dio: dio);
+
+  @Named(DiConst.dioNamedLogin)
+  @lazySingleton
+  Dio provideLoginDio(PrettyDioLogger prettyDioLogger) => provideDio(
+        baseUrl: 'https://login/',
+      );
+
+  @Named(DiConst.dioNamedLogin)
+  @lazySingleton
+  DioCaller provideLoginDioCaller(@Named(DiConst.dioNamedLogin) Dio dio) => DioCaller(dio: dio);
 }
 
 @module
@@ -90,17 +100,17 @@ Future<SharedPreferences> initSharedPreferences() async {
   return await SharedPreferences.getInstance();
 }
 
-T inject<T extends Object>({dynamic param1, dynamic param2}) => _getIt!.get<T>(param1: param1, param2: param2);
+T inject<T extends Object>({dynamic param1, dynamic param2}) => _getIt.get<T>(param1: param1, param2: param2);
 
-T injectWithNamed<T extends Object>(n) => _getIt!.get<T>(instanceName: n);
+T injectWithNamed<T extends Object>(n) => _getIt.get<T>(instanceName: n);
 
-resetWithNamed<T extends Object>(n) => _getIt?.resetLazySingleton<T>(instanceName: n);
+resetWithNamed<T extends Object>(n) => _getIt.resetLazySingleton<T>(instanceName: n);
 
-reset<T extends Object>() => _getIt?.resetLazySingleton<T>();
+reset<T extends Object>() => _getIt.resetLazySingleton<T>();
 
-resetAllServiceLocator() async => await _getIt?.reset(dispose: true);
+resetAllServiceLocator() async => await _getIt.reset(dispose: true);
 
-resetScopeAllServiceLocator() => _getIt?.resetScope(dispose: true);
+resetScopeAllServiceLocator() => _getIt.resetScope(dispose: true);
 
 reGenerateGetIt() async {
   // reset<GetIt>();

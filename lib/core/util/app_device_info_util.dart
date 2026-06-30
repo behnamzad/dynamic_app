@@ -122,7 +122,7 @@ class AppDeviceInfoUtil {
       if (Platform.isAndroid) {
         osVersion = _androidInfo.version.release;
       } else if (Platform.isIOS) {
-        osVersion = _iosDeviceInfo.systemVersion!;
+        osVersion = _iosDeviceInfo.systemVersion;
       } else if (Platform.isLinux) {
         osVersion = 'LINUX';
       } else if (Platform.isMacOS) {

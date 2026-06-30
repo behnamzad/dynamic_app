@@ -48,6 +48,7 @@ class Strings {
   String get addressAndDeliveryTime => 'آدرس و زمان ارسال';
 
   String get totalCartAmount => 'جمع سبد خرید';
+
   String get payableAmount => 'مبلغ قابل پرداخت';
 
   String get setting => 'تنظیمات';
@@ -57,18 +58,44 @@ class Strings {
   String get checkOut => 'بررسی و ادامه';
 
   String get continueToByProcess => 'ادامه فرایند خرید';
+
   String get paymentAndSet => 'پرداخت و ثبت';
 
   String get sendFromOneDay => 'ارسال از 1 روزکاری دیگر';
 
   String get product => 'کالا';
+
   String get sentTo => 'ارسال به';
+
   String get addAddress => 'افزودن آدرس';
+
   String get orderSummery => 'سفارش شما';
+
   String get discount => 'تخفیف';
+
   String get amount => 'مبلغ';
+
   String get totalAmount => 'مبلغ کل';
+
   String get copied => 'کپی شد';
+
+  String get username => 'نام کاربری';
+
+  String get password => 'رمز ورود';
+
+  String get usernameAndPasswordInputError => 'نام کاربری و رمز را به صورت کامل وارد نمایید';
+
+  String get usernameInputError => 'نام کاربری را وارد نمایید';
+
+  String get passwordInputEmptyError => ' رمز را وارد نمایید';
+
+  String get login => 'ورود';
+
+  String get register => 'ثبت نام';
+
+  String get version => 'نسخه';
+
+  String get storeName => 'هوشاپ';
 
   String get endOfStrings => 'endOfStrings';
 }

@@ -2,9 +2,6 @@ import 'package:dynamic_app/core/mock_data/mock_data.dart';
 import 'package:dynamic_app/core/presentation/widget/app/product_in_cart_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_in_cart_entity.dart';
-import 'package:dynamic_app/shared/product/domain/entities/product_in_cart_entity.dart';
-import 'package:dynamic_app/shared/product/domain/entities/product_in_cart_entity.dart';
-import 'package:dynamic_app/shared/product/domain/entities/product_in_cart_entity.dart';
 
 @RoutePage()
 class CartPage extends StatefulWidget implements AutoRouteWrapper {
@@ -41,7 +38,7 @@ class _CartPageState extends State<CartPage> {
           itemBuilder: (context, index) {
             ProductInCartEntity entity = MockData().productInCartList()[index];
             return ProductInCartWidget(productInCartEntity: entity, increaseCount: () {}, decreaseCount: () {});
-          }),
+          },),
     );
   }
 
@@ -57,7 +54,7 @@ class _CartPageState extends State<CartPage> {
               Expanded(
                   flex: 3,
                   child: BzButton.submit(
-                      text: ss.continueToByProcess, onPressed: () => context.pushRoute(const CheckOutPageRoute()))),
+                      text: ss.continueToByProcess, onPressed: () => context.pushRoute(const CheckOutPageRoute()),),),
               // Spacer(),
               Expanded(
                 flex: 2,
@@ -68,7 +65,7 @@ class _CartPageState extends State<CartPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         BzText(ss.totalCartAmount,
-                            style: context.body3Medium.copyWith(color: context.scheme().subText)),
+                            style: context.body3Medium.copyWith(color: context.scheme().subText),),
                         BzTextCurrency.amountWithTitle(
                           amount: int.parse('45800000'),
                           currencyUnitStyle: context.body3Medium.copyWith(color: context.scheme().primary),

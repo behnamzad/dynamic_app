@@ -40,7 +40,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
         const VGap(32),
         _orderSummeryWidget(context),
         const Spacer(),
-        _checkOutBtn(context)
+        _checkOutBtn(context),
       ],
     );
   }
@@ -101,9 +101,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
                       items: [
                         BzTitleValueText(title: ss.product, value: '3'),
                         BzTitleValueText(
-                            title: ss.amount, value: '35000000'.toFulCurrencyFormat, direction: TextDirection.rtl),
+                            title: ss.amount, value: '35000000'.toFulCurrencyFormat, direction: TextDirection.rtl,),
                         BzTitleValueText(
-                            title: ss.discount, value: '50000'.toFulCurrencyFormat, direction: TextDirection.rtl),
+                            title: ss.discount, value: '50000'.toFulCurrencyFormat, direction: TextDirection.rtl,),
                       ],
                     ),
                   ),

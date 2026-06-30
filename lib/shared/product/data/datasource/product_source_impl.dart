@@ -9,7 +9,7 @@ import 'product_date_source.dart';
 class ProductDateSourceImpl implements ProductDateSource {
   final DioCaller dioCaller;
 
-  ProductDateSourceImpl({@Named(DiConst.dioNamedProduct) required this.dioCaller});
+  ProductDateSourceImpl({@Named(DiConst.dioNamedStore) required this.dioCaller});
 
   @override
   Future<ApiResponse> add() {

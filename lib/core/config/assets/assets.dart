@@ -18,6 +18,8 @@ class Assets {
     return AdaAssetImage('$imagePath$imageName.png');
   }
 
+  AssetSvg get headerLogo => getAssetSvg('ic_header_logo', assetNameDark: 'ic_header_logo_dark');
+
   ThemeService get themeService => inject<ThemeService>();
 
   AdaAssetImage get itm => getAssetImage('itm');

@@ -10,7 +10,7 @@ class CheckoutRow extends StatelessWidget {
   final VoidCallback? onTapEndIcon;
 
   const CheckoutRow(
-      {super.key, required this.title, this.subTitle, required this.icon, this.endIcon, this.onTapEndIcon});
+      {super.key, required this.title, this.subTitle, required this.icon, this.endIcon, this.onTapEndIcon,});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class CheckoutRow extends StatelessWidget {
             BzGestureDetector(
                 inkwellPadding: const EdgeInsets.all(8),
                 onTap: () => onTapEndIcon != null ? onTapEndIcon!.call() : {},
-                child: Icon(endIcon, size: 22))
+                child: Icon(endIcon, size: 22),),
         ],
       ),
     );

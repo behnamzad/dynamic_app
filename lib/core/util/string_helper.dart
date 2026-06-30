@@ -32,22 +32,22 @@ class StringHelper {
   static String transferThousandAndMillionToLetter(int? price, {String? currentCurrency}) {
     if (price == null || price == 0) return '';
     currentCurrency ??= CurrencyManager().getCurrencyUnit();
-    int _price;
-    int _priceLength;
-    String _priceString;
+    int price0;
+    int priceLength;
+    String priceString;
     String currencyString = getCurrencyString(currentCurrency);
     if (price.toString().length == 4 && currentCurrency == currencyToman) {
       return '${price.toString().substring(0, price.toString().length - 3)} صد $currencyString';
     } else {
-      _price = currentCurrency == currencyToman ? price ~/ 10 : price;
-      _priceString = _price.toString();
-      _priceLength = _priceString.length;
-      if (_priceLength >= 4 && _priceLength <= 6) {
-        return '${_priceString.substring(0, _priceLength - 3)} هزار $currencyString';
-      } else if (_priceLength >= 7 && _priceLength <= 9) {
-        return '${_priceString.substring(0, _priceLength - 6)} میلیون $currencyString';
-      } else if (_priceLength > 7) {
-        return '${_priceString.substring(0, _priceLength - 9)} میلیارد $currencyString';
+      price0 = currentCurrency == currencyToman ? price ~/ 10 : price;
+      priceString = price0.toString();
+      priceLength = priceString.length;
+      if (priceLength >= 4 && priceLength <= 6) {
+        return '${priceString.substring(0, priceLength - 3)} هزار $currencyString';
+      } else if (priceLength >= 7 && priceLength <= 9) {
+        return '${priceString.substring(0, priceLength - 6)} میلیون $currencyString';
+      } else if (priceLength > 7) {
+        return '${priceString.substring(0, priceLength - 9)} میلیارد $currencyString';
       } else {
         return 'تعریف نشده!';
       }
@@ -125,6 +125,8 @@ class StringHelper {
 }
 
 extension StringUtil on String {
+
+
   String toPersianCharacters() {
     String str = this;
 

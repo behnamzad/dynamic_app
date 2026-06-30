@@ -37,7 +37,7 @@ class AddressWidget extends StatelessWidget {
           ),
           const Spacer(),
           Icon(isSelected ? Icons.radio_button_checked_outlined : Icons.radio_button_off_outlined,
-              size: 24, color: context.scheme().primary),
+              size: 24, color: context.scheme().primary,),
           const HGap(8),
         ],
       ),

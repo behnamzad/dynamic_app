@@ -18,6 +18,6 @@ class LoginDateSourceImpl implements LoginDataSource {
           'username': 'username',
           'password': 'password',
         },
-        fromJson: () {});
+        fromJson: () {},);
   }
 }

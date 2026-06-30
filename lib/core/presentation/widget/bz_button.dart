@@ -206,7 +206,7 @@ class _BzButtonState extends State<BzButton> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Icon(widget.leftIconData,
-                                size: widget.arrowIconSize ?? 24, color: _getTextColor(context)),
+                                size: widget.arrowIconSize ?? 24, color: _getTextColor(context),),
                           ),
                         ),
                       )
@@ -219,7 +219,7 @@ class _BzButtonState extends State<BzButton> {
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Icon(Icons.arrow_forward,
-                                  size: widget.arrowIconSize ?? 24, color: _getTextColor(context)),
+                                  size: widget.arrowIconSize ?? 24, color: _getTextColor(context),),
                             ),
                           ),
                         ),

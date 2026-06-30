@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 import 'package:dynamic_app/feature/cart/presentation/cart_page.dart';
 import 'package:dynamic_app/feature/cart/presentation/check_out_page.dart';
 import 'package:dynamic_app/feature/home_shop/presentation/home_shop_page.dart';
@@ -12,14 +11,13 @@ import 'package:dynamic_app/feature/home_tabs/presentation/bottom_navigation_scr
 import 'package:dynamic_app/feature/login/presentation/login_page.dart';
 import 'package:dynamic_app/feature/product_info/presentation/product_info_page.dart';
 import 'package:dynamic_app/feature/splash/presentation/splash_page.dart';
+import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 part 'app_router.gr.dart';
 
-@AutoRouterConfig(
-  replaceInRouteName: 'Page,Route,Screen',
-)
+@AutoRouterConfig(replaceInRouteName: 'Page,Route,Screen')
 @lazySingleton
 class AppRouter extends RootStackRouter {
   @override
@@ -42,6 +40,7 @@ class AppRouter extends RootStackRouter {
     ),
 
     AutoRoute(path: '/HomeShopPage', page: HomeShopPageRoute.page),
+    AutoRoute(path: '/LoginPage', page: LoginPageRoute.page),
     AutoRoute(path: '/ProductListPage', page: ProductListPageRoute.page),
     AutoRoute(path: '/ProductInfoPage', page: ProductInfoPageRoute.page),
     AutoRoute(path: '/CartPage', page: CartPageRoute.page),

@@ -8,7 +8,7 @@ class UserEntity extends Equatable {
   final String email;
 
   const UserEntity(
-      {required this.id, required this.lastName, required this.firstName, required this.imgPath, required this.email});
+      {required this.id, required this.lastName, required this.firstName, required this.imgPath, required this.email,});
 
   String get fullName => '$firstName $lastName';
 

@@ -12,7 +12,7 @@ Dio provideDio(
     Duration? networkTimeout,
     bool setFalseEncryptionEnabledKey = false,
     bool setTrueEncryptionEnabledKey = false,
-    Map<String, dynamic>? customHeaders}) {
+    Map<String, dynamic>? customHeaders,}) {
   final dio = Dio(
     BaseOptions(
         connectTimeout: networkTimeout ?? Const.networkTimeout,
@@ -20,7 +20,7 @@ Dio provideDio(
         sendTimeout: networkTimeout ?? Const.networkTimeout,
         responseType: ResponseType.json,
         baseUrl: baseUrl,
-        headers: customHeaders ?? {}),
+        headers: customHeaders ?? {},),
   );
 
   if (interceptors != null) {

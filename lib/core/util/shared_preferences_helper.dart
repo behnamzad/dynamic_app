@@ -87,10 +87,9 @@ class SharedPreferencesHelper {
     return sharePrefs.remove(key);
   }
 
-  getEncryptedJsonObject(String key, {String? defaultValue}) {
+  dynamic getEncryptedJsonObject(String key, {String? defaultValue}) {
     var strObj = getEncryptedString(key);
-    // var strObj = encryptHelper.decryptCbcByPasswordKey(sharePrefs.getString(key));
-    strObj = strObj ?? defaultValue ?? '{}';
+    strObj = strObj;
     return strObj.isNotEmpty ? json.decode(strObj) : '{}';
   }
 

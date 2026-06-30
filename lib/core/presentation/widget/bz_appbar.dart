@@ -1,9 +1,4 @@
-import 'package:dynamic_app/core/config/dimen.dart';
-import 'package:dynamic_app/core/presentation/widget/bz_text.dart';
-import 'package:dynamic_app/core/style/app_theme.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
-import 'package:dynamic_app/core/util/extension/context_ext.dart';
-import 'package:flutter/material.dart';
 
 class BzAppBar extends StatelessWidget {
   const BzAppBar(
@@ -19,7 +14,7 @@ class BzAppBar extends StatelessWidget {
       this.backIcon,
       this.multiAccountWidget,
       this.showCloseButton = false,
-      this.isUseSafeArea = true});
+      this.isUseSafeArea = true,});
 
   final String title;
   final bool showBackButton;
@@ -70,7 +65,7 @@ class BzAppBar extends StatelessWidget {
                             Icon(
                               showCloseButton ? Icons.close_rounded : Icons.arrow_back_sharp,
                               color: context.scheme().titleText,
-                            )),
+                            ),),
                   ),
                 ),
             ],

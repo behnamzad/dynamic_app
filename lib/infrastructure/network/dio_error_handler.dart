@@ -112,7 +112,7 @@ ApiError handleDioError({DioException? dioException, Response? response}) {
 
       default:
         return UncaughtError(errorModel.message.isNotEmpty ? errorModel.message : Strings.serverError,
-            code: errorModel.code ?? '');
+            code: errorModel.code ?? '',);
     }
   } catch (e) {
     if (response.statusCode! > 500) {

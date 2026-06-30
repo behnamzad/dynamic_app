@@ -27,7 +27,7 @@ class ProfileRowWidget extends StatelessWidget {
             children: [
               BzText('سلام 😊', style: context.body3Regular),
               const VGap(2),
-              BzText(entity.fullName, style: context.headline3Bold)
+              BzText(entity.fullName, style: context.headline3Bold),
             ],
           ),
           const Spacer(),

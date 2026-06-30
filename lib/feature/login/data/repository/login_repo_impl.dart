@@ -6,9 +6,7 @@ import 'package:dynamic_app/feature/login/domain/repository/login_repo.dart';
 class LoginRepoImpl implements LoginRepo {
   final LoginDataSource _dataSource;
 
-  LoginRepoImpl({
-    required LoginDataSource dataSource,
-  }) : _dataSource = dataSource;
+  LoginRepoImpl({required LoginDataSource dataSource}) : _dataSource = dataSource;
 
   @override
   Future<ApiResponse> login(String username, String password) async {
