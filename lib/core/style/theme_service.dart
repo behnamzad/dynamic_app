@@ -25,7 +25,7 @@ class ThemeService {
     String currentTheme = settingManager.getTheme();
     ThemeMode themeMode = ThemeMode.values.byName(currentTheme);
     if (themeMode == ThemeMode.system) {
-      Brightness currentBrightness = WidgetsBinding.instance.window.platformBrightness;
+      Brightness currentBrightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
       // var brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
       isDark = currentBrightness == Brightness.dark;
     } else {
@@ -43,8 +43,6 @@ class ThemeService {
         return ss.themeModeDark;
       case ThemeMode.light:
         return ss.themeModeLight;
-      default:
-        return '';
     }
   }
 
@@ -56,8 +54,6 @@ class ThemeService {
         return ss.themeModeDark;
       case ThemeMode.light:
         return ss.themeModeLight;
-      default:
-        return '';
     }
   }
 

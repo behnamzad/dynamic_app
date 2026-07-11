@@ -8,6 +8,8 @@ import 'package:dynamic_app/core/util/crypto/keystore_gcm_crypto_helper.dart';
 import 'package:dynamic_app/di/di_const.dart';
 import 'package:dynamic_app/infrastructure/network/dio_caller.dart';
 import 'package:dynamic_app/infrastructure/network/dio_provider.dart';
+import 'package:dynamic_app/infrastructure/supabase/supabase_auth_interceptor.dart';
+import 'package:dynamic_app/infrastructure/supabase/supabase_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -16,6 +18,7 @@ import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'injection_container.config.dart';
 
@@ -23,14 +26,10 @@ late final GetIt _getIt;
 String? strFlavorName;
 
 @InjectableInit(initializerName: r'$initGetIt')
-Future<void> configureDependencies({
-  bool isReInit = false,
-}) async {
+Future<void> configureDependencies({bool isReInit = false}) async {
   _getIt = isReInit ? GetIt.asNewInstance() : GetIt.instance;
 
-  AppLogger.debugLog1(
-    isReInit ? 'Re-initializing dependencies' : 'Initializing dependencies',
-  );
+  AppLogger.debugLog1(isReInit ? 'Re-initializing dependencies' : 'Initializing dependencies');
 
   await _getIt.$initGetIt();
 }
@@ -52,28 +51,37 @@ abstract class NetworkModule {
   @lazySingleton
   Logger get logger => Logger();
 
+  // نقطه اصلی دسترسی به SupabaseClient؛ همه کلاس‌ها باید این را از inject بگیرند.
+  @lazySingleton
+  SupabaseClient get supabaseClient => Supabase.instance.client;
+
   PrettyDioLogger get prettyDioLogger =>
       PrettyDioLogger(requestHeader: true, requestBody: true, logPrint: _defaultLogPrint);
 
-  @Named(DiConst.dioNamedStore)
+  @Named(DiConst.dioDigikala)
   @lazySingleton
-  Dio provideStoreDio(PrettyDioLogger prettyDioLogger) => provideDio(
-        baseUrl: 'https://digikala_api/',
-      );
+  Dio provideDigikalaDio(PrettyDioLogger prettyDioLogger) =>
+      provideDio(baseUrl: 'https://api.one-api.ir/digikala/v1/', isAddOneApiTokenToHeaders: true);
 
-  @Named(DiConst.dioNamedStore)
+  @Named(DiConst.dioDigikala)
   @lazySingleton
-  DioCaller provideStoreCaller(@Named(DiConst.dioNamedStore) Dio dio) => DioCaller(dio: dio);
+  DioCaller provideDigikalaCaller(@Named(DiConst.dioDigikala) Dio dio) => DioCaller(dio: dio);
 
   @Named(DiConst.dioNamedLogin)
   @lazySingleton
-  Dio provideLoginDio(PrettyDioLogger prettyDioLogger) => provideDio(
-        baseUrl: 'https://login/',
-      );
+  Dio provideLoginDio(PrettyDioLogger prettyDioLogger) => provideDio(baseUrl: 'https://login/');
 
   @Named(DiConst.dioNamedLogin)
   @lazySingleton
   DioCaller provideLoginDioCaller(@Named(DiConst.dioNamedLogin) Dio dio) => DioCaller(dio: dio);
+
+  // مسیر REST دیتابیس Supabase؛ درخواست‌های جدول‌ها از این Dio عبور می‌کنند تا PrettyDioLogger لاگشان کند.
+  @Named(DiConst.dioSupabaseRest)
+  @lazySingleton
+  Dio provideSupabaseRestDio(SupabaseClient supabaseClient) => provideDio(
+        baseUrl: '${SupabaseConfig.url}/rest/v1/',
+        interceptors: [SupabaseAuthInterceptor(supabaseClient)],
+      );
 }
 
 @module
@@ -116,7 +124,7 @@ reGenerateGetIt() async {
   // reset<GetIt>();
   await resetScopeAllServiceLocator();
   await resetAllServiceLocator();
-  await configureDependencies( isReInit: true);
+  await configureDependencies(isReInit: true);
   final KeystoreGcmCryptoHelper aesGcm = inject();
   await aesGcm.initializeSecureKey();
 }

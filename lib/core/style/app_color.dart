@@ -119,7 +119,7 @@ class AppColors {
 
   AppColor get radioButton => const AppColor(light: Color(0xFF5A5A5A), dark: Color(0xFFB4B4B4));
 
-  AppColor get dialogShadow => AppColor(light: Colors.black.withOpacity(0.4), dark: Colors.black.withOpacity(0.72));
+  AppColor get dialogShadow => AppColor(light: Colors.black.withValues(alpha: 0.4), dark: Colors.black.withValues(alpha: 0.72));
 
   AppColor get dialogIcon => const AppColor(light: Color(0xFF4C4C4C), dark: Color(0xFF979797));
 

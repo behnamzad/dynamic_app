@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:dynamic_app/core/local/setting_manager.dart';
+import 'package:dynamic_app/core/config/configs.dart';
 import 'package:dynamic_app/core/util/app_device_info_util.dart';
-import 'package:injectable/injectable.dart';
+import 'package:dynamic_app/core/util/common_bloc_imports.dart';
 
 @LazySingleton(dispose: disposeNetworkUtils)
 class NetworkUtils {
@@ -16,10 +16,10 @@ class NetworkUtils {
     // logic to dispose instance
   }
 
-  Map<String, dynamic> getDefaultHeaders({bool addTestData = false}) {
+  Map<String, dynamic> getDefaultHeaders({bool addTestData = false, bool isAddOneApiTokenToHeaders = false}) {
     Map<String, dynamic> headers = {
-      'app_name': appDeviceInfoUtil.packageName,
-      'device_id': appDeviceInfoUtil.deviceId,
+      // 'app_name': appDeviceInfoUtil.packageName,
+      // 'device_id': appDeviceInfoUtil.deviceId,
 
       /// If the version is less than 8, the exchange(user/security) service gives an error
       'app_version': appDeviceInfoUtil.appVersion,
@@ -34,6 +34,11 @@ class NetworkUtils {
       'ip_address': '192.168.1.6',
       'platform': 'net',
     };
+
+    if (isAddOneApiTokenToHeaders) {
+      var token = inject<Configs>().oneApiToken;
+      headers.putIfAbsent('one-api-token', () => token);
+    }
 
     if (addTestData) {
       headers.putIfAbsent('addTestData', () => addTestData);

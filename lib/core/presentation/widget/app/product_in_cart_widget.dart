@@ -50,9 +50,9 @@ class _ProductInCartWidgetState extends State<ProductInCartWidget> {
                   //img
                   Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: Dimen.productInCartRowImgHeight,
-                        child: Image.network(_entity.productEntity.imageUrl),
+                        // child: Image.network(_entity.productEntity.imageUrl),
                       ),
                       const VGap(24),
                       _incDecWidget(context),
@@ -67,7 +67,7 @@ class _ProductInCartWidgetState extends State<ProductInCartWidget> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         BzText(
-                          _entity.productEntity.name,
+                          _entity.productEntity.titleFa,
                           style: context.body4Medium.copyWith(color: context.scheme().titleText),
                           overflow: TextOverflow.clip,
                         ),
@@ -82,7 +82,7 @@ class _ProductInCartWidgetState extends State<ProductInCartWidget> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             BzTextCurrency.amountWithTitle(
-                              amount: int.parse(_entity.productEntity.amount),
+                              amount: _entity.productEntity.price,
                               style: context.body1Bold.copyWith(color: context.scheme().primary),
                             ),
                           ],

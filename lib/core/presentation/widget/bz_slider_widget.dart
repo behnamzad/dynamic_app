@@ -176,7 +176,7 @@ class _BzSliderState extends State<BzSlider> {
                   shape: BoxShape.circle,
                   color: _currentAccountDeposit == entry.key
                       ? widget.activeIndicatorColor ?? acs.mainButtonText.light
-                      : widget.deActiveIndicatorColor ?? Colors.white.withOpacity(0.5),
+                      : widget.deActiveIndicatorColor ?? Colors.white.withValues(alpha: 0.5),
                 ),
               ),
             );

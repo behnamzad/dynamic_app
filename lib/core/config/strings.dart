@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class Strings {
-  String get dynamicApp => 'dynamicApp';
+  String get generalError => 'خطا!';
 
   String get hour => 'ساعت';
 
@@ -33,7 +33,11 @@ class Strings {
 
   String get seeMore => 'مشاهده بیشتر';
 
-  String get reviewCount => 'دیدگاه';
+  String get question => 'پرسش و پاسخ';
+
+  String get review => 'دیدگاه';
+
+  String  rateCount(int count) => 'امتیاز $count خریدار';
 
   String get description => 'توضیحات';
 

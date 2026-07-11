@@ -76,8 +76,8 @@ class _HomePageState extends BaseState<HomePage> {
           Divider(thickness: 0.4, height: 0, color: context.scheme().divider),
           NavigationBarTheme(
             data: NavigationBarThemeData(
-              labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>(
-                (Set<MaterialState> states) => states.contains(MaterialState.selected)
+              labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
+                (Set<WidgetState> states) => states.contains(WidgetState.selected)
                     ? context.body2Bold.copyWith(color: context.scheme().primaryBold)
                     : context.body2Regular.copyWith(color: context.scheme().mainText),
               ),

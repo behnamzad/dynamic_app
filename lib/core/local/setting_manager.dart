@@ -1,6 +1,7 @@
 import 'package:dynamic_app/core/local/user/enum/gender.dart';
 import 'package:dynamic_app/core/local/user/enum/user_register_status.dart';
 import 'package:dynamic_app/core/local/user/enum/user_status.dart';
+import 'package:dynamic_app/core/local/user/user.dart';
 import 'package:dynamic_app/core/util/app_logger.dart';
 import 'package:dynamic_app/core/util/shared_preferences_helper.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ class SettingsManager {
   final String _userNicknameKey = 'user_N_N_K';
   final String _userNameKey = 'user_N_K';
   final String _passwordKey = 'p_w_K';
+  final String _loggedInUserKey = 'logged_in_user_k';
+  final String _lastLoginEmailKey = 'last_login_email_k';
 
   final String _userStatusKey = 'user_S_K';
   final String _userGenderKey = 'user_g_K';
@@ -55,6 +58,31 @@ class SettingsManager {
 
   String getPassword() {
     return prefs.getEncryptedString(_passwordKey);
+  }
+
+  Future<bool> setLastLoginEmail(String email) {
+    return prefs.setStringAndEncrypt(_lastLoginEmailKey, email);
+  }
+
+  String getLastLoginEmail() {
+    return prefs.getEncryptedString(_lastLoginEmailKey);
+  }
+
+  Future<bool> setLoggedInUser(AppUser user) {
+    // UserManager بعد از login موفق این متد را صدا می‌زند تا کاربر برای استفاده بعدی ذخیره شود.
+    return prefs.setJsonObjectAndEncrypt(_loggedInUserKey, user.toJson());
+  }
+
+  AppUser? getLoggedInUser() {
+    final userJson = prefs.getEncryptedJsonObject(_loggedInUserKey);
+    if (userJson is Map<String, dynamic> && (userJson['id']?.toString().isNotEmpty ?? false)) {
+      return AppUser.fromJson(userJson);
+    }
+    return null;
+  }
+
+  Future<void> clearLoggedInUser() async {
+    await prefs.remove(_loggedInUserKey);
   }
 
   setMobileNumber(String mobile) {

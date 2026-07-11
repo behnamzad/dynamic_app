@@ -68,7 +68,7 @@ class Dimen {
 
   //endregion
 
-  static const double productInfoImageHeight = 400;
+  static const double productInfoImageHeight = 300;
 
   static BorderRadius get defaultBorderRadius => BorderRadius.circular(defaultRadius);
 

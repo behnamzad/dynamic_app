@@ -140,7 +140,7 @@ class _BzButtonState extends State<BzButton> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          highlightColor: _getBackgroundColor(context).withOpacity(0.1),
+          highlightColor: _getBackgroundColor(context).withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(widget.borderRadius),
           enableFeedback: false,
           // disabledColor: ,

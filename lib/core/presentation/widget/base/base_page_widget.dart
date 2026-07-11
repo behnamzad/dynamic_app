@@ -132,7 +132,7 @@ class _BasePageWidgetState extends State<BasePageWidget> {
               return Directionality(
                 textDirection: TextDirection.rtl,
                 child: LoadingOverlay(
-                  color: context.scheme().dialogShadow.withOpacity(0.9),
+                  color: context.scheme().dialogShadow.withValues(alpha: 0.9),
                   isLoading: overlayLoadingState.overlayLoadingStatus.isStartLoading,
                   progressIndicator: BzOverLayLoadingWidget(message: overlayLoadingState.loadingMessage),
                   child: getScaffold(),

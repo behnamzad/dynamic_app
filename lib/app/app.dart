@@ -5,22 +5,27 @@ import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:logger/logger.dart';
 import 'package:overlay_support/overlay_support.dart';
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   final AppTheme appTheme;
   static final GlobalKey publicKey = GlobalKey();
   final ThemeService themeService;
   final AppRouter appRouter;
   final NavigatorObserverLogger navigatorObserverLogger;
 
-  App(
+  const App(
       {super.key,
       required this.appTheme,
       required this.themeService,
       required this.appRouter,
       required this.navigatorObserverLogger,});
 
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   ThemeMode? themeMode;
-  ValueNotifier<bool> isThemeChangeNotify = ValueNotifier(false);
+  final ValueNotifier<bool> isThemeChangeNotify = ValueNotifier(false);
 
   // This widget is the root of your application.
   @override
@@ -39,23 +44,29 @@ class App extends StatelessWidget {
             valueListenable: isThemeChangeNotify,
             builder: (BuildContext context, value, Widget? child) {
               return MaterialApp.router(
-                title: ss.dynamicApp,
+                title: ss.storeName,
                 debugShowCheckedModeBanner: false,
-                theme: appTheme.appThemeLight(context),
-                darkTheme: appTheme.appThemeDark(context),
-                themeMode: themeMode ?? themeService.themeMode,
-                routerDelegate: appRouter.delegate(
+                theme: widget.appTheme.appThemeLight(context),
+                darkTheme: widget.appTheme.appThemeDark(context),
+                themeMode: themeMode ?? widget.themeService.themeMode,
+                routerDelegate: widget.appRouter.delegate(
                     navigatorObservers: () => [
                           CustomNavigatorObserver(onScreenChange: (routeName) {}),
                           NavigatorObserverLogger(logger: inject<Logger>()),
                         ],),
-                routeInformationProvider: appRouter.routeInfoProvider(),
-                routeInformationParser: appRouter.defaultRouteParser(),
+                routeInformationProvider: widget.appRouter.routeInfoProvider(),
+                routeInformationParser: widget.appRouter.defaultRouteParser(),
               );
             },
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    isThemeChangeNotify.dispose();
+    super.dispose();
   }
 }

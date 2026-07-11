@@ -47,7 +47,7 @@ class BroadcastManager {
   }
 
   void subscribeToBroadcast(Function(BroadcastModel) callback) {
-    StreamSubscription<BroadcastModel> subscription = broadcastStream.listen((event) {
+    broadcastStream.listen((event) {
       if (kDebugMode) {
         AppLogger.debugLog('subscribeToBroadcast listen ${(event).broadcastEventType}');
       }

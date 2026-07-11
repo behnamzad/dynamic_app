@@ -6,4 +6,6 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:freezed_annotation/freezed_annotation.dart';
 export 'package:injectable/injectable.dart';
 export 'package:logger/logger.dart';
+export 'package:dynamic_app/core/model/result.dart';
+export 'package:dynamic_app/core/config/strings.dart';
 

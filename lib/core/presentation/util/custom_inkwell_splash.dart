@@ -138,7 +138,7 @@ class CustomInkWellSplash extends InteractiveInkFeature {
       ..addListener(controller.markNeedsPaint)
       ..addStatusListener(_handleAlphaStatusChanged);
     _alpha = _alphaController!.drive(IntTween(
-      begin: color.alpha,
+      begin: (color.a * 255.0).round().clamp(0, 255),
       end: 0,
     ),);
 

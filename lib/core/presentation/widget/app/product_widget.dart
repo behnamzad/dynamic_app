@@ -48,9 +48,9 @@ class _ProductWidgetState extends State<ProductWidget> {
                           topRight: Radius.circular(Dimen.defaultRadius),
                           topLeft: Radius.circular(Dimen.defaultRadius),),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 2.0, bottom: 2),
-                      child: Image.network(widget.entity.imageUrl),
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 2.0, bottom: 2),
+                      // child: Image.network(widget.entity.imageUrl),
                     ),
                   ),
                   //info
@@ -66,12 +66,12 @@ class _ProductWidgetState extends State<ProductWidget> {
                       child: Column(
                         children: [
                           BzText(
-                            widget.entity.name,
+                            widget.entity.titleFa,
                             style: context.body1Bold,
                             overflow: TextOverflow.ellipsis,
                           ),
                           BzTextCurrency.amountWithTitle(
-                            amount: int.parse(widget.entity.amount),
+                            amount:widget.entity.price,
                             style: context.body2Medium.copyWith(color: context.scheme().primary),
                           ),
                         ],
@@ -85,7 +85,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                 child: Icon(
                   widget.entity.id.isEven ? Icons.favorite_outline_rounded : Icons.favorite,
                   size: 24,
-                  color: context.scheme().dialogIcon.withOpacity(0.8),
+                  color: context.scheme().dialogIcon.withValues(alpha: 0.8),
                 ),
               ),
             ],
@@ -110,9 +110,9 @@ class _ProductWidgetState extends State<ProductWidget> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   //img
-                  SizedBox(
+                  const SizedBox(
                     height: Dimen.productRowImgHeight,
-                    child: Image.network(widget.entity.imageUrl),
+                    // child: Image.network(widget.entity.imageUrl),
                   ),
                   //info
                   Expanded(
@@ -125,7 +125,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                           child: Padding(
                             padding: const EdgeInsets.only(top: 24.0),
                             child: BzText(
-                              widget.entity.name,
+                              widget.entity.titleFa,
                               style: context.body4Medium.copyWith(color: context.scheme().titleText),
                               overflow: TextOverflow.clip,
                             ),
@@ -142,13 +142,13 @@ class _ProductWidgetState extends State<ProductWidget> {
                                   Row(
                                     children: [
                                       const Icon(Icons.star, size: 14, color: Colors.amberAccent),
-                                      BzText(widget.entity.rate,
+                                      BzText(widget.entity.titleFa,
                                           style: context.body4Regular.copyWith(color: context.scheme().mainText),),
                                     ],
                                   ),
                                   //amount
                                   BzTextCurrency.amountWithTitle(
-                                    amount: int.parse(widget.entity.amount),
+                                    amount: widget.entity.price,
                                     style: context.body2Medium.copyWith(color: context.scheme().primary),
                                   ),
                                 ],

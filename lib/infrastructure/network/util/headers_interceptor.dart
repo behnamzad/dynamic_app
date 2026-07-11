@@ -6,17 +6,19 @@ import 'package:injectable/injectable.dart';
 @lazySingleton
 class HeadersInterceptor extends Interceptor {
   final bool isAddTestData;
+  final bool isAddOneApiTokenToHeaders;
 
-  HeadersInterceptor({
-    required this.isAddTestData,
-  });
+  HeadersInterceptor({required this.isAddTestData, required this.isAddOneApiTokenToHeaders});
 
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     if (_permitsRequestBody(options.method)) {
       Map<String, dynamic> oldHeader = Map<String, dynamic>.from(options.headers);
 
-      Map<String, dynamic>? headers = inject<NetworkUtils>().getDefaultHeaders(addTestData: false);
+      Map<String, dynamic>? headers = inject<NetworkUtils>().getDefaultHeaders(
+        addTestData: false,
+        isAddOneApiTokenToHeaders: isAddOneApiTokenToHeaders,
+      );
 
       oldHeader.addAll(headers);
 
@@ -31,8 +33,8 @@ class HeadersInterceptor extends Interceptor {
   }
 
   @override
-  Future<void> onError(DioException dioError, ErrorInterceptorHandler handler) async {
-    handler.next(dioError);
+  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+    handler.next(err);
   }
 }
 

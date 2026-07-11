@@ -90,9 +90,7 @@ extension StringExt on String? {
     final parsedValue = int.tryParse(cleanedValue) ?? 0;
     return isNullOrBlank
         ? ''
-        : inject<CurrencyManager>().currencyFormat(parsedValue) +
-            ' ' +
-            inject<CurrencyManager>().getCurrencyCurrencyUnitTitle();
+        : '${inject<CurrencyManager>().currencyFormat(parsedValue)} ${inject<CurrencyManager>().getCurrencyCurrencyUnitTitle()}';
   }
 
   bool get isNullOrZeroOrEmpty => isNullOrBlank || this == '0';

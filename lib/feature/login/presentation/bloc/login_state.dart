@@ -18,13 +18,25 @@ enum Status {
   bool get isInvalidInput => this == Status.invalidInput;
 }
 
+enum LoginMode {
+  login,
+  register;
+
+  bool get isLogin => this == LoginMode.login;
+
+  bool get isRegister => this == LoginMode.register;
+}
+
 @freezed
 sealed class LoginState with _$LoginState {
   factory LoginState.initial({
     @Default(Status.initial) Status status,
+    @Default(LoginMode.login) LoginMode mode,
     String? userName,
+    String? email,
     String? passWord,
     String? infoMessage,
     String? errorMessage,
+    @Default(LoginFeedbackCode.none) LoginFeedbackCode feedbackCode,
   }) = _Initial;
 }

@@ -11,6 +11,8 @@ class Configs {
   bool get isActiveOtpDialogInAppActivation => F.isGooglePlay ? true : false;
 
   bool get isActiveOtpDialogInWithdrawWallet => F.isGooglePlay ? true : false;
+
+  String get oneApiToken=>'747841:6a47ecc14dfd6';
 }
 
 /// cs = Config s
