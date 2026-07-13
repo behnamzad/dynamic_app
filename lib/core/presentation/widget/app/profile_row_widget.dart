@@ -1,4 +1,5 @@
 import 'package:dynamic_app/core/local/user/user.dart';
+import 'package:dynamic_app/core/presentation/widget/app/avatar_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 
 class ProfileRowWidget extends StatelessWidget {
@@ -13,14 +14,7 @@ class ProfileRowWidget extends StatelessWidget {
       child: Row(
         children: [
           //image
-          Container(
-            height: 54,
-            width: 54,
-            decoration: BoxDecoration(
-              borderRadius: Dimen.defaultBorderRadius,
-              color: context.scheme().success,
-            ),
-          ),
+          const AvatarWidget(size: 58, fontSize: 24),
           const HGap(12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,17 +25,7 @@ class ProfileRowWidget extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          BzGestureDetector(
-            materialColor: context.scheme().mainBackground2,
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Icon(
-                Icons.settings,
-                size: 24,
-                color: context.scheme().profileIcon,
-              ),
-            ),
-          ),
+          as.hoshopLogo.svg(height: 64, width: 64),
         ],
       ),
     );

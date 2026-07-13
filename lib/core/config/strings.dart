@@ -453,6 +453,7 @@ class Strings {
 
   String get yesterday => 'دیروز';
 
+
   String get endOfStrings => 'endOfStrings';
 }
 

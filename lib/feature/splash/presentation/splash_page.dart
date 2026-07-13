@@ -33,9 +33,7 @@ class _SplashPageState extends State<SplashPage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.storefront, size: 48, color: context.scheme().primary),
-            const VGap(16),
-            BzText(ss.storeName, style: context.headline1Bold.copyWith(color: context.scheme().primary)),
+            as.hoshopNamed.image(width: 210, height: 210),
 
             const VGap(48),
 

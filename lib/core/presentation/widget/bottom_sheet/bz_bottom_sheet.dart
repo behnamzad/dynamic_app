@@ -149,8 +149,8 @@ class BzBottomSheet extends StatelessWidget {
                   borderRadius: isFullScreen
                       ? null
                       : BorderRadius.only(
-                          topLeft: Radius.circular(Dimen.bottomSheetRadius),
-                          topRight: Radius.circular(Dimen.bottomSheetRadius),
+                          topLeft: const Radius.circular(Dimen.bottomSheetRadius),
+                          topRight: const Radius.circular(Dimen.bottomSheetRadius),
                           bottomLeft: (Radius.circular(margin != null ? Dimen.bottomSheetRadius : 0)),
                           bottomRight: (Radius.circular(margin != null ? Dimen.bottomSheetRadius : 0)),
                         ),

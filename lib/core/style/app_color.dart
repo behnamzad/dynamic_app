@@ -13,7 +13,7 @@ class AppColor {
 class AppColors {
   /// Main ///
 
-  AppColor get primary => const AppColor(light: Color(0xFF4D42BD), dark: Color(0xFF908CE5));
+  AppColor get primary => const AppColor(light: Color(0xFF6227CF), dark: Color(0xFF908CE5));
 
 
   AppColor get primary16 => const AppColor(light: Color(0xFFE9E9EC), dark: Color(0xFF827F9F));

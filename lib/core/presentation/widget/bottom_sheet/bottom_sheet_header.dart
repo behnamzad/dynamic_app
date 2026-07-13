@@ -18,7 +18,7 @@ class BottomSheetHeader extends StatelessWidget {
   final TextDirection? subTitleDirection;
 
   const BottomSheetHeader({
-    Key? key,
+    super.key,
     required this.title,
     this.titleWidget,
     this.icon,
@@ -34,10 +34,10 @@ class BottomSheetHeader extends StatelessWidget {
     this.bottomTitlePadding,
     this.subTitleDirection,
     this.bottomHandlerPadding,
-  }) : super(key: key);
+  });
 
   const BottomSheetHeader.withHandler({
-    Key? key,
+    super.key,
     this.showHandler = true,
     this.title,
     this.titleWidget,
@@ -53,10 +53,10 @@ class BottomSheetHeader extends StatelessWidget {
     this.bottomTitlePadding,
     this.subTitleDirection,
     this.bottomHandlerPadding,
-  }) : super(key: key);
+  });
 
   const BottomSheetHeader.withClose({
-    Key? key,
+    super.key,
     this.showHandler = true,
     this.title,
     this.titleWidget,
@@ -71,8 +71,7 @@ class BottomSheetHeader extends StatelessWidget {
     this.bottomTitlePadding,
     this.subTitleDirection,
     this.bottomHandlerPadding,
-  }) : showClose = true,
-       super(key: key);
+  }) : showClose = true;
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +115,7 @@ class BottomSheetHeader extends StatelessWidget {
                   visible: showDivider,
                   child: Column(
                     children: [
-                      SizedBox(height: 3),
+                      const SizedBox(height: 3),
                       Divider(height: 0.7, thickness: 0.7, color: context.scheme().divider),
                       SizedBox(height: bottomDividerPadding ?? 16),
                     ],

@@ -13,20 +13,22 @@ class Assets {
     return AssetSvg('$iconPath$svgName.svg', assetNameDark: '$iconPath$assetNameDark.svg');
   }
 
-  AdaAssetImage getAssetImage(String imageName) {
+  BzAssetImage getAssetImage(String imageName) {
     String imagePath = 'assets/images/';
-    return AdaAssetImage('$imagePath$imageName.png');
+    return BzAssetImage('$imagePath$imageName.png');
   }
 
   AssetSvg get headerLogo => getAssetSvg('ic_header_logo', assetNameDark: 'ic_header_logo_dark');
 
+  AssetSvg get hoshopLogo => getAssetSvg('ic_hoshop', assetNameDark: 'ic_hoshop');
+
   ThemeService get themeService => inject<ThemeService>();
 
-  AdaAssetImage get itm => getAssetImage('itm');
+  BzAssetImage get hoshopNamed => getAssetImage('hoshop_named_img');
 }
 
-class AdaAssetImage {
-  const AdaAssetImage(this._assetName);
+class BzAssetImage {
+  const BzAssetImage(this._assetName);
 
   final String _assetName;
 

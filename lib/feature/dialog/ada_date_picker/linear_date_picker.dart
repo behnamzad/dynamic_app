@@ -173,7 +173,7 @@ class _LinearDatePickerState extends State<LinearDatePicker> {
                 minValue: _getMinimumYear()!,
                 maxValue: _getMaximumYear(),
                 showDividers: widget.showDividers,
-                dividerColor: widget.dividerStyle?.color ?? Color(0xffbebebe),
+                dividerColor: widget.dividerStyle?.color ?? const Color(0xffbebebe),
                 selectedRowStyle: widget.selectedRowStyle,
                 unselectedRowStyle: widget.unselectedRowStyle,
                 onChanged: (value) {
@@ -205,7 +205,7 @@ class _LinearDatePickerState extends State<LinearDatePicker> {
                 maxValue: _getMaximumMonth(),
                 selectedRowStyle: widget.selectedRowStyle,
                 showDividers: widget.showDividers,
-                dividerColor: widget.dividerStyle?.color ?? Color(0xffbebebe),
+                dividerColor: widget.dividerStyle?.color ?? const Color(0xffbebebe),
                 unselectedRowStyle: widget.unselectedRowStyle,
                 isShowMonthName: widget.showMonthName,
                 isJalali: widget.isJalaali,
@@ -237,7 +237,7 @@ class _LinearDatePickerState extends State<LinearDatePicker> {
                   initialValue: _selectedDay,
                   minValue: _getMinimumDay(),
                   showDividers: widget.showDividers,
-                  dividerColor: widget.dividerStyle?.color ?? Color(0xffbebebe),
+                  dividerColor: widget.dividerStyle?.color ?? const Color(0xffbebebe),
                   maxValue: _getMaximumDay(),
                   selectedRowStyle: widget.selectedRowStyle,
                   unselectedRowStyle: widget.unselectedRowStyle,
@@ -285,7 +285,7 @@ class _LinearDatePickerState extends State<LinearDatePicker> {
         firstOfNextMonth = DateTime(selectedYear!, selectedMonth! + 1, 1, 12);
       }
       int numberOfDaysInMonth = firstOfNextMonth
-          .subtract(Duration(days: 1))
+          .subtract(const Duration(days: 1))
           .day;
       //.subtract(Duration) returns a DateTime, .day gets the integer for the day of that DateTime
       return numberOfDaysInMonth;

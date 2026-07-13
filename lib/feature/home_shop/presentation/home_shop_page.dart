@@ -1,3 +1,4 @@
+import 'package:dynamic_app/core/config/configs.dart';
 import 'package:dynamic_app/core/local/user/user_manager.dart';
 import 'package:dynamic_app/core/mock_data/mock_data.dart';
 import 'package:dynamic_app/core/presentation/widget/app/product_widget.dart';
@@ -20,7 +21,7 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
     return BlocListener<HomeShopBloc, HomeShopState>(
       listenWhen: (previous, current) => previous.status != current.status && current.status.isFailed,
       listener: (context, state) => showToastError(state.errorMessage ?? ss.cartFetchError),
-      child: BasePageWidget(appBar: const BzAppBar(), child: _body(context)),
+      child: BasePageWidget(child: _body(context)),
     );
   }
 
@@ -41,11 +42,18 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
   }
 
   Widget _sliderWidget(BuildContext context) {
+    List<String> imageList = inject<Configs>().homeImageSliderPath;
     return BzSlider(
       height: Dimen.miniCardHeight,
-      itemList: List.generate(3, (index) => BzText('text $index')),
+      itemList: List.generate(imageList.length, (index) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Transform.scale(scale: index == 1 ? 1.15 : 1.1, child: Image.asset(imageList[index])),
+        );
+      }),
       // controller: sliderCtrl,
       enlargeFactor: 0.2,
+      viewportFraction: 0.95,
       indicatorIntoSlider: true,
       showIndicator: false,
       onPageChanged: (int index) {
@@ -98,8 +106,8 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
     return ProfileRowWidget(user: inject<UserManager>().currentUser!);
   }
 
-//endregion
-// region Function
+  //endregion
+  // region Function
 
-//endregion
+  //endregion
 }

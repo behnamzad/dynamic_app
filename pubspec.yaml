@@ -81,3 +81,6 @@ flutter:
         - asset: assets/fonts/yekan_extra_bold.ttf
           weight: 800
 
+  assets:
+    - assets/icons/
+    - assets/images/

@@ -14,7 +14,7 @@ class ProductInfoPage extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-    create: (_) => inject<ProductInfoBloc>()..add(ProductInfoEvent.init(productId: 4623728)),
+    create: (_) => inject<ProductInfoBloc>()..add(const ProductInfoEvent.init(productId: 4623728)),
     child: this,
   );
 
@@ -477,34 +477,6 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
     );
   }
 
-  Widget _commentCard(BuildContext context, ProductCommentEntity comment) {
-    return Container(
-      width: 156,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: context.scheme().mainBackground1,
-        border: Border.all(color: context.scheme().divider),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BzText(comment.userName, style: context.body3Medium.copyWith(color: context.scheme().mainText), maxLines: 1),
-          const VGap(12),
-          Row(children: List.generate(5, (int index) => const Icon(Icons.star_rounded, color: Colors.amber, size: 18))),
-          const VGap(10),
-          BzText(
-            comment.body,
-            style: context.body4Regular.copyWith(color: context.scheme().mainText, height: 1.6),
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const Spacer(),
-          BzText(ss.seeMore, style: context.body4Bold.copyWith(color: context.scheme().mainText)),
-        ],
-      ),
-    );
-  }
 
   // ignore: unused_element
   Widget _rateProduct(BuildContext context) {

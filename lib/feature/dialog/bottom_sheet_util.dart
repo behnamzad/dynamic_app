@@ -82,8 +82,8 @@ class BottomSheetUtil {
             bottomTitlePadding: bottomTitlePadding,
             bottomHandlerPadding: bottomHandlerPadding,
             topPadding: topPadding,
-            child: contentChild,
             margin: margin,
+            child: contentChild,
           );
         }
       },

@@ -12,7 +12,13 @@ class Configs {
 
   bool get isActiveOtpDialogInWithdrawWallet => F.isGooglePlay ? true : false;
 
-  String get oneApiToken=>'747841:6a47ecc14dfd6';
+  String get oneApiToken => '747841:6a47ecc14dfd6';
+
+  List<String> get homeImageSliderPath => [
+    'assets/images/banner_1.png',
+    'assets/images/banner_2.png',
+    'assets/images/banner_3.png',
+  ];
 }
 
 /// cs = Config s

@@ -113,16 +113,7 @@ class _LoginPageState extends State<LoginPage> with InputFormattersRegexUtils, W
                             padding: const EdgeInsets.only(top: 64),
                             child: Align(
                               alignment: Alignment.bottomCenter,
-                              child: Column(
-                                children: [
-                                  Icon(Icons.storefront_sharp, size: 78, color: context.scheme().primary),
-                                  const VGap(8),
-                                  BzText(
-                                    ss.storeName,
-                                    style: context.headline2Bold.copyWith(color: context.scheme().primary),
-                                  ),
-                                ],
-                              ),
+                              child: Column(children: [as.hoshopLogo.svg(height: 160, width: 160)]),
                               // child: as.headerLogo.svg(
                               //   width: 200,
                               //   //height: dimen.bankHeaderLogoHeight,
@@ -311,9 +302,13 @@ class _LoginPageState extends State<LoginPage> with InputFormattersRegexUtils, W
     return Row(
       textDirection: TextDirection.rtl,
       children: [
-        Expanded(child: _genderOption(context, title: 'خانم', value: 'female', enabled: !state.status.isLoading)),
+        Expanded(
+          child: _genderOption(context, title: 'خانم', value: 'female', enabled: !state.status.isLoading),
+        ),
         const HGap(10),
-        Expanded(child: _genderOption(context, title: 'آقا', value: 'male', enabled: !state.status.isLoading)),
+        Expanded(
+          child: _genderOption(context, title: 'آقا', value: 'male', enabled: !state.status.isLoading),
+        ),
       ],
     );
   }
@@ -339,9 +334,7 @@ class _LoginPageState extends State<LoginPage> with InputFormattersRegexUtils, W
         ),
         child: BzText(
           title,
-          style: context.title2Bold.copyWith(
-            color: isSelected ? context.scheme().primary : context.scheme().mainText,
-          ),
+          style: context.title2Bold.copyWith(color: isSelected ? context.scheme().primary : context.scheme().mainText),
         ),
       ),
     );
