@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:dynamic_app/di/di_const.dart';
+import 'package:dynamic_app/infrastructure/network/dio_caller.dart';
 import 'package:dynamic_app/infrastructure/network/model/api_error.dart';
 import 'package:dynamic_app/infrastructure/network/model/api_response.dart';
 import 'package:dynamic_app/infrastructure/supabase/supabase_config.dart';
@@ -10,16 +10,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'login_data_source.dart';
 
 @Injectable(as: LoginDataSource)
-class LoginDateSourceImpl implements LoginDataSource {
+class LoginDataSourceImpl implements LoginDataSource {
   final SupabaseClient _client;
-  final Dio _supabaseDio;
+  final DioCaller _dioCaller;
   final Logger _logger;
 
-  LoginDateSourceImpl(
-    this._client,
-    @Named(DiConst.dioSupabaseRest) this._supabaseDio,
-    this._logger,
-  );
+  LoginDataSourceImpl(this._client, @Named(DiConst.dioSupabaseRest) this._dioCaller, this._logger);
 
   @override
   Future<ApiResponse<AuthResponse>> login(String email, String password) async {
@@ -35,9 +31,7 @@ class LoginDateSourceImpl implements LoginDataSource {
       return ApiResponse.completed(data: response);
     } on AuthException catch (e) {
       _logger.e('Supabase Auth login failed: ${e.message}');
-      return ApiResponse.error(
-        apiError: InvalidPasswordOrUsername(e.message, e.statusCode),
-      );
+      return ApiResponse.error(apiError: InvalidPasswordOrUsername(e.message, e.statusCode));
     } catch (e) {
       _logger.e('Supabase Auth login failed: $e');
       return ApiResponse.error(apiError: UncaughtError(e.toString()));
@@ -78,19 +72,12 @@ class LoginDateSourceImpl implements LoginDataSource {
   }
 
   @override
-  Future<ApiResponse<bool>> isUsernameAvailable(String username) async {
-    try {
-      // شروع چک نام کاربری از LoginBloc است؛ این request با Dio می‌رود تا PrettyDioLogger لاگ بگیرد.
-      final response = await _supabaseDio.post(
-        'rpc/is_username_available',
-        data: {'input_username': username.trim()},
-      );
-
-      return ApiResponse.completed(data: response.data == true);
-    } on DioException catch (e) {
-      return ApiResponse.error(apiError: ServerError(e.message ?? 'Supabase request failed', e.response?.statusCode?.toString()));
-    } catch (e) {
-      return ApiResponse.error(apiError: UncaughtError(e.toString()));
-    }
+  Future<ApiResponse<bool>> isUsernameAvailable(String username) {
+    // RPC نام کاربری نیز از DioCaller می‌گذرد تا همه خطاها به ApiResponse تبدیل شوند.
+    return _dioCaller.post<bool>(
+      'rpc/is_username_available',
+      data: {'input_username': username.trim()},
+      fromJson: (json) => json == true,
+    );
   }
 }

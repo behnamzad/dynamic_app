@@ -1,10 +1,10 @@
+import 'package:dynamic_app/core/local/user/user.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
-import 'package:dynamic_app/shared/user/domain/entities/user_entity.dart';
 
 class ProfileRowWidget extends StatelessWidget {
-  final UserEntity entity;
+  final AppUser user;
 
-  const ProfileRowWidget({super.key, required this.entity});
+  const ProfileRowWidget({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +25,9 @@ class ProfileRowWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BzText('سلام 😊', style: context.body3Regular),
+              BzText('${ss.hello} 😊', style: context.body3Regular),
               const VGap(2),
-              BzText(entity.fullName, style: context.headline3Bold),
+              BzText(user.username, style: context.headline3Bold),
             ],
           ),
           const Spacer(),

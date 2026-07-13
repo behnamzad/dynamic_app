@@ -3,6 +3,7 @@ import 'package:dynamic_app/core/presentation/widget/bz_info_chip.dart';
 import 'package:dynamic_app/core/presentation/widget/bz_slider_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/feature/product_info/presentation/bloc/product_info_bloc.dart';
+import 'package:dynamic_app/feature/product_info/presentation/widget/comment_card_widget.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 @RoutePage()
@@ -13,7 +14,7 @@ class ProductInfoPage extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-    create: (_) => inject<ProductInfoBloc>()..add(const ProductInfoEvent.init(productId: 17986495)),
+    create: (_) => inject<ProductInfoBloc>()..add(ProductInfoEvent.init(productId: 4623728)),
     child: this,
   );
 
@@ -36,11 +37,22 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<ProductInfoBloc, ProductInfoState>(
       listener: (context, state) {
-        if (state.status.isFailed || state.specificationStatus.isFailed) {
+        if (state.status.isFailed) {
           showToastError(state.errorMessage!, bottomPadding: Dimen.bottomToastPadding);
         }
         if (state.status.isLoaded) {
           _product = state.productEntity!;
+        }
+        switch (state.cartActionStatus) {
+          case CartActionStatus.added:
+            showToastSuccess(ss.productAddedToCart);
+          case CartActionStatus.removed:
+            showToastSuccess(ss.productRemovedFromCart);
+          case CartActionStatus.failed:
+            showToastError(state.errorMessage ?? ss.cartOperationError);
+          case CartActionStatus.initial:
+          case CartActionStatus.loading:
+            break;
         }
       },
       builder: (context, state) {
@@ -64,14 +76,14 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
           padding: const EdgeInsets.only(bottom: 100),
           children: [_topBar(context), _breadcrumb(context), _productImage(context), _productInfoCard(context, state)],
         ),
-        Align(alignment: Alignment.bottomCenter, child: _addToCart(context)),
+        Align(alignment: Alignment.bottomCenter, child: _addToCart(context, state)),
       ],
     );
   }
 
   Widget _topBar(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 4),
+      padding: const EdgeInsets.only(right: 4, left: 16, top: 12, bottom: 4),
       child: Row(
         children: [
           BzGestureDetector(
@@ -79,11 +91,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
             child: Icon(Icons.close_rounded, color: context.scheme().profileIcon, size: 28),
           ),
           const Spacer(),
-          Icon(Icons.search_rounded, color: context.scheme().profileIcon, size: 28),
-          const HGap(18),
-          Icon(Icons.shopping_cart_outlined, color: context.scheme().profileIcon, size: 28),
-          const HGap(18),
-          Icon(Icons.more_vert_rounded, color: context.scheme().profileIcon, size: 28),
+          Icon(Icons.favorite_outline_rounded, color: context.scheme().profileIcon, size: 28),
         ],
       ),
     );
@@ -96,16 +104,19 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: List.generate((_product.breadcrumbs.length * 2) - 1, (index) {
-          if (index.isEven) {
-            BreadcrumbEntity breadcrumb = _product.breadcrumbs.reversed.toList()[index ~/ 2];
-            return BzText(breadcrumb.title, style: context.body2Medium.copyWith(color: context.scheme().subText));
-          }
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: List.generate((_product.breadcrumbs.length * 2) - 1, (index) {
+            if (index.isEven) {
+              BreadcrumbEntity breadcrumb = _product.breadcrumbs.reversed.toList()[index ~/ 2];
+              return BzText(breadcrumb.title, style: context.body2Medium.copyWith(color: context.scheme().subText));
+            }
 
-          return Icon(Icons.chevron_right_rounded, size: 18, color: context.scheme().subText);
-        }),
+            return Icon(Icons.chevron_right_rounded, size: 18, color: context.scheme().subText);
+          }),
+        ),
       ),
     );
   }
@@ -137,7 +148,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
             viewportFraction: 1,
             indicatorIntoSlider: false,
             controller: _carouselSliderController,
-            showIndicator: false,
+            showIndicator: true,
             onPageChanged: (int index) {},
           ),
         ),
@@ -146,94 +157,89 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
   }
 
   Widget _productInfoCard(BuildContext context, ProductInfoState state) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.scheme().mainBackground1,
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
-        border: Border(top: BorderSide(color: context.scheme().divider)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Center(
-              child: Container(
-                width: 52,
-                height: 5,
-                margin: const EdgeInsets.only(top: 10, bottom: 16),
-                decoration: BoxDecoration(color: context.scheme().divider, borderRadius: BorderRadius.circular(8)),
+    return Padding(
+      padding: const EdgeInsets.only(top: 18.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.scheme().mainBackground1,
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
+          border: Border(top: BorderSide(color: context.scheme().divider)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Center(
+                child: Container(
+                  width: 52,
+                  height: 5,
+                  margin: const EdgeInsets.only(top: 10, bottom: 16),
+                  decoration: BoxDecoration(color: context.scheme().divider, borderRadius: BorderRadius.circular(8)),
+                ),
               ),
-            ),
-            _productActions(context),
-            _productHeaders(context),
-            _productMeta(context),
-            const VGap(20),
-            const BzDivider(),
-            _productOptions(context),
-            const VGap(20),
-            _specificationsTable(context, state),
-            const VGap(20),
-            _commentsSection(context),
-          ],
+              _productCategoryTree(context),
+              const VGap(16),
+              _productHeaders(context),
+              const VGap(16),
+              _productMeta(context),
+              const VGap(20),
+
+              _productOptions(context),
+              const VGap(20),
+              const BzDivider(),
+              const VGap(20),
+              _specificationsTable(context, state),
+              const VGap(20),
+              _commentsSection(context),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _productActions(BuildContext context) {
+  Widget _productCategoryTree(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Icon(Icons.favorite_border_rounded, color: context.scheme().profileIcon, size: 26),
-          const HGap(24),
-          Icon(Icons.share_outlined, color: context.scheme().profileIcon, size: 24),
+          Flexible(
+            child: BzText(
+              _product.brandName,
+              style: context.body2Medium.copyWith(color: context.scheme().subText),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const HGap(6),
+          Icon(Icons.chevron_right_rounded, size: 18, color: context.scheme().subText),
+          const HGap(6),
+          BzText(
+            '${_product.categoryTitle} ${_product.brandName}',
+            style: context.body2Medium.copyWith(color: context.scheme().subText),
+          ),
         ],
       ),
     );
   }
 
   Widget _productHeaders(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Flexible(
-                child: BzText(
-                  _product.brandName,
-                  style: context.body2Medium.copyWith(color: context.scheme().subText),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const HGap(6),
-              Icon(Icons.chevron_right_rounded, size: 18, color: context.scheme().subText),
-              const HGap(6),
-              BzText(
-                '${_product.categoryTitle} ${_product.brandName}',
-                style: context.body2Medium.copyWith(color: context.scheme().subText),
-              ),
-            ],
-          ),
-          const VGap(12),
-          BzText(
-            _product.titleFa,
-            style: context.title1Bold.copyWith(color: context.scheme().titleText),
-            textAlign: TextAlign.right,
-            overflow: TextOverflow.clip,
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        BzText(
+          _product.titleFa,
+          style: context.title1Bold.copyWith(color: context.scheme().titleText),
+          textAlign: TextAlign.right,
+          overflow: TextOverflow.clip,
+        ),
+      ],
     );
   }
 
   Widget _productMeta(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
       scrollDirection: Axis.horizontal,
       reverse: true,
       child: Row(
@@ -244,9 +250,9 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
             iconColor: Colors.amber,
           ),
           const HGap(8),
-          BzInfoChip(text: '${_product.commentCount} دیدگاه', icon: Icons.rate_review_outlined),
+          BzInfoChip(text: ss.commentCount(_product.commentCount), icon: Icons.rate_review_outlined),
           const HGap(8),
-          BzInfoChip(text: '${_product.questionCount} پرسش', icon: Icons.help_outline_rounded),
+          BzInfoChip(text: ss.questionCount(_product.questionCount), icon: Icons.help_outline_rounded),
         ],
       ),
     );
@@ -261,10 +267,10 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               BzText(
-                _product.selectedColor!.title,
-                style: context.title1Bold.copyWith(color: context.scheme().titleText),
+                '${ss.color}: ${_product.selectedColor!.title}',
+                style: context.body1Medium.copyWith(color: context.scheme().titleText),
               ),
-              BzText('رنگ: ', style: context.title1Bold.copyWith(color: context.scheme().titleText)),
+
               const HGap(8),
               Container(
                 height: 18,
@@ -279,7 +285,15 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
           ),
           const VGap(16),
         ],
-        if (_product.seller != null) _sellerBox(context),
+        if (_product.seller != null)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BzText('${ss.seller}:', style: context.body1Medium.copyWith(color: context.scheme().titleText)),
+              const VGap(16),
+              _sellerBox(context),
+            ],
+          ),
       ],
     );
   }
@@ -292,24 +306,20 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: context.scheme().boxBorder),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+      child: Row(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Flexible(
-                child: BzText(_product.seller!.name, style: context.body1Bold, overflow: TextOverflow.ellipsis),
-              ),
-              const HGap(8),
-              Icon(Icons.storefront_outlined, color: context.scheme().primary, size: 22),
-            ],
+          Icon(Icons.storefront_outlined, color: context.scheme().primary, size: 22),
+          const HGap(8),
+          Expanded(
+            child: BzText(_product.seller!.name, style: context.body1Bold, overflow: TextOverflow.ellipsis),
           ),
-          const VGap(8),
-          BzText(
-            '${_product.seller!.satisfactionPercent.toStringAsFixed(0)}٪ رضایت | ${_product.seller!.performance ?? ''}',
-            style: context.body4Medium.copyWith(color: context.scheme().subText),
-            textAlign: TextAlign.right,
+
+          const Spacer(),
+          Expanded(
+            child: BzText(
+              ss.satisfaction(_product.seller!.satisfactionPercent.round(), _product.seller!.performance ?? ''),
+              style: context.body4Medium.copyWith(color: context.scheme().subText),
+            ),
           ),
         ],
       ),
@@ -318,8 +328,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
 
   // ignore: unused_element
   Widget _productDes(BuildContext context, ProductInfoState state) {
-    final List<ProductSpecificationEntity> specifications =
-        state.productSpecificationEntityList ?? _product.specifications;
+    final List<ProductSpecificationEntity> specifications = _product.specifications;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -327,7 +336,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (specifications.isNotEmpty) ...[
-            BzText('مشخصات', style: context.title1Bold),
+            BzText(ss.specifications, style: context.title1Bold),
             const VGap(10),
             ...specifications.expand((ProductSpecificationEntity specification) => specification.items).take(4).map((
               ProductSpecificationItemEntity item,
@@ -350,7 +359,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
   }
 
   Widget _specificationsTable(BuildContext context, ProductInfoState state) {
-    final List<ProductSpecificationItemEntity> items = (state.productSpecificationEntityList ?? _product.specifications)
+    final List<ProductSpecificationItemEntity> items = _product.specifications
         .expand((ProductSpecificationEntity specification) => specification.items)
         .where((ProductSpecificationItemEntity item) => item.values.isNotEmpty)
         .take(5)
@@ -363,7 +372,10 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        BzText(_product.specifications.first.groupTitle, style: context.title1Bold.copyWith(color: context.scheme().titleText)),
+        BzText(
+          _product.specifications.first.groupTitle,
+          style: context.title1Bold.copyWith(color: context.scheme().titleText),
+        ),
         const VGap(14),
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
@@ -381,7 +393,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
                           border: Border(bottom: BorderSide(color: context.scheme().divider)),
                         ),
                         child: BzText(
-                            item.title,
+                          item.title,
 
                           style: context.body2Medium.copyWith(color: context.scheme().mainText),
                           textAlign: TextAlign.right,
@@ -419,14 +431,14 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
   }
 
   Widget _commentsSection(BuildContext context) {
-    final List<ProductCommentEntity> comments = _product.comments.take(4).toList();
+    final List<ProductCommentEntity> comments = _product.comments.toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            BzText('دیدگاه کاربران', style: context.title1Bold.copyWith(color: context.scheme().titleText)),
+            BzText(ss.userReviews, style: context.title1Bold.copyWith(color: context.scheme().titleText)),
             const Spacer(),
           ],
         ),
@@ -441,64 +453,27 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
             ),
             const HGap(8),
             BzText(
-              '(بر اساس نظر ${_product.rateCount} خریدار)',
+              ss.buyersOpinionCount(_product.rateCount),
               style: context.body4Medium.copyWith(color: context.scheme().subText),
             ),
           ],
         ),
         const VGap(18),
         SizedBox(
-          height: 210,
+          height: 224,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              _commentsSummaryCard(context),
-              const HGap(10),
               ...comments.map((ProductCommentEntity comment) {
-                return Padding(padding: const EdgeInsets.only(right: 10), child: _commentCard(context, comment));
+                return Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: CommentCardWidget(comment: comment),
+                );
               }),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  Widget _commentsSummaryCard(BuildContext context) {
-    final String summary = _product.review?.shortReview ?? _product.review?.description ?? _product.titleFa;
-
-    return Container(
-      width: 250,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(color: context.scheme().purpleBackground, borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.auto_awesome_rounded, color: context.scheme().primary, size: 24),
-              const HGap(8),
-              Expanded(
-                child: BzText(
-                  'خلاصه دیدگاه‌های خریداران',
-                  style: context.body1Bold.copyWith(color: context.scheme().primary),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const VGap(14),
-          BzText(
-            summary,
-            style: context.body3Medium.copyWith(color: context.scheme().mainText, height: 1.7),
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const Spacer(),
-          BzText('مشاهده بیشتر', style: context.body3Bold.copyWith(color: context.scheme().mainText)),
-        ],
-      ),
     );
   }
 
@@ -525,7 +500,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
             overflow: TextOverflow.ellipsis,
           ),
           const Spacer(),
-          BzText('مشاهده بیشتر', style: context.body4Bold.copyWith(color: context.scheme().mainText)),
+          BzText(ss.seeMore, style: context.body4Bold.copyWith(color: context.scheme().mainText)),
         ],
       ),
     );
@@ -556,7 +531,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
     );
   }
 
-  Widget _addToCart(BuildContext context) {
+  Widget _addToCart(BuildContext context, ProductInfoState state) {
     return Container(
       color: context.scheme().mainBackground1,
       child: Padding(
@@ -565,7 +540,21 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
           children: [
             Expanded(
               flex: 3,
-              child: BzButton.submit(text: _product.available ? ss.addToCart : 'ناموجود', onPressed: () {}),
+              child: BzButton.submit(
+                text: !_product.available
+                    ? ss.unavailable
+                    : state.isInCart
+                    ? ss.removeFromCart
+                    : ss.addToCart,
+                showLoading: state.cartActionStatus.isLoading,
+                enabled: _product.available && !state.cartActionStatus.isLoading,
+                onPressed: () {
+                  final event = state.isInCart
+                      ? ProductInfoEvent.removeFromCart(_product.id)
+                      : ProductInfoEvent.addToCart(_product);
+                  context.read<ProductInfoBloc>().add(event);
+                },
+              ),
             ),
             Expanded(
               flex: 2,

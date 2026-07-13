@@ -1,29 +1,30 @@
+import 'package:dynamic_app/core/local/user/user_manager.dart';
 import 'package:dynamic_app/core/mock_data/mock_data.dart';
 import 'package:dynamic_app/core/presentation/widget/app/product_widget.dart';
 import 'package:dynamic_app/core/presentation/widget/app/profile_row_widget.dart';
 import 'package:dynamic_app/core/presentation/widget/bz_slider_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
+import 'package:dynamic_app/feature/home_shop/presentation/bloc/home_shop_bloc.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 @RoutePage()
 class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
   const HomeShopPage({super.key});
 
-  //
-  // @override
-  // Widget wrappedRoute(BuildContext context) => BlocProvider(
-  //       create: (_) => inject<HomeShopBloc>(),
-  //       child: this,
-  //     );
   @override
-  Widget wrappedRoute(BuildContext context) => this;
+  Widget wrappedRoute(BuildContext context) =>
+      BlocProvider(create: (_) => inject<HomeShopBloc>()..add(const HomeShopEvent.init()), child: this);
 
   @override
   Widget build(BuildContext context) {
-    return BasePageWidget(appBar: const BzAppBar(), child: _body(context));
+    return BlocListener<HomeShopBloc, HomeShopState>(
+      listenWhen: (previous, current) => previous.status != current.status && current.status.isFailed,
+      listener: (context, state) => showToastError(state.errorMessage ?? ss.cartFetchError),
+      child: BasePageWidget(appBar: const BzAppBar(), child: _body(context)),
+    );
   }
 
-//region Widgets
+  //region Widgets
   Widget _body(BuildContext context) {
     return ListView(
       shrinkWrap: true,
@@ -64,14 +65,12 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    BzText('product Category'),
+                    BzText(ss.productCategory),
                     const Spacer(),
                     BzGestureDetector(
-                        onTap: () => context.pushRoute(ProductListPageRoute(products: MockData().products())),
-                        child: BzText(
-                          ss.seeMore,
-                          style: context.title2Bold,
-                        ),),
+                      onTap: () => context.pushRoute(ProductListPageRoute(products: MockData().products())),
+                      child: BzText(ss.seeMore, style: context.title2Bold),
+                    ),
                   ],
                 ),
               ),
@@ -79,13 +78,14 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
                 height: Dimen.productCardHeight,
                 color: context.scheme().primaryBold,
                 child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: MockData().products().length,
-                    itemBuilder: (context, index) {
-                      ProductEntity entity = MockData().products()[index];
-                      return ProductWidget.card(entity: entity);
-                    },),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: MockData().products().length,
+                  itemBuilder: (context, index) {
+                    ProductEntity entity = MockData().products()[index];
+                    return ProductWidget.card(entity: entity);
+                  },
+                ),
               ),
             ],
           ),
@@ -95,7 +95,7 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
   }
 
   Widget _profileRow(BuildContext context) {
-    return ProfileRowWidget(entity: MockData().user());
+    return ProfileRowWidget(user: inject<UserManager>().currentUser!);
   }
 
 //endregion

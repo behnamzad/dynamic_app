@@ -4,6 +4,7 @@ export 'package:dynamic_app/shared/product/domain/entities/product_specification
 
 class ProductEntity {
   final int id;
+  final int categoryId;
 
   // Basic Info
   final String titleFa;
@@ -65,6 +66,7 @@ class ProductEntity {
 
   const ProductEntity({
     required this.id,
+    required this.categoryId,
     required this.titleFa,
     this.titleEn,
     required this.categoryTitle,
@@ -266,6 +268,7 @@ class ProductCommentEntity {
   final String title;
   final String body;
   final DateTime createdAt;
+  final bool isBuyer;
 
   final List<String> pros;
   final List<String> cons;
@@ -280,6 +283,7 @@ class ProductCommentEntity {
     required this.title,
     required this.body,
     required this.createdAt,
+    this.isBuyer=false,
     this.pros = const [],
     this.cons = const [],
     this.likeCount = 0,

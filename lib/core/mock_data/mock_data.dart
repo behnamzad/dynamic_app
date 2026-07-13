@@ -1,21 +1,20 @@
+import 'package:dynamic_app/core/config/strings.dart';
 import 'package:dynamic_app/shared/address/domain/entities/address_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
-import 'package:dynamic_app/shared/product/domain/entities/product_in_cart_entity.dart';
-import 'package:dynamic_app/shared/user/domain/entities/user_entity.dart';
 
 class MockData {
   List<ProductEntity> products() {
     List<ProductEntity> list = [];
     for (int i = 0; i < 25; i++) {
       list.add(
-        const ProductEntity(
+        ProductEntity(
           id: 20481188,
-          titleFa:
-              'گوشی موبایل اپل مدل iPhone 17 Pro Max ZAA تک سیم کارت + eSim ظرفیت 256 گیگابایت و رم 12 گیگابایت - نات اکتیو',
+          categoryId: 18,
+          titleFa: ss.sampleProductTitle,
           titleEn:
-              'Apple iPhone 17 Pro Max ZAA Single SIM + eSim Storage 256GB And RAM 12GB Mobile Phone - Not Activated',
-          categoryTitle: 'گوشی موبایل',
-          brandName: 'اپل',
+          'Apple iPhone 17 Pro Max ZAA Single SIM + eSim Storage 256GB And RAM 12GB Mobile Phone - Not Activated',
+          categoryTitle: ss.mobilePhone,
+          brandName: ss.apple,
 
           // Images
           images: [
@@ -41,9 +40,9 @@ class MockData {
 
           // Seller (از default_variant_id)
           seller: SellerEntity(
-            name: 'دیجی‌کالا',
+            name: ss.digikala,
             satisfactionPercent: 100, // 5 ستاره → 100٪
-            performance: 'عالی',
+            performance: ss.excellent,
           ),
 
           // Inventory
@@ -52,11 +51,11 @@ class MockData {
 
           // Colors
           colors: [
-            ProductColorEntity(id: '17', title: 'نارنجی', hexColor: '#FFA501'),
-            ProductColorEntity(id: '42', title: '42', hexColor: '#000000'),
-            ProductColorEntity(id: '12', title: '12', hexColor: '#000000'),
+            ProductColorEntity(id: '17', title: ss.orange, hexColor: '#FFA501'),
+            const ProductColorEntity(id: '42', title: '42', hexColor: '#000000'),
+            const ProductColorEntity(id: '12', title: '12', hexColor: '#000000'),
           ],
-          selectedColor: ProductColorEntity(id: '17', title: 'نارنجی', hexColor: '#FFA501'),
+          selectedColor: ProductColorEntity(id: '17', title: ss.orange, hexColor: '#FFA501'),
 
           // Storages (در JSON نبود)
           storages: [],
@@ -75,30 +74,30 @@ class MockData {
             price: 3659990000,
             originalPrice: 3659990000,
             discountPercent: null,
-            color: ProductColorEntity(id: '17', title: 'نارنجی', hexColor: '#FFA501'),
-            themes: [ProductThemeEntity(title: 'نارنجی', type: 'colored', isMain: true)],
-            seller: SellerEntity(name: 'دیجی‌کالا', satisfactionPercent: 100, performance: 'عالی'),
+            color: ProductColorEntity(id: '17', title: ss.orange, hexColor: '#FFA501'),
+            themes: [ProductThemeEntity(title: ss.orange, type: 'colored', isMain: true)],
+            seller: SellerEntity(name: ss.digikala, satisfactionPercent: 100, performance: ss.excellent),
             digiplus: DigiplusEntity(
               services: [
-                '۴ ارسال رایگان دیجیکالا',
-                '۲ ارسال سوپرمارکت',
-                '۴ ارسال رایگان ۴۵ دقیقه‌ای',
-                'پشتیبانی اختصاصی',
-                'ارسال سریع و رایگان دیجی‌کالا (فقط تهران و کرج)',
+                ss.freeDigikalaShipping,
+                ss.supermarketShipping,
+                ss.freeFortyFiveMinuteShipping,
+                ss.dedicatedSupport,
+                ss.fastTehranShipping,
               ],
               isJetEligible: true,
-              fastShippingText: 'ارسال سریع دیجی‌کالا',
+              fastShippingText: ss.fastDigikalaShipping,
             ),
-            insurance: InsuranceEntity(title: 'digitalInsurance', price: 60390000, selected: false),
+            insurance: const InsuranceEntity(title: 'digitalInsurance', price: 60390000, selected: false),
             badges: [
               VariantBadgeEntity(
-                text: 'تنها 1 عدد در انبار باقی مانده',
+                text: ss.onlyOneItemLeft,
                 textColor: '#d32f2f',
                 icon:
-                    'https://dkstatics-public.digikala.com/digikala-static/54419b9303246cde131fcb5b251b86f2ab4aeb71_1716833765.svg',
+                'https://dkstatics-public.digikala.com/digikala-static/54419b9303246cde131fcb5b251b86f2ab4aeb71_1716833765.svg',
               ),
             ],
-            statistics: VariantStatisticsEntity(
+            statistics: const VariantStatisticsEntity(
               totalCount: 64,
               totalRate: 91.8,
               totallySatisfiedCount: 49,
@@ -114,7 +113,7 @@ class MockData {
           ],
 
           // Insurance (از mainVariant)
-          insurance: InsuranceEntity(title: 'digitalInsurance', price: 60390000, selected: false),
+          insurance: const InsuranceEntity(title: 'digitalInsurance', price: 60390000, selected: false),
 
           // Breadcrumbs
           breadcrumbs: [],
@@ -146,24 +145,10 @@ class MockData {
   List<AddressEntity> addressList() {
     List<AddressEntity> list = [];
 
-    list.add(
-      const AddressEntity(province: 'لرستان', city: 'بروجرد', exactAddress: 'خیابان تختی خیابان زرپرور کوچه شوق پلاک3'),
-    );
+    list.add(AddressEntity(province: ss.lorestan, city: ss.borujerd, exactAddress: ss.sampleBorujerdAddress));
 
-    list.add(
-      const AddressEntity(
-        province: 'تهران',
-        city: 'تهران',
-        exactAddress: 'خیابان جمهوری خیابان سعدی کوچه احمدی پلاک18',
-      ),
-    );
+    list.add(AddressEntity(province: ss.tehran, city: ss.tehran, exactAddress: ss.sampleTehranAddress));
 
     return list;
   }
-
-  List<ProductInCartEntity> productInCartList() =>
-      products().map((e) => ProductInCartEntity(productEntity: e, selectedCount: e.id)).toList();
-
-  UserEntity user() =>
-      const UserEntity(id: 0, email: 'test@gmail.com', firstName: 'بهنام', lastName: 'زادپور', imgPath: '');
 }

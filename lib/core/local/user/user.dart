@@ -42,9 +42,9 @@ enum AppUserGender {
 class AppUser {
   final String id;
   final String email;
-  final String? username;
+  final String username;
   final AppUserGender gender;
-  final int? age;
+  final int age;
   final String? accessToken;
   final String? refreshToken;
   final DateTime? createdAt;
@@ -54,9 +54,9 @@ class AppUser {
   const AppUser({
     required this.id,
     required this.email,
-    this.username,
+    required this.username,
     this.gender = AppUserGender.unknown,
-    this.age,
+    required this.age,
     this.accessToken,
     this.refreshToken,
     this.createdAt,
@@ -64,19 +64,16 @@ class AppUser {
     this.isEmailVerified = false,
   });
 
-  factory AppUser.fromSupabase({
-    required supabase.User user,
-    supabase.Session? session,
-  }) {
+  factory AppUser.fromSupabase({required supabase.User user, supabase.Session? session}) {
     final metadata = user.userMetadata ?? {};
 
     // پاسخ Supabase Auth اینجا به مدل محلی اپ تبدیل می‌شود تا باقی اپ به SDK وابسته نباشد.
     return AppUser(
       id: user.id,
       email: user.email ?? '',
-      username: metadata['username']?.toString(),
+      username: metadata['username']?.toString() ?? '',
       gender: AppUserGender.fromSupabaseValue(metadata['gender']?.toString()),
-      age: int.tryParse(metadata['age']?.toString() ?? ''),
+      age: int.tryParse(metadata['age']?.toString() ?? '0') ?? 0,
       accessToken: session?.accessToken,
       refreshToken: session?.refreshToken,
       createdAt: DateTime.tryParse(user.createdAt),
@@ -89,9 +86,9 @@ class AppUser {
     return AppUser(
       id: json['id']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
-      username: json['username']?.toString(),
+      username: json['username']?.toString() ?? '',
       gender: AppUserGender.fromSupabaseValue(json['gender']?.toString()),
-      age: int.tryParse(json['age']?.toString() ?? ''),
+      age: int.tryParse(json['age']?.toString() ?? '0') ?? 0,
       accessToken: json['accessToken']?.toString(),
       refreshToken: json['refreshToken']?.toString(),
       createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),

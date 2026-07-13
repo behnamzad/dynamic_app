@@ -24,3 +24,4 @@ export 'package:dynamic_app/core/presentation/widget/bz_divider.dart';
 export 'package:dynamic_app/core/presentation/widget/bz_text_currency.dart';
 export 'package:dynamic_app/core/presentation/widget/bz_gesture_detector.dart';
 export 'package:dynamic_app/core/presentation/widget/toast/toast.dart';
+export 'package:shamsi_date/shamsi_date.dart';

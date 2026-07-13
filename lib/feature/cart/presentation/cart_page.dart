@@ -1,7 +1,6 @@
-import 'package:dynamic_app/core/mock_data/mock_data.dart';
-import 'package:dynamic_app/core/presentation/widget/app/product_in_cart_widget.dart';
+import 'package:dynamic_app/core/presentation/widget/app/cart_product_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
-import 'package:dynamic_app/shared/product/domain/entities/product_in_cart_entity.dart';
+import 'package:dynamic_app/shared/cart/domain/manager/cart_manager.dart';
 
 @RoutePage()
 class CartPage extends StatefulWidget implements AutoRouteWrapper {
@@ -15,11 +14,20 @@ class CartPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _CartPageState extends State<CartPage> {
-  //
+  late final CartManager _cartManager;
+
+  @override
+  void initState() {
+    super.initState();
+    _cartManager = inject<CartManager>();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BasePageWidget(appBar: BzAppBar(title: ss.cart), child: _body(context));
+    return AnimatedBuilder(
+      animation: _cartManager,
+      builder: (context, _) => BasePageWidget(appBar: BzAppBar(title: ss.cart), child: _body(context)),
+    );
   }
 
 //region Widgets
@@ -33,12 +41,11 @@ class _CartPageState extends State<CartPage> {
     return Positioned.fill(
       top: 30,
       child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: MockData().productInCartList().length,
-          itemBuilder: (context, index) {
-            ProductInCartEntity entity = MockData().productInCartList()[index];
-            return ProductInCartWidget(productInCartEntity: entity, increaseCount: () {}, decreaseCount: () {});
-          },),
+        shrinkWrap: true,
+        itemCount: _cartManager.products.length,
+        itemBuilder: (context, index) {
+          return CartProductWidget(product: _cartManager.products[index]);
+        },),
     );
   }
 
@@ -52,30 +59,9 @@ class _CartPageState extends State<CartPage> {
           child: Row(
             children: [
               Expanded(
-                  flex: 3,
-                  child: BzButton.submit(
-                      text: ss.continueToByProcess, onPressed: () => context.pushRoute(const CheckOutPageRoute()),),),
-              // Spacer(),
-              Expanded(
-                flex: 2,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        BzText(ss.totalCartAmount,
-                            style: context.body3Medium.copyWith(color: context.scheme().subText),),
-                        BzTextCurrency.amountWithTitle(
-                          amount: int.parse('45800000'),
-                          currencyUnitStyle: context.body3Medium.copyWith(color: context.scheme().primary),
-                          style: context.headline5Bold.copyWith(color: context.scheme().primary),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                flex: 3,
+                child: BzButton.submit(
+                  text: ss.continueToByProcess, onPressed: () => context.pushRoute(const CheckOutPageRoute()),),),
             ],
           ),
         ),
@@ -90,7 +76,7 @@ class _CartPageState extends State<CartPage> {
         alignment: Alignment.topRight,
         child: Container(
           color: context.scheme().mainBackground1,
-          child: BzText('${MockData().productInCartList().length} ${ss.product}'),
+          child: BzText(ss.cartProductsCount(_cartManager.totalQuantity)),
         ),
       ),
     );

@@ -79,9 +79,13 @@ abstract class NetworkModule {
   @Named(DiConst.dioSupabaseRest)
   @lazySingleton
   Dio provideSupabaseRestDio(SupabaseClient supabaseClient) => provideDio(
-        baseUrl: '${SupabaseConfig.url}/rest/v1/',
-        interceptors: [SupabaseAuthInterceptor(supabaseClient)],
-      );
+    baseUrl: '${SupabaseConfig.url}/rest/v1/',
+    interceptors: [SupabaseAuthInterceptor(supabaseClient)],
+  );
+
+  @Named(DiConst.dioSupabaseRest)
+  @lazySingleton
+  DioCaller provideSupabaseRestCaller(@Named(DiConst.dioSupabaseRest) Dio dio) => DioCaller(dio: dio);
 }
 
 @module

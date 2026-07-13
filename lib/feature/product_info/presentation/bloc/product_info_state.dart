@@ -29,13 +29,25 @@ enum SpecificationStatus {
   bool get isFailed => this == SpecificationStatus.failed;
 }
 
+enum CartActionStatus {
+  initial,
+  loading,
+  added,
+  removed,
+  failed;
+
+  bool get isLoading => this == CartActionStatus.loading;
+}
+
 @freezed
 class ProductInfoState with _$ProductInfoState {
   factory ProductInfoState.initial({
     @Default(Status.initial) Status status,
-    @Default(SpecificationStatus.initial) SpecificationStatus specificationStatus,
+    // @Default(SpecificationStatus.initial) SpecificationStatus specificationStatus,
+    @Default(CartActionStatus.initial) CartActionStatus cartActionStatus,
+    @Default(false) bool isInCart,
     ProductEntity? productEntity,
-    List<ProductSpecificationEntity>? productSpecificationEntityList,
+    // List<ProductSpecificationEntity>? productSpecificationEntityList,
     String? infoMessage,
     String? errorMessage,
   }) = _Initial;

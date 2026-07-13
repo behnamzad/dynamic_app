@@ -1,5 +1,7 @@
 // Manual DTOs. No Freezed or generated serialization code is required.
 
+import 'package:dynamic_app/core/config/strings.dart';
+
 T? _asObject<T>(Object? value, T Function(Map<String, dynamic>) parser) {
   if (value is Map && value.isNotEmpty) {
     return parser(Map<String, dynamic>.from(value));
@@ -76,12 +78,12 @@ const Map<Status, String> _statusJson = <Status, String>{
   Status.outOfStock: 'out_of_stock',
 };
 
-const Map<Service, String> _serviceJson = <Service, String>{
-  Service.freeShipping: '۴ ارسال رایگان دیجیکالا',
-  Service.dedicatedSupport: 'پشتیبانی اختصاصی',
-  Service.fast45: '۴ ارسال رایگان ۴۵ دقیقه\u200cای',
-  Service.supermarket: '۲ ارسال سوپرمارکت',
-  Service.fastTehran: 'ارسال سریع و رایگان دیجی\u200cکالا (فقط تهران و کرج)',
+final Map<Service, String> _serviceJson = <Service, String>{
+  Service.freeShipping: ss.freeDigikalaShipping,
+  Service.dedicatedSupport: ss.dedicatedSupport,
+  Service.fast45: ss.freeFortyFiveMinuteShipping,
+  Service.supermarket: ss.supermarketShipping,
+  Service.fastTehran: ss.fastTehranShipping,
 };
 
 const Map<Nature, String> _natureJson = <Nature, String>{Nature.color: 'color'};
@@ -188,50 +190,50 @@ class ProductDto {
     parameters: _asObject(json['parameters'], Parameters.fromJson) ?? Parameters.fromJson(const <String, dynamic>{}),
     productType: _asString(json['product_type']),
     properties:
-        _asObject(json['properties'], ProductProperties.fromJson) ??
+    _asObject(json['properties'], ProductProperties.fromJson) ??
         ProductProperties.fromJson(const <String, dynamic>{}),
     price: _asObject(json['price'], ProductPrice.fromJson) ?? ProductPrice.fromJson(const <String, dynamic>{}),
     media: _asList(
       json['media'],
-      (value) => _asObject(value, Media.fromJson) ?? Media.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Media.fromJson) ?? Media.fromJson(const <String, dynamic>{}),
     ),
     digiplus: _asObject(json['digiplus'], Digiplus.fromJson) ?? Digiplus.fromJson(const <String, dynamic>{}),
     productBadge:
-        _asObject(json['product_badge'], ProductBadge.fromJson) ?? ProductBadge.fromJson(const <String, dynamic>{}),
+    _asObject(json['product_badge'], ProductBadge.fromJson) ?? ProductBadge.fromJson(const <String, dynamic>{}),
     categoryTitle: (json['category_title'] == null ? null : _asString(json['category_title'])),
     rating: _asObject(json['rating'], ProductRating.fromJson),
     subBadges: _asList(
       json['sub_badges'],
-      (value) => _asObject(value, SubBadge.fromJson) ?? SubBadge.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, SubBadge.fromJson) ?? SubBadge.fromJson(const <String, dynamic>{}),
     ),
     mainBadges: _asList(
       json['main_badges'],
-      (value) => _asObject(value, MainBadge.fromJson) ?? MainBadge.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, MainBadge.fromJson) ?? MainBadge.fromJson(const <String, dynamic>{}),
     ),
     variants: _asList(
       json['variants'],
-      (value) => _asObject(value, Variant.fromJson) ?? Variant.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Variant.fromJson) ?? Variant.fromJson(const <String, dynamic>{}),
     ),
     variantsImages: _asObject(json['variants_images'], VariantsImages.fromJson),
     galleryVariant: (json['gallery_variant'] == null ? null : _asString(json['gallery_variant'])),
     colors: _asList(
       json['colors'],
-      (value) => _asObject(value, ColorElement.fromJson) ?? ColorElement.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, ColorElement.fromJson) ?? ColorElement.fromJson(const <String, dynamic>{}),
     ),
     hasPriceChart: _asBool(json['has_price_chart']),
     mainThemes: _asList(
       json['main_themes'],
-      (value) => _asObject(value, Theme.fromJson) ?? Theme.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Theme.fromJson) ?? Theme.fromJson(const <String, dynamic>{}),
     ),
     review: _asObject(json['review'], Review.fromJson),
     prosAndCons: _asList(json['pros_and_cons'], (value) => value),
     breadcrumb: _asList(
       json['breadcrumb'],
-      (value) => _asObject(value, Breadcrumb.fromJson) ?? Breadcrumb.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Breadcrumb.fromJson) ?? Breadcrumb.fromJson(const <String, dynamic>{}),
     ),
     videos: _asList(
       json['videos'],
-      (value) => _asObject(value, Video.fromJson) ?? Video.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Video.fromJson) ?? Video.fromJson(const <String, dynamic>{}),
     ),
     comments: _asObject(json['comments'], Comments.fromJson),
     questions: _asObject(json['questions'], Questions.fromJson),
@@ -523,7 +525,7 @@ class Review {
     description: _asString(json['description']),
     attributes: _asList(
       json['attributes'],
-      (value) => _asObject(value, Attribute.fromJson) ?? Attribute.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Attribute.fromJson) ?? Attribute.fromJson(const <String, dynamic>{}),
     ),
   );
 
@@ -605,9 +607,9 @@ class Video {
 
 class Comments {
   final int count;
-  final List<LatestComment> latestComments;
+  final List<Comment> latestComments;
   final CommentsOverview commentsOverview;
-  final List<TopMediaComment> topMediaComments;
+  final List<Comment> topMediaComments;
 
   const Comments({
     required this.count,
@@ -620,14 +622,14 @@ class Comments {
     count: _asInt(json['count']),
     latestComments: _asList(
       json['latest_comments'],
-      (value) => _asObject(value, LatestComment.fromJson) ?? LatestComment.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Comment.fromJson) ?? Comment.fromJson(const <String, dynamic>{}),
     ),
     commentsOverview:
-        _asObject(json['comments_overview'], CommentsOverview.fromJson) ??
+    _asObject(json['comments_overview'], CommentsOverview.fromJson) ??
         CommentsOverview.fromJson(const <String, dynamic>{}),
     topMediaComments: _asList(
       json['top_media_comments'],
-      (value) => _asObject(value, TopMediaComment.fromJson) ?? TopMediaComment.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Comment.fromJson) ?? Comment.fromJson(const <String, dynamic>{}),
     ),
   );
 
@@ -667,7 +669,7 @@ class CommentsOverview {
   };
 }
 
-class LatestComment {
+class Comment {
   final int id;
   final String body;
   final int rate;
@@ -677,7 +679,7 @@ class LatestComment {
   final DateTime createdAt;
   final bool isBuyer;
 
-  const LatestComment({
+  const Comment({
     required this.id,
     required this.body,
     this.rate = 0,
@@ -688,7 +690,7 @@ class LatestComment {
     required this.isBuyer,
   });
 
-  factory LatestComment.fromJson(Map<String, dynamic> json) => LatestComment(
+  factory Comment.fromJson(Map<String, dynamic> json) => Comment(
     id: _asInt(json['id']),
     body: _asString(json['body']),
     rate: _asInt(json['rate']),
@@ -723,58 +725,6 @@ class Reactions {
   Map<String, dynamic> toJson() => <String, dynamic>{'likes': likes, 'dislikes': dislikes};
 }
 
-class TopMediaComment {
-  final int id;
-  final String body;
-  final int rate;
-  final String user;
-  final String userName;
-  final TopMediaCommentReactions reactions;
-  final DateTime createdAt;
-  final bool isBuyer;
-  final List<FileElement> files;
-
-  const TopMediaComment({
-    required this.id,
-    required this.body,
-    required this.rate,
-    required this.user,
-    required this.userName,
-    required this.reactions,
-    required this.createdAt,
-    required this.isBuyer,
-    required this.files,
-  });
-
-  factory TopMediaComment.fromJson(Map<String, dynamic> json) => TopMediaComment(
-    id: _asInt(json['id']),
-    body: _asString(json['body']),
-    rate: _asInt(json['rate']),
-    user: _asString(json['user']),
-    userName: _asString(json['user_name']),
-    reactions:
-        _asObject(json['reactions'], TopMediaCommentReactions.fromJson) ??
-        TopMediaCommentReactions.fromJson(const <String, dynamic>{}),
-    createdAt: _asDateTime(json['created_at']),
-    isBuyer: _asBool(json['is_buyer']),
-    files: _asList(
-      json['files'],
-      (value) => _asObject(value, FileElement.fromJson) ?? FileElement.fromJson(const <String, dynamic>{}),
-    ),
-  );
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-    'id': id,
-    'body': body,
-    'rate': rate,
-    'user': user,
-    'user_name': userName,
-    'reactions': reactions.toJson(),
-    'created_at': createdAt.toIso8601String(),
-    'is_buyer': isBuyer,
-    'files': files.map((value) => value.toJson()).toList(),
-  };
-}
 
 class FileElement {
   final String id;
@@ -792,17 +742,6 @@ class FileElement {
   Map<String, dynamic> toJson() => <String, dynamic>{'id': id, 'url': url, 'thumbnail_url': thumbnailUrl};
 }
 
-class TopMediaCommentReactions {
-  final int likes;
-  final int dislikes;
-
-  const TopMediaCommentReactions({this.likes = 0, this.dislikes = 0});
-
-  factory TopMediaCommentReactions.fromJson(Map<String, dynamic> json) =>
-      TopMediaCommentReactions(likes: _asInt(json['likes']), dislikes: _asInt(json['dislikes']));
-
-  Map<String, dynamic> toJson() => <String, dynamic>{'likes': likes, 'dislikes': dislikes};
-}
 
 class Questions {
   final int count;
@@ -814,7 +753,7 @@ class Questions {
     count: _asInt(json['count']),
     latestQuestions: _asList(
       json['latest_questions'],
-      (value) => _asObject(value, LatestQuestion.fromJson) ?? LatestQuestion.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, LatestQuestion.fromJson) ?? LatestQuestion.fromJson(const <String, dynamic>{}),
     ),
   );
 
@@ -928,7 +867,7 @@ class Variant {
     warranty: _asObject(json['warranty'], Brand.fromJson) ?? Brand.fromJson(const <String, dynamic>{}),
     themes: _asList(
       json['themes'],
-      (value) => _asObject(value, Theme.fromJson) ?? Theme.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Theme.fromJson) ?? Theme.fromJson(const <String, dynamic>{}),
     ),
     color: _asObject(json['color'], Brand.fromJson) ?? Brand.fromJson(const <String, dynamic>{}),
     seller: _asObject(json['seller'], Seller.fromJson) ?? Seller.fromJson(const <String, dynamic>{}),
@@ -936,14 +875,14 @@ class Variant {
     insurance: _asObject(json['insurance'], Insurance.fromJson),
     price: _asObject(json['price'], ProductPrice.fromJson) ?? ProductPrice.fromJson(const <String, dynamic>{}),
     shipmentMethods:
-        _asObject(json['shipment_methods'], ShipmentMethods.fromJson) ??
+    _asObject(json['shipment_methods'], ShipmentMethods.fromJson) ??
         ShipmentMethods.fromJson(const <String, dynamic>{}),
     variantBadges: (json['variant_badges'] == null
         ? null
         : _asList(
-            json['variant_badges'],
-            (value) => _asObject(value, VariantBadge.fromJson) ?? VariantBadge.fromJson(const <String, dynamic>{}),
-          )),
+      json['variant_badges'],
+          (value) => _asObject(value, VariantBadge.fromJson) ?? VariantBadge.fromJson(const <String, dynamic>{}),
+    )),
     leadTime: (json['lead_time'] == null ? null : _asInt(json['lead_time'])),
   );
 
@@ -988,11 +927,11 @@ class Digiplus {
   factory Digiplus.fromJson(Map<String, dynamic> json) => Digiplus(
     services: _asList(
       json['services'],
-      (value) => _enumFromJson(Service.values, value, _serviceJson) ?? Service.values.first,
+          (value) => _enumFromJson(Service.values, value, _serviceJson) ?? Service.values.first,
     ),
     serviceList: _asList(
       json['service_list'],
-      (value) => _asObject(value, ServiceList.fromJson) ?? ServiceList.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, ServiceList.fromJson) ?? ServiceList.fromJson(const <String, dynamic>{}),
     ),
     servicesSummary: (json['services_summary'] == null
         ? null
@@ -1219,7 +1158,7 @@ class Insurance {
     description: _asString(json['description']),
     covers: _asList(
       json['covers'],
-      (value) => _asObject(value, Cover.fromJson) ?? Cover.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Cover.fromJson) ?? Cover.fromJson(const <String, dynamic>{}),
     ),
     basePremium: _asInt(json['base_premium']),
     tax: _asInt(json['tax']),
@@ -1279,7 +1218,7 @@ class ShipmentMethods {
     iconColor: _asString(json['icon_color']),
     providers: _asList(
       json['providers'],
-      (value) => _asObject(value, Provider.fromJson) ?? Provider.fromJson(const <String, dynamic>{}),
+          (value) => _asObject(value, Provider.fromJson) ?? Provider.fromJson(const <String, dynamic>{}),
     ),
   );
 

@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:dynamic_app/core/util/common_bloc_imports.dart';
+import 'package:dynamic_app/shared/cart/domain/manager/cart_manager.dart';
+import 'package:dynamic_app/shared/cart/domain/repository/cart_repository.dart';
+import 'package:dynamic_app/shared/cart/domain/entities/cart_product_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 import 'package:dynamic_app/shared/product/domain/repository/product_repo.dart';
 
@@ -11,22 +14,31 @@ part 'product_info_state.dart';
 @injectable
 class ProductInfoBloc extends Bloc<ProductInfoEvent, ProductInfoState> {
   final ProductRepo _productRepo;
+  final CartRepository _cartRepository;
+  final CartManager _cartManager;
 
-  ProductInfoBloc(this._productRepo) : super(ProductInfoState.initial()) {
+  ProductInfoBloc(this._productRepo, this._cartRepository, this._cartManager) : super(ProductInfoState.initial()) {
     on<_Init>(_onInit);
     on<_getProduct>(_onGetProduct);
-    on<_getProductSpecifications>(_onGetProductSpecifications);
+    // on<_getProductSpecifications>(_onGetProductSpecifications);
+    on<_AddToCart>(_onAddToCart);
+    on<_RemoveFromCart>(_onRemoveFromCart);
   }
 
   FutureOr<void> _onInit(_Init event, Emitter<ProductInfoState> emit) {
     emit(state.copyWith(status: Status.loading));
     if (event.entity != null) {
-      emit(state.copyWith(status: Status.loaded, productEntity: event.entity));
-      add(ProductInfoEvent.getProductSpecifications(event.entity!.id));
+      emit(
+        state.copyWith(
+          status: Status.loaded,
+          productEntity: event.entity,
+          isInCart: _cartManager.containsProduct(event.entity!.id),
+        ),
+      );
     } else if (event.productId != null) {
       add(ProductInfoEvent.getProduct(event.productId!));
     } else {
-      emit(state.copyWith(status: Status.failed, errorMessage: ' محصول یا شناسه محصول به صفحه ارسال نشده'));
+      emit(state.copyWith(status: Status.failed, errorMessage: ss.productNotProvided));
     }
   }
 
@@ -37,7 +49,13 @@ class ProductInfoBloc extends Bloc<ProductInfoEvent, ProductInfoState> {
       Result<ProductEntity> result = await _productRepo.getProduct(id: event.productId);
       switch (result) {
         case Success<ProductEntity>(data: ProductEntity entity):
-          emit(state.copyWith(status: Status.loaded, productEntity: entity));
+          emit(
+            state.copyWith(
+              status: Status.loaded,
+              productEntity: entity,
+              isInCart: _cartManager.containsProduct(entity.id),
+            ),
+          );
 
         case Failure<ProductEntity>(:final error):
           emit(state.copyWith(status: Status.failed, errorMessage: error.message));
@@ -47,15 +65,44 @@ class ProductInfoBloc extends Bloc<ProductInfoEvent, ProductInfoState> {
     }
   }
 
-  FutureOr<void> _onGetProductSpecifications(_getProductSpecifications event, Emitter<ProductInfoState> emit) async {
-    emit(state.copyWith(specificationStatus: SpecificationStatus.loading));
-    Result<List<ProductSpecificationEntity>> result = await _productRepo.getProductSpecifications(id: event.productId);
+  Future<void> _onAddToCart(_AddToCart event, Emitter<ProductInfoState> emit) async {
+    emit(state.copyWith(cartActionStatus: CartActionStatus.loading));
+    // Repository پاسخ ApiResponse را به Result تبدیل کرده و Bloc فقط نتیجه نهایی را بررسی می‌کند.
+    final result = await _cartRepository.addProduct(
+      productId: event.product.id,
+      categoryId: event.product.categoryId,
+      quantity: event.quantity,
+    );
     switch (result) {
-      case Success<List<ProductSpecificationEntity>>(data: List<ProductSpecificationEntity> list):
-        emit(state.copyWith(specificationStatus: SpecificationStatus.loaded, productSpecificationEntityList: list));
-
-      case Failure<List<ProductSpecificationEntity>>(:final error):
-        emit(state.copyWith(specificationStatus: SpecificationStatus.failed, errorMessage: error.message));
+      case Success<CartProductEntity>(data: final product):
+        _cartManager.addOrUpdateProduct(product);
+        emit(state.copyWith(cartActionStatus: CartActionStatus.added, isInCart: true));
+      case Failure<CartProductEntity>(error: final error):
+        emit(state.copyWith(cartActionStatus: CartActionStatus.failed, errorMessage: error.message));
     }
   }
+
+  Future<void> _onRemoveFromCart(_RemoveFromCart event, Emitter<ProductInfoState> emit) async {
+    emit(state.copyWith(cartActionStatus: CartActionStatus.loading));
+    final result = await _cartRepository.removeProduct(event.productId);
+    switch (result) {
+      case Success<void>():
+        _cartManager.removeProduct(event.productId);
+        emit(state.copyWith(cartActionStatus: CartActionStatus.removed, isInCart: false));
+      case Failure<void>(error: final error):
+        emit(state.copyWith(cartActionStatus: CartActionStatus.failed, errorMessage: error.message));
+    }
+  }
+
+// FutureOr<void> _onGetProductSpecifications(_getProductSpecifications event, Emitter<ProductInfoState> emit) async {
+//   emit(state.copyWith(specificationStatus: SpecificationStatus.loading));
+//   Result<List<ProductSpecificationEntity>> result = await _productRepo.getProductSpecifications(id: event.productId);
+//   switch (result) {
+//     case Success<List<ProductSpecificationEntity>>(data: List<ProductSpecificationEntity> list):
+//       emit(state.copyWith(specificationStatus: SpecificationStatus.loaded, productSpecificationEntityList: list));
+//
+//     case Failure<List<ProductSpecificationEntity>>(:final error):
+//       emit(state.copyWith(specificationStatus: SpecificationStatus.failed, errorMessage: error.message));
+//   }
+// }
 }

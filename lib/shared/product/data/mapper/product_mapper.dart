@@ -1,3 +1,4 @@
+import 'package:dynamic_app/core/config/strings.dart';
 import 'package:dynamic_app/shared/product/data/models/product/product_dto.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
@@ -7,6 +8,7 @@ extension ProductMapperX on ProductDto {
 
     return ProductEntity(
       id: id,
+      categoryId: categoryId,
       titleFa: titleFa,
       titleEn: titleEn,
       categoryTitle: categoryTitle ?? '',
@@ -109,7 +111,7 @@ extension ProductMapperX on ProductDto {
 
     return <ProductSpecificationEntity>[
       ProductSpecificationEntity(
-        groupTitle: 'مشخصات',
+        groupTitle: ss.specifications,
         items: attributes.map((Attribute attribute) {
           return ProductSpecificationItemEntity(title: attribute.title, values: attribute.values);
         }).toList(),
@@ -188,21 +190,22 @@ extension ProductMapperX on ProductDto {
     return ProductVideoEntity(url: v.url, thumbnail: v.cover);
   }
 
-  List<ProductCommentEntity> _mapComments(Comments? c) {
-    if (c == null) return [];
-
-    return c.latestComments.map((lc) {
+  List<ProductCommentEntity> _mapComments(Comments? commnet) {
+    if (commnet == null) return [];
+    List<Comment> list = commnet.topMediaComments + commnet.latestComments;
+    return list.map((c) {
       return ProductCommentEntity(
-        id: lc.id.toString(),
-        userName: lc.userName,
-        rate: lc.rate.toDouble(),
+        id: c.id.toString(),
+        userName: c.userName,
+        rate: c.rate.toDouble(),
         title: '',
-        body: lc.body,
-        createdAt: lc.createdAt,
+        body: c.body,
+        createdAt: c.createdAt,
+        isBuyer: c.isBuyer,
         pros: [],
         cons: [],
-        likeCount: lc.reactions.likes,
-        dislikeCount: lc.reactions.dislikes,
+        likeCount: c.reactions.likes,
+        dislikeCount: c.reactions.dislikes,
       );
     }).toList();
   }

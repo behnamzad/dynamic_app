@@ -9,21 +9,33 @@ abstract class DioCaller {
 
   Future<ApiResponse<D>> post<D>(String path, {required Function? fromJson, data, Options? options, queryParameters});
 
-  Future<ApiResponse<D>> upload<D>(String path,
-      {required Function? fromJson,
-      data,
-      Options? options,
-      CancelToken? cancelToken,
-      ProgressCallback? onSendProgress,});
+  Future<ApiResponse<D>> upload<D>(
+    String path, {
+    required Function? fromJson,
+    data,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+  });
 
-  Future<ApiResponse<D>> get<D>(String path,
-      {required Function? fromJson, Map<String, dynamic>? queryParameters, Options? options,});
+  Future<ApiResponse<D>> get<D>(
+    String path, {
+    required Function? fromJson,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  });
 
   Future<ApiResponse<D>> put<D>(String path, {required Function fromJson, data, Options? options});
 
   Future<ApiResponse<D>> patch<D>(String path, {required Function fromJson, data, Options? options});
 
-  Future<ApiResponse<D>> delete<D>(String path, {required Function fromJson, data, Options? options});
+  Future<ApiResponse<D>> delete<D>(
+    String path, {
+    required Function fromJson,
+    Map<String, dynamic>? queryParameters,
+    data,
+    Options? options,
+  });
 }
 
 class _DioCallerStandardImpl implements DioCaller {
@@ -44,15 +56,22 @@ class _DioCallerStandardImpl implements DioCaller {
           ? ApiResponse.completed(data: fromJson!.call(response.data), statusCode: response.statusCode)
           : ApiResponse.error(apiError: handleDioError(response: response));
     } on DioException catch (e) {
-      return ApiResponse.error(apiError: handleDioError(dioException: e, response: e.response));
+      return ApiResponse.error(
+        apiError: handleDioError(dioException: e, response: e.response),
+      );
     } catch (e) {
       return ApiResponse.error(apiError: handleDioError());
     }
   }
 
   @override
-  Future<ApiResponse<D>> post<D>(String path,
-      {required Function? fromJson, data, Options? options, queryParameters,}) async {
+  Future<ApiResponse<D>> post<D>(
+    String path, {
+    required Function? fromJson,
+    data,
+    Options? options,
+    queryParameters,
+  }) async {
     try {
       final response = await dio.post(path, data: data, options: options, queryParameters: queryParameters);
       return _isSuccessfulStatusCode(response.statusCode)
@@ -66,7 +85,9 @@ class _DioCallerStandardImpl implements DioCaller {
         ApiResponse<D> response = await post<D>(path, data: data, options: options, fromJson: fromJson);
         return response;
       }
-      return ApiResponse<D>.error(apiError: handleDioError(dioException: e, response: e.response));
+      return ApiResponse<D>.error(
+        apiError: handleDioError(dioException: e, response: e.response),
+      );
     } catch (e) {
       return ApiResponse<D>.error(apiError: handleDioError());
     }
@@ -76,29 +97,28 @@ class _DioCallerStandardImpl implements DioCaller {
   Future<ApiResponse<D>> delete<D>(
     String path, {
     required Function fromJson,
+    Map<String, dynamic>? queryParameters,
+
     data,
     Options? options,
   }) async {
     try {
-      final response = await dio.delete(path, data: data, options: options);
+      final response = await dio.delete(path, data: data, queryParameters: queryParameters, options: options);
 
       return _isSuccessfulStatusCode(response.statusCode)
           ? ApiResponse.completed(data: fromJson.call(response.data), statusCode: response.statusCode)
           : ApiResponse.error(apiError: handleDioError(response: response));
     } on DioException catch (e) {
-      return ApiResponse.error(apiError: handleDioError(dioException: e, response: e.response));
+      return ApiResponse.error(
+        apiError: handleDioError(dioException: e, response: e.response),
+      );
     } catch (e) {
       return ApiResponse.error(apiError: handleDioError());
     }
   }
 
   @override
-  Future<ApiResponse<D>> patch<D>(
-    String path, {
-    required Function fromJson,
-    data,
-    Options? options,
-  }) async {
+  Future<ApiResponse<D>> patch<D>(String path, {required Function fromJson, data, Options? options}) async {
     try {
       final response = await dio.patch(path, data: data, options: options);
 
@@ -106,19 +126,16 @@ class _DioCallerStandardImpl implements DioCaller {
           ? ApiResponse.completed(data: fromJson.call(response.data), statusCode: response.statusCode)
           : ApiResponse.error(apiError: handleDioError(response: response));
     } on DioException catch (e) {
-      return ApiResponse.error(apiError: handleDioError(dioException: e, response: e.response));
+      return ApiResponse.error(
+        apiError: handleDioError(dioException: e, response: e.response),
+      );
     } catch (e) {
       return ApiResponse.error(apiError: handleDioError());
     }
   }
 
   @override
-  Future<ApiResponse<D>> put<D>(
-    String path, {
-    required Function fromJson,
-    data,
-    Options? options,
-  }) async {
+  Future<ApiResponse<D>> put<D>(String path, {required Function fromJson, data, Options? options}) async {
     try {
       final response = await dio.put(path, data: data, options: options);
 
@@ -126,7 +143,9 @@ class _DioCallerStandardImpl implements DioCaller {
           ? ApiResponse.completed(data: fromJson.call(response.data), statusCode: response.statusCode)
           : ApiResponse.error(apiError: handleDioError(response: response));
     } on DioException catch (e) {
-      return ApiResponse.error(apiError: handleDioError(dioException: e, response: e.response));
+      return ApiResponse.error(
+        apiError: handleDioError(dioException: e, response: e.response),
+      );
     } catch (e) {
       return ApiResponse.error(apiError: handleDioError());
     }
@@ -136,21 +155,30 @@ class _DioCallerStandardImpl implements DioCaller {
       httpStatusCode == null ? false : (httpStatusCode >= 200 && httpStatusCode < 300);
 
   @override
-  Future<ApiResponse<D>> upload<D>(String path,
-      {required Function? fromJson,
-      data,
-      Options? options,
-      CancelToken? cancelToken,
-      ProgressCallback? onSendProgress,}) async {
+  Future<ApiResponse<D>> upload<D>(
+    String path, {
+    required Function? fromJson,
+    data,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+  }) async {
     try {
-      final response =
-          await dio.post(path, data: data, options: options, cancelToken: cancelToken, onSendProgress: onSendProgress);
+      final response = await dio.post(
+        path,
+        data: data,
+        options: options,
+        cancelToken: cancelToken,
+        onSendProgress: onSendProgress,
+      );
 
       return _isSuccessfulStatusCode(response.statusCode)
           ? ApiResponse<D>.completed(data: fromJson?.call(response.data), statusCode: response.statusCode)
           : ApiResponse<D>.error(apiError: handleDioError(response: response));
     } on DioException catch (e) {
-      return ApiResponse<D>.error(apiError: handleDioError(dioException: e, response: e.response));
+      return ApiResponse<D>.error(
+        apiError: handleDioError(dioException: e, response: e.response),
+      );
     } catch (e) {
       return ApiResponse<D>.error(apiError: handleDioError());
     }
