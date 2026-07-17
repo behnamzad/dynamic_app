@@ -10,7 +10,10 @@ class ProductEntity {
   final String titleFa;
   final String? titleEn;
   final String categoryTitle;
-  final String brandName;
+  // brand
+  final BrandEntity brand;
+
+
 
   // Images
   final List<String> images;
@@ -70,7 +73,7 @@ class ProductEntity {
     required this.titleFa,
     this.titleEn,
     required this.categoryTitle,
-    required this.brandName,
+    required this.brand,
     required this.images,
     this.selectedImageIndex = 0,
     required this.rate,
@@ -104,6 +107,14 @@ class ProductEntity {
 }
 
 // ====================== Entity های کمکی ======================
+
+class BrandEntity {
+  final int id;
+  final String faTitle;
+  final String enTitle;
+
+  const BrandEntity({required this.id, required this.faTitle,required this.enTitle});
+}
 
 class SellerEntity {
   final String name;

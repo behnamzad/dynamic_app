@@ -21,21 +21,21 @@ class BzTextCurrency extends StatefulWidget {
     required this.style,
     this.textDirection,
     this.overflow,
-  })  : displayType = DisplayType.justAmount,
-        currencyUnitStyle = null,
-        gap = null,
-        extraTextAppendToTitle = '';
+  }) : displayType = DisplayType.justAmount,
+       currencyUnitStyle = null,
+       gap = null,
+       extraTextAppendToTitle = '';
 
   const BzTextCurrency.justCurrencyUnitTitle({
     super.key,
     required this.style,
     this.currencyUnitStyle,
     this.extraTextAppendToTitle = '',
-  })  : displayType = DisplayType.justCurrencyUnitTitle,
-        textDirection = null,
-        overflow = null,
-        gap = null,
-        amount = null;
+  }) : displayType = DisplayType.justCurrencyUnitTitle,
+       textDirection = null,
+       overflow = null,
+       gap = null,
+       amount = null;
 
   const BzTextCurrency.amountWithTitle({
     super.key,
@@ -44,9 +44,9 @@ class BzTextCurrency extends StatefulWidget {
     this.gap,
     required this.amount,
     this.extraTextAppendToTitle = '',
-  })  : displayType = DisplayType.titleWithAmount,
-        textDirection = null,
-        overflow = null;
+  }) : displayType = DisplayType.titleWithAmount,
+       textDirection = null,
+       overflow = null;
 
   @override
   State<BzTextCurrency> createState() => _BzTextCurrencyState();
@@ -59,7 +59,6 @@ class _BzTextCurrencyState extends State<BzTextCurrency> {
   void initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +88,12 @@ class _BzTextCurrencyState extends State<BzTextCurrency> {
 
   buildTitleWithAmountContent() {
     return Row(
-      children: [buildJustAmountContent(), SizedBox(width: widget.gap ?? 4), buildJustCurrencyUnitTitleContent()],
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        buildJustAmountContent(),
+        SizedBox(width: widget.gap ?? 4),
+        buildJustCurrencyUnitTitleContent(),
+      ],
     );
   }
 
@@ -102,7 +106,9 @@ class _BzTextCurrencyState extends State<BzTextCurrency> {
 
   buildJustAmountContent() {
     return BzText(
-      widget.amount != null ? inject<CurrencyManager>().currencyFormat(widget.amount) : '',
+      widget.amount != null
+          ? inject<CurrencyManager>().currencyFormat(widget.amount)
+          : '',
       style: widget.style,
       overflow: widget.overflow,
       textDirection: widget.textDirection,

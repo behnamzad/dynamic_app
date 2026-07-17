@@ -248,6 +248,8 @@ class _LoginPageState extends State<LoginPage> with InputFormattersRegexUtils, W
     // بعد از اولین ورود موفق، ایمیل از SharedPreferences داخل Bloc خوانده می‌شود و اینجا در UI می‌نشیند.
     if (state.email != null && state.email!.isNotEmpty && _emailTextEditingController.text.isEmpty) {
       _emailTextEditingController.text = state.email!;
+      // todo remove it later
+      _passwordTextEditingController.text = '19581958';
     }
   }
 

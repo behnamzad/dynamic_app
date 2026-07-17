@@ -14,7 +14,7 @@ class ProductInfoPage extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-    create: (_) => inject<ProductInfoBloc>()..add(const ProductInfoEvent.init(productId: 4623728)),
+    create: (_) => inject<ProductInfoBloc>()..add(ProductInfoEvent.init(/*entity: product*/ productId: product.id)),
     child: this,
   );
 
@@ -207,16 +207,16 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
         children: [
           Flexible(
             child: BzText(
-              _product.brandName,
+              _product.brand.faTitle,
               style: context.body2Medium.copyWith(color: context.scheme().subText),
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const HGap(6),
+          const HGap(4),
           Icon(Icons.chevron_right_rounded, size: 18, color: context.scheme().subText),
-          const HGap(6),
+          const HGap(4),
           BzText(
-            '${_product.categoryTitle} ${_product.brandName}',
+            '${_product.categoryTitle} ${_product.brand.faTitle}',
             style: context.body2Medium.copyWith(color: context.scheme().subText),
           ),
         ],
@@ -476,7 +476,6 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
       ],
     );
   }
-
 
   // ignore: unused_element
   Widget _rateProduct(BuildContext context) {

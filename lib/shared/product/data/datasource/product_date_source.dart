@@ -1,6 +1,7 @@
 import 'package:dynamic_app/infrastructure/network/model/api_response.dart';
 import 'package:dynamic_app/shared/product/data/models/category/category_response.dart';
 import 'package:dynamic_app/shared/product/data/models/product/product_response.dart';
+import 'package:dynamic_app/shared/product/data/models/product_of_category/product_of_category_response.dart';
 import 'package:dynamic_app/shared/product/data/models/product_specifications/product_specifications_dto.dart';
 
 abstract class ProductDateSource {
@@ -10,7 +11,7 @@ abstract class ProductDateSource {
 
   Future<ApiResponse<CategoryResponse>> getCategories();
 
-  Future<ApiResponse<dynamic>> getProductByCategory({required int categoryId, int? page});
+  Future<ApiResponse<ProductOfCategoryResponse>> getProductByCategory({required int categoryId, int? page});
 
   Future<ApiResponse<ProductSpecificationDto>> getProductSpecifications({required int id});
 

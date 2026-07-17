@@ -23,9 +23,7 @@ class _ProductWidgetState extends State<ProductWidget> {
 
   _card(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(
-        8.0,
-      ),
+      padding: const EdgeInsets.all(8.0),
       child: SizedBox(
         height: Dimen.productCardHeight,
         width: Dimen.productCardWidth,
@@ -45,48 +43,43 @@ class _ProductWidgetState extends State<ProductWidget> {
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(Dimen.defaultRadius),
-                          topLeft: Radius.circular(Dimen.defaultRadius),),
+                        topRight: Radius.circular(Dimen.defaultRadius),
+                        topLeft: Radius.circular(Dimen.defaultRadius),
+                      ),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 2.0, bottom: 2),
-                      // child: Image.network(widget.entity.imageUrl),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 2.0, bottom: 2),
+                      child: Image.network(widget.entity.images.first),
                     ),
                   ),
                   //info
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(
-                          bottomRight: Radius.circular(Dimen.defaultRadius),
-                          bottomLeft: Radius.circular(Dimen.defaultRadius),),
+                        bottomRight: Radius.circular(Dimen.defaultRadius),
+                        bottomLeft: Radius.circular(Dimen.defaultRadius),
+                      ),
                       color: context.scheme().mainBackground2,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 6.0, bottom: 4, top: 4),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           BzText(
                             widget.entity.titleFa,
-                            style: context.body1Bold,
+                            style: context.body4Medium.copyWith(color: context.scheme().mainText),
                             overflow: TextOverflow.ellipsis,
                           ),
                           BzTextCurrency.amountWithTitle(
-                            amount:widget.entity.price,
-                            style: context.body2Medium.copyWith(color: context.scheme().primary),
+                            amount: widget.entity.price,
+                            style: context.body3Regular.copyWith(color: context.scheme().primary),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ],
-              ),
-              //fav Icon
-              BzGestureDetector(
-                child: Icon(
-                  widget.entity.id.isEven ? Icons.favorite_outline_rounded : Icons.favorite,
-                  size: 24,
-                  color: context.scheme().dialogIcon.withValues(alpha: 0.8),
-                ),
               ),
             ],
           ),
@@ -110,9 +103,10 @@ class _ProductWidgetState extends State<ProductWidget> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   //img
-                  const SizedBox(
+                  SizedBox(
+                    width: Dimen.productRowImgHeight,
                     height: Dimen.productRowImgHeight,
-                    // child: Image.network(widget.entity.imageUrl),
+                    child: Image.network(widget.entity.images.first, fit: BoxFit.contain),
                   ),
                   //info
                   Expanded(
@@ -121,37 +115,47 @@ class _ProductWidgetState extends State<ProductWidget> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        Expanded(
+                        Flexible(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 24.0),
                             child: BzText(
                               widget.entity.titleFa,
                               style: context.body4Medium.copyWith(color: context.scheme().titleText),
-                              overflow: TextOverflow.clip,
+                              overflow: TextOverflow.visible,
                             ),
                           ),
                         ),
+                        const VGap(40),
                         Expanded(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                              //rate
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  //rate
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.star, size: 14, color: Colors.amberAccent),
-                                      BzText(widget.entity.titleFa,
-                                          style: context.body4Regular.copyWith(color: context.scheme().mainText),),
-                                    ],
+                                  BzText(
+                                    widget.entity.rate.toString(),
+                                    style: context.body4Regular.copyWith(color: context.scheme().mainText),
                                   ),
-                                  //amount
-                                  BzTextCurrency.amountWithTitle(
-                                    amount: widget.entity.price,
-                                    style: context.body2Medium.copyWith(color: context.scheme().primary),
-                                  ),
+                                  const HGap(4),
+                                  const Icon(Icons.star, size: 14, color: Colors.amberAccent),
                                 ],
+                              ),
+                              const HGap(8),
+                              //amount
+                              Expanded(
+                                child: Align(
+                                  alignment: AlignmentDirectional.centerEnd,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: AlignmentDirectional.centerEnd,
+                                    child: BzTextCurrency.amountWithTitle(
+                                      amount: widget.entity.price,
+                                      style: context.body2Medium.copyWith(color: context.scheme().primary),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -163,10 +167,7 @@ class _ProductWidgetState extends State<ProductWidget> {
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(right: 100.0, top: 4, bottom: 4),
-            child: BzDivider(),
-          ),
+          const Padding(padding: EdgeInsets.only(right: 100.0, top: 4, bottom: 4), child: BzDivider()),
         ],
       ),
     );

@@ -12,9 +12,9 @@ class MockData {
           categoryId: 18,
           titleFa: ss.sampleProductTitle,
           titleEn:
-          'Apple iPhone 17 Pro Max ZAA Single SIM + eSim Storage 256GB And RAM 12GB Mobile Phone - Not Activated',
+              'Apple iPhone 17 Pro Max ZAA Single SIM + eSim Storage 256GB And RAM 12GB Mobile Phone - Not Activated',
           categoryTitle: ss.mobilePhone,
-          brandName: ss.apple,
+          brand: BrandEntity(id: 0, faTitle: '', enTitle: ''),
 
           // Images
           images: [
@@ -94,7 +94,7 @@ class MockData {
                 text: ss.onlyOneItemLeft,
                 textColor: '#d32f2f',
                 icon:
-                'https://dkstatics-public.digikala.com/digikala-static/54419b9303246cde131fcb5b251b86f2ab4aeb71_1716833765.svg',
+                    'https://dkstatics-public.digikala.com/digikala-static/54419b9303246cde131fcb5b251b86f2ab4aeb71_1716833765.svg',
               ),
             ],
             statistics: const VariantStatisticsEntity(

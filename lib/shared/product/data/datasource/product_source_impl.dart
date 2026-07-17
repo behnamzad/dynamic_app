@@ -3,6 +3,7 @@ import 'package:dynamic_app/di/di_const.dart';
 import 'package:dynamic_app/infrastructure/network/dio_caller.dart';
 import 'package:dynamic_app/shared/product/data/models/category/category_response.dart';
 import 'package:dynamic_app/shared/product/data/models/product/product_response.dart';
+import 'package:dynamic_app/shared/product/data/models/product_of_category/product_of_category_response.dart';
 import 'package:dynamic_app/shared/product/data/models/product_specifications/product_specifications_dto.dart';
 
 import 'product_date_source.dart';
@@ -34,11 +35,12 @@ class ProductDateSourceImpl implements ProductDateSource {
   }
 
   @override
-  Future<ApiResponse<dynamic>> getProductByCategory({required int categoryId, int? page}) {
+  Future<ApiResponse<ProductOfCategoryResponse>> getProductByCategory({required int categoryId, int? page}) async {
+
     return dioCaller.get(
       'category/',
       queryParameters: {'id': categoryId, if (page != null) 'page': page},
-      fromJson: CategoryResponse.fromJson,
+      fromJson: ProductOfCategoryResponse.fromJson,
     );
   }
 
@@ -47,3 +49,4 @@ class ProductDateSourceImpl implements ProductDateSource {
     return dioCaller.get('product/specifications/', queryParameters: {'id': id}, fromJson: CategoryResponse.fromJson);
   }
 }
+

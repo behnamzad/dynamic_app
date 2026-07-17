@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dynamic_app/feature/cart/presentation/cart_page.dart';
 import 'package:dynamic_app/feature/cart/presentation/check_out_page.dart';
 import 'package:dynamic_app/feature/home_shop/presentation/home_shop_page.dart';
-import 'package:dynamic_app/feature/home_shop/presentation/product_list_page.dart';
 import 'package:dynamic_app/feature/home_tabs/home_page.dart';
 import 'package:dynamic_app/feature/home_tabs/presentation/bottom_navigation_screens/tab1_screen.dart';
 import 'package:dynamic_app/feature/home_tabs/presentation/bottom_navigation_screens/tab2_screen.dart';
@@ -10,6 +9,7 @@ import 'package:dynamic_app/feature/home_tabs/presentation/bottom_navigation_scr
 import 'package:dynamic_app/feature/home_tabs/presentation/bottom_navigation_screens/tab4_screen.dart';
 import 'package:dynamic_app/feature/login/presentation/login_page.dart';
 import 'package:dynamic_app/feature/product_info/presentation/product_info_page.dart';
+import 'package:dynamic_app/feature/product_list/presentation/product_list_page.dart';
 import 'package:dynamic_app/feature/splash/presentation/splash_page.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 import 'package:flutter/material.dart';

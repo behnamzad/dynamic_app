@@ -61,8 +61,8 @@ class _BzSliderState extends State<BzSlider> {
             options: CarouselOptions(
               initialPage: widget.initialPage ?? 0,
               autoPlay: widget.itemList.length > 1 ? true : false,
-              autoPlayAnimationDuration: const Duration(milliseconds: 750),
-              autoPlayInterval: const Duration(seconds: 5),
+              autoPlayAnimationDuration: const Duration(seconds: 1),
+              autoPlayInterval: const Duration(seconds: 6),
               height: widget.height,
               aspectRatio: widget.aspectRatio ?? 16 / 9,
               enlargeCenterPage: true,
@@ -105,6 +105,9 @@ class _BzSliderState extends State<BzSlider> {
             carouselController: _carouselController,
             options: CarouselOptions(
               initialPage: widget.initialPage ?? 0,
+              autoPlay: widget.itemList.length > 1 ? true : false,
+              autoPlayAnimationDuration: const Duration(seconds: 1),
+              autoPlayInterval: const Duration(seconds: 6),
               height: widget.height,
               aspectRatio: widget.aspectRatio ?? 16 / 9,
               enlargeCenterPage: true,

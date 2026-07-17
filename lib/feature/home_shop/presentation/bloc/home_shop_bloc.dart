@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:dynamic_app/core/util/common_bloc_imports.dart';
+import 'package:dynamic_app/shared/cart/domain/entities/cart_entity.dart';
 import 'package:dynamic_app/shared/cart/domain/manager/cart_manager.dart';
 import 'package:dynamic_app/shared/cart/domain/repository/cart_repository.dart';
-import 'package:dynamic_app/shared/cart/domain/entities/cart_entity.dart';
 
 part 'home_shop_bloc.freezed.dart';
 part 'home_shop_event.dart';

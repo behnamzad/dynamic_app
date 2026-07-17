@@ -1,12 +1,10 @@
 import 'package:dynamic_app/core/config/configs.dart';
 import 'package:dynamic_app/core/local/user/user_manager.dart';
-import 'package:dynamic_app/core/mock_data/mock_data.dart';
-import 'package:dynamic_app/core/presentation/widget/app/product_widget.dart';
 import 'package:dynamic_app/core/presentation/widget/app/profile_row_widget.dart';
 import 'package:dynamic_app/core/presentation/widget/bz_slider_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/feature/home_shop/presentation/bloc/home_shop_bloc.dart';
-import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
+import 'package:dynamic_app/feature/product_list/presentation/widget/horizontal_product_list.dart';
 
 @RoutePage()
 class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
@@ -34,9 +32,9 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
         const VGap(20),
         _sliderWidget(context),
         const VGap(20),
-        _productList(context),
-        const VGap(20),
-        _productList(context),
+        HorizontalProductList(categoryId: 11).wrappedRoute(context),
+        // const VGap(20),
+        // _productList(context),
       ],
     );
   }
@@ -48,57 +46,16 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
       itemList: List.generate(imageList.length, (index) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: Transform.scale(scale: index == 1 ? 1.15 : 1.1, child: Image.asset(imageList[index])),
+          child: Transform.scale(scale: index == 2 ? 1 : 1.15, child: Image.asset(imageList[index])),
         );
       }),
       // controller: sliderCtrl,
       enlargeFactor: 0.2,
       viewportFraction: 0.95,
-      indicatorIntoSlider: true,
       showIndicator: false,
       onPageChanged: (int index) {
         // context.read<CardColorBloc>().add(CardColorEvent.colorChanged(color: state.colors[index]));
       },
-    );
-  }
-
-  Widget _productList(BuildContext context) {
-    return Row(
-      children: [
-        Flexible(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    BzText(ss.productCategory),
-                    const Spacer(),
-                    BzGestureDetector(
-                      onTap: () => context.pushRoute(ProductListPageRoute(products: MockData().products())),
-                      child: BzText(ss.seeMore, style: context.title2Bold),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                height: Dimen.productCardHeight,
-                color: context.scheme().primaryBold,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: MockData().products().length,
-                  itemBuilder: (context, index) {
-                    ProductEntity entity = MockData().products()[index];
-                    return ProductWidget.card(entity: entity);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 

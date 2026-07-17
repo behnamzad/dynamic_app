@@ -12,10 +12,12 @@ extension ProductMapperX on ProductDto {
       titleFa: titleFa,
       titleEn: titleEn,
       categoryTitle: categoryTitle ?? '',
-      brandName: brand.titleFa,
+
+      //Brand
+      brand: _mapBrand(),
 
       // Images
-      images: [images.main, ...?images.imageList],
+      images: _images(images),
       selectedImageIndex: 0,
 
       // Rating
@@ -30,7 +32,7 @@ extension ProductMapperX on ProductDto {
       discountPercent: price.discountPercent,
 
       // Seller
-      seller: mapSeller(mainVariant?.seller),
+      seller: _mapSeller(mainVariant?.seller),
 
       // Inventory
       available: status == Status.marketable,
@@ -119,7 +121,7 @@ extension ProductMapperX on ProductDto {
     ];
   }
 
-  SellerEntity? mapSeller(Seller? seller) {
+  SellerEntity? _mapSeller(Seller? seller) {
     return seller != null
         ? SellerEntity(
             name: seller.titleFa,
@@ -133,6 +135,10 @@ extension ProductMapperX on ProductDto {
     return colors.map((c) {
       return ProductColorEntity(id: c.id.toString(), title: c.title, hexColor: c.hexCode, available: true);
     }).toList();
+  }
+
+  BrandEntity _mapBrand() {
+    return BrandEntity(id: brand.id, enTitle: brand.titleEn ?? '', faTitle: brand.titleFa);
   }
 
   ProductColorEntity? _mapSelectedColor(Variant? variant) {
@@ -165,7 +171,7 @@ extension ProductMapperX on ProductDto {
               hexColor: v.color.hexCode ?? '#000',
             ),
             themes: v.themes.map(mapTheme).toList(),
-            seller: mapSeller(v.seller)!,
+            seller: _mapSeller(v.seller)!,
             digiplus: mapDigiplus(v.digiplus),
             insurance: v.insurance != null ? mapInsurance(v.insurance!) : null,
             badges: v.variantBadges?.map(mapVariantBadge).toList(),
@@ -257,4 +263,11 @@ extension ProductMapperX on ProductDto {
   ProductThemeEntity mapTheme(Theme t) {
     return ProductThemeEntity(title: t.value.title, type: t.type, isMain: t.isMain);
   }
+}
+
+List<String> _images(Images images) {
+  if ((images.imageList ?? []).length > 12) {
+    return [images.main, ...(images.imageList ?? []).sublist(0, 10)];
+  }
+  return [images.main, ...?images.imageList];
 }

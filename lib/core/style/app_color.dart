@@ -22,7 +22,7 @@ class AppColors {
 
   AppColor get primary24 => const AppColor(light: Color(0xFFFCEEC2), dark: Color(0xFF443D27));
 
-  AppColor get primaryBold => const AppColor(light: Color(0xFF5244C9), dark: Color(0xFFA396D0));
+  AppColor get primaryBold => const AppColor(light: Color(0xFF271191), dark: Color(0xFFA396D0));
 
   AppColor get secondary => const AppColor(light: Color(0xFF000000), dark: Color(0xFFEDEDED));
 
@@ -147,9 +147,9 @@ class AppColors {
 
   AppColor get purpleBackground => const AppColor(light: Color(0xFFEBE7F7), dark: Color(0xFF37383F));
 
-  AppColor get shimmerBaseColor => const AppColor(light: Color(0xFFEBEBEB), dark: Color(0xFF353535));
+  AppColor get shimmerBaseColor => const AppColor(light: Color(0xFFE4D9FA), dark: Color(0xFF353535));
 
-  AppColor get shimmerHighlightColor => const AppColor(light: Color(0xFFF6F6F6), dark: Color(0xFF262626));
+  AppColor get shimmerHighlightColor => const AppColor(light: Color(0xFFC0BAD5), dark: Color(0xFF262626));
 }
 
 /// acs = App color s
