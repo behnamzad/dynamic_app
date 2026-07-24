@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dynamic_app/core/util/common_bloc_imports.dart';
+import 'package:dynamic_app/shared/category/domain/entities/category_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_of_category_entity.dart';
 import 'package:dynamic_app/shared/product/domain/repository/product_repo.dart';
@@ -25,11 +26,12 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
     Emitter<ProductListState> emit,
   ) async {
     emit(state.copyWith(productByCategoryStatus: ProductListStatus.loading));
-    final result = await _productRepo.getProductByCategory(categoryId: event.categoryId, page: event.page);
+    final result = await _productRepo.getProductByCategory(categoryId: event.entity.id, page: event.page);
     switch (result) {
       case Success<ProductAndBrandsOfCategoryResultEntity>(data: final entity):
         emit(
           state.copyWith(
+            categoryEntity: event.entity,
             productByCategoryStatus: ProductListStatus.loaded,
             horizontalProduct: entity.product.sublist(0, 10),
             loadedProduct: entity.product,

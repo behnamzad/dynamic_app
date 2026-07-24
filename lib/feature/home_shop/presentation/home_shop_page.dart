@@ -5,6 +5,7 @@ import 'package:dynamic_app/core/presentation/widget/bz_slider_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/feature/home_shop/presentation/bloc/home_shop_bloc.dart';
 import 'package:dynamic_app/feature/product_list/presentation/widget/horizontal_product_list.dart';
+import 'package:dynamic_app/shared/category/domain/entities/category_entity.dart';
 
 @RoutePage()
 class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
@@ -16,15 +17,24 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<HomeShopBloc, HomeShopState>(
+    return BlocConsumer<HomeShopBloc, HomeShopState>(
       listenWhen: (previous, current) => previous.status != current.status && current.status.isFailed,
       listener: (context, state) => showToastError(state.errorMessage ?? ss.cartFetchError),
-      child: BasePageWidget(child: _body(context)),
+      builder: (context, state) {
+        return BasePageWidget.withOnScreenLoading(
+          onScreenLoadingModeShowCircularLoadingByState: state.status.isLoading || state.status.isInitial,
+          onScreenLoadingModeShowFailureByState: state.status.isFailed,
+          onScreenLoadingOnTryAgainCLick: () => context.read<HomeShopBloc>().add(const HomeShopEvent.init()),
+          child: state.status == HomeShopStatus.loaded ? _body(context, state) : const SizedBox(),
+        );
+      },
     );
   }
 
   //region Widgets
-  Widget _body(BuildContext context) {
+  Widget _body(BuildContext context, HomeShopState state) {
+    final List<CategoryEntity> categories = state.categoryForHorizontalProductLis ?? const [];
+
     return ListView(
       shrinkWrap: true,
       children: [
@@ -32,9 +42,10 @@ class HomeShopPage extends StatelessWidget implements AutoRouteWrapper {
         const VGap(20),
         _sliderWidget(context),
         const VGap(20),
-        HorizontalProductList(categoryId: 11).wrappedRoute(context),
-        // const VGap(20),
-        // _productList(context),
+        ...List.generate(categories.length, (index) {
+          final category = categories[index];
+          return HorizontalProductList(key: ValueKey(category.id), categoryEntity: category).wrappedRoute(context);
+        }),
       ],
     );
   }

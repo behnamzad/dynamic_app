@@ -446,13 +446,13 @@ class Strings {
 
   String get buyer => 'خریدار';
 
-
   String get today => 'امروز';
 
   String get tomorrow => 'فردا';
 
   String get yesterday => 'دیروز';
 
+  String get emptyCart => 'سبد خرید شما خالی است';
 
   String get endOfStrings => 'endOfStrings';
 }

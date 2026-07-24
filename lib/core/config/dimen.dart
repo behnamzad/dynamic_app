@@ -62,6 +62,8 @@ class Dimen {
   static const double productRowHeight = 140;
   static const double productRowImgHeight = 110;
 
+  static const double productInCartImgSize = 84;
+
   //in cart
   static const double productInCartRowHeight = 190;
   static const double productInCartRowImgHeight = 110;

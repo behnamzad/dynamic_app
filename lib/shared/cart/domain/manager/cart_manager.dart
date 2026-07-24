@@ -6,10 +6,17 @@ import 'package:injectable/injectable.dart';
 @lazySingleton
 class CartManager extends ChangeNotifier {
   CartEntity _cart = const CartEntity.empty();
+  bool _isCartLoaded = false;
 
   CartEntity get cart => _cart;
 
+  bool get hasCart => _cart.id.isNotEmpty;
+
+  bool get isCartLoaded => _isCartLoaded;
+
   List<CartProductEntity> get products => List.unmodifiable(_cart.products);
+
+  bool get isEmptyCart => _cart.products.isEmpty;
 
   int get totalQuantity => _cart.products.fold(0, (total, product) => total + product.quantity);
 
@@ -24,13 +31,22 @@ class CartManager extends ChangeNotifier {
     return null;
   }
 
-  // HomeShopBloc بعد از دریافت موفق Result، کل سبد را در حافظه مشترک اپ قرار می‌دهد.
   void setCart(CartEntity cart) {
     _cart = cart;
+    _isCartLoaded = true;
     notifyListeners();
   }
 
-  // ProductInfoBloc فقط بعد از Success شدن درخواست سرور این متد را اجرا می‌کند.
+  void setCartId(String cartId) {
+    if (cartId.isEmpty || cartId == _cart.id) {
+      return;
+    }
+
+    _cart = CartEntity(id: cartId, products: const []);
+    _isCartLoaded = false;
+    notifyListeners();
+  }
+
   void addOrUpdateProduct(CartProductEntity product) {
     final products = [..._cart.products];
     final index = products.indexWhere((item) => item.productId == product.productId);
@@ -52,6 +68,7 @@ class CartManager extends ChangeNotifier {
 
   void clear() {
     _cart = const CartEntity.empty();
+    _isCartLoaded = false;
     notifyListeners();
   }
 }

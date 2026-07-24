@@ -7,8 +7,14 @@ abstract class CartDataSource {
   Future<ApiResponse<CartProductDto>> addProduct({
     required int productId,
     required int categoryId,
+    required String productName,
+    required String imageUrl,
     required int quantity,
+    required int price,
   });
 
-  Future<ApiResponse<void>> removeProduct(int productId);
+  Future<ApiResponse<void>> removeProduct(
+    int productId, {
+    required int currentQuantity,
+  });
 }

@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:dynamic_app/core/util/crypto/keystore_gcm_crypto_helper.dart';
 import 'package:dynamic_app/core/util/extension/string_ext.dart';
 import 'package:dynamic_app/di/injection_container.dart';
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -61,16 +60,10 @@ class SharedPreferencesHelper {
   }
 
   Future<bool> setStringAndEncrypt(String key, String value) async {
-    var isMigrateDone = migrateDataFromCbcToGcm(key);
-    if (isMigrateDone) {
-      return true;
-    } else {
-      return _setStringByGcm(value, key);
-    }
+    return _setStringByGcm(value, key);
   }
 
   String getEncryptedString(String key, {String? defaultValue}) {
-    migrateDataFromCbcToGcm(key);
     String clearValue = decryptByGcm(key);
     return clearValue.isNotNullOrBlank ? clearValue : defaultValue ?? '';
   }
@@ -95,38 +88,6 @@ class SharedPreferencesHelper {
 
   Future<bool> setJsonObjectAndEncrypt(String key, Object object) async {
     return setStringAndEncrypt(key, json.encode(object));
-  }
-
-  bool migrateDataFromCbcToGcm(String key) {
-    final isContainsOldCbcKey = sharePrefs.containsKey(key);
-    if (!isContainsOldCbcKey) return false;
-
-    final encryptedValueCbc = sharePrefs.getString(key);
-    if (encryptedValueCbc == null) {
-      if (kDebugMode) {
-        print('No data found to migrate for key: $key');
-      }
-      return false;
-    }
-
-    final aesCbcDecryptedData = decryptOldCbc(encryptedValueCbc);
-    if (aesCbcDecryptedData == null) {
-      if (kDebugMode) {
-        print('Failed to decrypt the data with the old CBC method.');
-      }
-      return false;
-    }
-
-    //for save in gcm mode this key convert to ['$key$keyGcm'] in _setStringByGcm
-    _setStringByGcm(aesCbcDecryptedData, key);
-
-    //finally remove OldCbcKey for prevent to migrate again
-    // check by sharePrefs.containsKey(key) in top of migrateDataFromCbcToGcm
-    sharePrefs.remove(key);
-    if (kDebugMode) {
-      print('key: $key Data migrated successfully.');
-    }
-    return true;
   }
 
   _setStringByGcm(String data, String key) {

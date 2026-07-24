@@ -8,6 +8,7 @@ import 'package:dynamic_app/core/util/crypto/keystore_gcm_crypto_helper.dart';
 import 'package:dynamic_app/di/di_const.dart';
 import 'package:dynamic_app/infrastructure/network/dio_caller.dart';
 import 'package:dynamic_app/infrastructure/network/dio_provider.dart';
+import 'package:dynamic_app/infrastructure/network/logger/limited_pretty_log_printer.dart';
 import 'package:dynamic_app/infrastructure/supabase/supabase_auth_interceptor.dart';
 import 'package:dynamic_app/infrastructure/supabase/supabase_config.dart';
 import 'package:flutter/foundation.dart';
@@ -60,28 +61,30 @@ abstract class NetworkModule {
 
   @Named(DiConst.dioDigikala)
   @lazySingleton
-  Dio provideDigikalaDio(PrettyDioLogger prettyDioLogger) =>
-      provideDio(baseUrl: 'https://api.one-api.ir/digikala/v1/', isAddOneApiTokenToHeaders: true);
+  Dio provideDigikalaDio() {
+    final limitedLogPrinter = LimitedPrettyLogPrinter(maxBodyCharacters: 200, logPrint: _defaultLogPrint);
+
+    return provideDio(
+      baseUrl: 'https://api.one-api.ir/digikala/v1/',
+      isAddOneApiTokenToHeaders: true,
+      prettyDioLogger: PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        logPrint: limitedLogPrinter.call,
+      ),
+    );
+  }
 
   @Named(DiConst.dioDigikala)
   @lazySingleton
   DioCaller provideDigikalaCaller(@Named(DiConst.dioDigikala) Dio dio) => DioCaller(dio: dio);
 
-  @Named(DiConst.dioNamedLogin)
-  @lazySingleton
-  Dio provideLoginDio(PrettyDioLogger prettyDioLogger) => provideDio(baseUrl: 'https://login/');
-
-  @Named(DiConst.dioNamedLogin)
-  @lazySingleton
-  DioCaller provideLoginDioCaller(@Named(DiConst.dioNamedLogin) Dio dio) => DioCaller(dio: dio);
-
   // مسیر REST دیتابیس Supabase؛ درخواست‌های جدول‌ها از این Dio عبور می‌کنند تا PrettyDioLogger لاگشان کند.
   @Named(DiConst.dioSupabaseRest)
   @lazySingleton
-  Dio provideSupabaseRestDio(SupabaseClient supabaseClient) => provideDio(
-    baseUrl: '${SupabaseConfig.url}/rest/v1/',
-    interceptors: [SupabaseAuthInterceptor(supabaseClient)],
-  );
+  Dio provideSupabaseRestDio(SupabaseClient supabaseClient) =>
+      provideDio(baseUrl: '${SupabaseConfig.url}/rest/v1/', interceptors: [SupabaseAuthInterceptor(supabaseClient)]);
 
   @Named(DiConst.dioSupabaseRest)
   @lazySingleton

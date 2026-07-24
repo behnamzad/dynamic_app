@@ -21,6 +21,7 @@ class ProductListState with _$ProductListState {
     @Default(ProductListStatus.initial) ProductListStatus status,
     // add other get product type like: search or ..
     @Default(ProductListStatus.initial) ProductListStatus productByCategoryStatus,
+    CategoryEntity? categoryEntity,
     @Default([]) List<ProductEntity> loadedProduct,
     @Default([]) List<ProductEntity> horizontalProduct,
     @Default([]) List<BrandOfCategoryEntity> brands,

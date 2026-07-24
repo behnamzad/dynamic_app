@@ -3,6 +3,7 @@ import 'package:dynamic_app/di/injection_container.dart';
 import 'package:dynamic_app/infrastructure/network/config/const.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
+
 import 'util/headers_interceptor.dart';
 
 Dio provideDio({
@@ -13,6 +14,7 @@ Dio provideDio({
   bool setFalseEncryptionEnabledKey = false,
   bool setTrueEncryptionEnabledKey = false,
   Map<String, dynamic>? customHeaders,
+  PrettyDioLogger? prettyDioLogger,
 }) {
   final dio = Dio(
     BaseOptions(
@@ -35,7 +37,7 @@ Dio provideDio({
     (HeadersInterceptor(isAddTestData: false, isAddOneApiTokenToHeaders: isAddOneApiTokenToHeaders)),
   );
 
-  dio.interceptors.add(inject<PrettyDioLogger>());
+  dio.interceptors.add(prettyDioLogger ?? inject<PrettyDioLogger>());
 
   return dio;
 }

@@ -3,30 +3,38 @@ import 'package:dynamic_app/core/presentation/widget/bz_retry_widget.dart';
 import 'package:dynamic_app/core/presentation/widget/bz_shimmer_loading_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/feature/product_list/presentation/bloc/product_list_bloc.dart';
+import 'package:dynamic_app/shared/category/domain/entities/category_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 class HorizontalProductList extends StatefulWidget implements AutoRouteWrapper {
-  final int categoryId;
+  final CategoryEntity categoryEntity;
 
-  const HorizontalProductList({super.key, required this.categoryId});
+  const HorizontalProductList({super.key, required this.categoryEntity});
 
   @override
   State<HorizontalProductList> createState() => _HorizontalProductListState();
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
+    key: ValueKey('horizontal-product-list-${categoryEntity.id}'),
     create: (context) =>
-        inject<ProductListBloc>()..add(ProductListEvent.getProductAndBrandsByCategory(categoryId: categoryId)),
+        inject<ProductListBloc>()..add(ProductListEvent.getProductAndBrandsByCategory(entity: categoryEntity)),
     child: this,
   );
 }
 
-class _HorizontalProductListState extends State<HorizontalProductList> {
+class _HorizontalProductListState extends State<HorizontalProductList>
+    with AutomaticKeepAliveClientMixin<HorizontalProductList> {
   static const double _headerHeight = 52;
   static const double _sectionHeight = _headerHeight + Dimen.productCardHeight;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return BlocConsumer<ProductListBloc, ProductListState>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -52,13 +60,18 @@ class _HorizontalProductListState extends State<HorizontalProductList> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                BzText(ss.productCategory),
+                BzText(
+                  state.categoryEntity!.name,
+                  style: context.body2Bold.copyWith(color: context.scheme().titleText),
+                ),
                 const Spacer(),
                 BzGestureDetector(
-                  onTap: () => context.pushRoute(ProductListPageRoute(products: state.loadedProduct)),
+                  onTap: () => context.pushRoute(
+                    ProductListPageRoute(products: state.loadedProduct, categoryEntity: state.categoryEntity!),
+                  ),
                   child: Row(
                     children: [
-                      BzText(ss.seeMore, style: context.title2Bold),
+                      BzText(ss.seeMore, style: context.body3Medium.copyWith(color: context.scheme().mainText)),
                       const HGap(4),
                       Icon(Icons.arrow_forward_ios, size: 14, color: context.scheme().titleText),
                     ],
@@ -131,7 +144,7 @@ class _HorizontalProductListState extends State<HorizontalProductList> {
     return BzRetryWidget(
       onRetryClick: () {
         context.read<ProductListBloc>().add(
-          ProductListEvent.getProductAndBrandsByCategory(categoryId: widget.categoryId),
+          ProductListEvent.getProductAndBrandsByCategory(entity: widget.categoryEntity),
         );
       },
     );

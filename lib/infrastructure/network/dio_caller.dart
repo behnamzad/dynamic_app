@@ -27,7 +27,13 @@ abstract class DioCaller {
 
   Future<ApiResponse<D>> put<D>(String path, {required Function fromJson, data, Options? options});
 
-  Future<ApiResponse<D>> patch<D>(String path, {required Function fromJson, data, Options? options});
+  Future<ApiResponse<D>> patch<D>(
+    String path, {
+    required Function fromJson,
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  });
 
   Future<ApiResponse<D>> delete<D>(
     String path, {
@@ -118,9 +124,15 @@ class _DioCallerStandardImpl implements DioCaller {
   }
 
   @override
-  Future<ApiResponse<D>> patch<D>(String path, {required Function fromJson, data, Options? options}) async {
+  Future<ApiResponse<D>> patch<D>(
+    String path, {
+    required Function fromJson,
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
     try {
-      final response = await dio.patch(path, data: data, options: options);
+      final response = await dio.patch(path, data: data, queryParameters: queryParameters, options: options);
 
       return _isSuccessfulStatusCode(response.statusCode)
           ? ApiResponse.completed(data: fromJson.call(response.data), statusCode: response.statusCode)

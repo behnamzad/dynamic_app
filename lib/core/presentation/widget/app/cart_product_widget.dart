@@ -8,40 +8,48 @@ class CartProductWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: context.scheme().mainBackground1,
-              borderRadius: Dimen.defaultBorderRadius,
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.shopping_bag_outlined, color: context.scheme().primary, size: 34),
-                const HGap(12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BzText(ss.productIdValue(product.productId), style: context.title2Bold),
-                      const VGap(6),
-                      BzText(
-                        ss.categoryIdValue(product.categoryId),
-                        style: context.body3Medium.copyWith(color: context.scheme().subText),
-                      ),
-                    ],
-                  ),
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                width: Dimen.productInCartImgSize,
+                height: Dimen.productInCartImgSize,
+                child: Image.network(product.imageUrl),
+              ),
+              const HGap(12),
+              Flexible(
+                child: BzText(
+                  product.productName,
+                  style: context.body3Medium.copyWith(color: context.scheme().mainText),
                 ),
-                BzText(ss.quantityValue(product.quantity), style: context.title2Bold),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
-        const BzDivider(thickness: 2),
-      ],
+          const VGap(18),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              BzText(
+                ss.quantityValue(product.quantity),
+                style: context.body2Medium.copyWith(color: context.scheme().subText),
+              ),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: AlignmentDirectional.centerEnd,
+                child: BzTextCurrency.amountWithTitle(
+                  amount: product.price,
+                  style: context.body2Medium.copyWith(color: context.scheme().primary),
+                ),
+              ),
+            ],
+          ),
+          const VGap(14),
+          const BzDivider(thickness: 2),
+        ],
+      ),
     );
   }
 }

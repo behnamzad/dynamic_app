@@ -4,6 +4,7 @@ import 'package:dynamic_app/core/presentation/widget/bz_slider_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/feature/product_info/presentation/bloc/product_info_bloc.dart';
 import 'package:dynamic_app/feature/product_info/presentation/widget/comment_card_widget.dart';
+import 'package:dynamic_app/shared/cart/domain/manager/cart_manager.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 @RoutePage()
@@ -47,7 +48,9 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
           case CartActionStatus.added:
             showToastSuccess(ss.productAddedToCart);
           case CartActionStatus.removed:
-            showToastSuccess(ss.productRemovedFromCart);
+            if (!state.isInCart) {
+              showToastSuccess(ss.productRemovedFromCart);
+            }
           case CartActionStatus.failed:
             showToastError(state.errorMessage ?? ss.cartOperationError);
           case CartActionStatus.initial:
@@ -200,27 +203,24 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
   }
 
   Widget _productCategoryTree(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Flexible(
-            child: BzText(
-              _product.brand.faTitle,
-              style: context.body2Medium.copyWith(color: context.scheme().subText),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const HGap(4),
-          Icon(Icons.chevron_right_rounded, size: 18, color: context.scheme().subText),
-          const HGap(4),
-          BzText(
-            '${_product.categoryTitle} ${_product.brand.faTitle}',
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Flexible(
+          child: BzText(
+            _product.brand.faTitle,
             style: context.body2Medium.copyWith(color: context.scheme().subText),
+            overflow: TextOverflow.ellipsis,
           ),
-        ],
-      ),
+        ),
+        const HGap(4),
+        Icon(Icons.chevron_right_rounded, size: 18, color: context.scheme().subText),
+        const HGap(4),
+        BzText(
+          '${_product.categoryTitle} ${_product.brand.faTitle}',
+          style: context.body2Medium.copyWith(color: context.scheme().subText),
+        ),
+      ],
     );
   }
 
@@ -503,6 +503,9 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
   }
 
   Widget _addToCart(BuildContext context, ProductInfoState state) {
+    final cartProduct = inject<CartManager>().findProduct(_product.id);
+    final quantity = cartProduct?.quantity ?? 0;
+
     return Container(
       color: context.scheme().mainBackground1,
       child: Padding(
@@ -510,22 +513,17 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
         child: Row(
           children: [
             Expanded(
-              flex: 3,
-              child: BzButton.submit(
-                text: !_product.available
-                    ? ss.unavailable
-                    : state.isInCart
-                    ? ss.removeFromCart
-                    : ss.addToCart,
-                showLoading: state.cartActionStatus.isLoading,
-                enabled: _product.available && !state.cartActionStatus.isLoading,
-                onPressed: () {
-                  final event = state.isInCart
-                      ? ProductInfoEvent.removeFromCart(_product.id)
-                      : ProductInfoEvent.addToCart(_product);
-                  context.read<ProductInfoBloc>().add(event);
-                },
-              ),
+              flex: 2,
+              child: state.isInCart && quantity > 0
+                  ? _cartQuantityControl(context, state, quantity)
+                  : BzButton.submit(
+                      text: !_product.available ? ss.unavailable : ss.addToCart,
+                      showLoading: state.cartActionStatus.isLoading,
+                      enabled: _product.available && !state.cartActionStatus.isLoading,
+                      onPressed: () {
+                        context.read<ProductInfoBloc>().add(ProductInfoEvent.addToCart(_product));
+                      },
+                    ),
             ),
             Expanded(
               flex: 2,
@@ -538,6 +536,59 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
                     style: context.headline5Bold.copyWith(color: context.scheme().primary),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _cartQuantityControl(BuildContext context, ProductInfoState state, int quantity) {
+    final isLoading = state.cartActionStatus.isLoading;
+    final color = context.scheme().error.withValues(alpha: 0.8);
+
+    return Container(
+      height: 56,
+      width: 50,
+      decoration: BoxDecoration(
+        color: context.scheme().mainBackground1,
+        border: Border.all(color: context.scheme().boxBorder),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Row(
+          children: [
+            Expanded(
+              child: IconButton(
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        context.read<ProductInfoBloc>().add(ProductInfoEvent.removeFromCart(_product.id));
+                      },
+                icon: Icon(
+                  quantity == 1 ? Icons.delete_outline_rounded : Icons.remove_rounded,
+                  color: isLoading ? color.withValues(alpha: 0.45) : color,
+                  size: 26,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: isLoading
+                    ? SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2, color: color))
+                    : BzText(quantity.toString(), style: context.headline5Bold.copyWith(color: color)),
+              ),
+            ),
+            Expanded(
+              child: IconButton(
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        context.read<ProductInfoBloc>().add(ProductInfoEvent.addToCart(_product));
+                      },
+                icon: Icon(Icons.add_rounded, color: isLoading ? color.withValues(alpha: 0.45) : color, size: 28),
               ),
             ),
           ],
