@@ -4,7 +4,7 @@ import 'package:dynamic_app/core/presentation/widget/app/profile_row_widget.dart
 import 'package:dynamic_app/core/presentation/widget/bz_slider_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/feature/home_shop/presentation/bloc/home_shop_bloc.dart';
-import 'package:dynamic_app/feature/product_list/presentation/widget/horizontal_product_list.dart';
+import 'package:dynamic_app/feature/search/presentation/widget/horizontal_product_list.dart';
 import 'package:dynamic_app/shared/category/domain/entities/category_entity.dart';
 
 @RoutePage()

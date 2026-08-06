@@ -1,5 +1,6 @@
 import 'package:dynamic_app/shared/cart/domain/entities/cart_entity.dart';
 import 'package:dynamic_app/shared/cart/domain/entities/cart_product_entity.dart';
+import 'package:dynamic_app/shared/cart/domain/models/cart_totals.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -19,6 +20,20 @@ class CartManager extends ChangeNotifier {
   bool get isEmptyCart => _cart.products.isEmpty;
 
   int get totalQuantity => _cart.products.fold(0, (total, product) => total + product.quantity);
+
+  CartTotals get cartTotals => calculateTotals(_cart);
+
+  CartTotals calculateTotals(CartEntity cart) {
+    final productCount = cart.products.fold<int>(0, (sum, item) => sum + item.quantity);
+    final subtotalAmount = cart.products.fold<int>(0, (sum, item) => sum + (item.price * item.quantity));
+    const discountAmount = 0;
+    return CartTotals(
+      productCount: productCount,
+      subtotalAmount: subtotalAmount,
+      discountAmount: discountAmount,
+      totalAmount: subtotalAmount - discountAmount,
+    );
+  }
 
   bool containsProduct(int productId) => _cart.products.any((product) => product.productId == productId);
 

@@ -208,7 +208,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
       children: [
         Flexible(
           child: BzText(
-            _product.brand.faTitle,
+            _product.brand.titleFa,
             style: context.body2Medium.copyWith(color: context.scheme().subText),
             overflow: TextOverflow.ellipsis,
           ),
@@ -217,7 +217,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
         Icon(Icons.chevron_right_rounded, size: 18, color: context.scheme().subText),
         const HGap(4),
         BzText(
-          '${_product.categoryTitle} ${_product.brand.faTitle}',
+          '${_product.categoryTitle} ${_product.brand.titleFa}',
           style: context.body2Medium.copyWith(color: context.scheme().subText),
         ),
       ],

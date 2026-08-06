@@ -9,8 +9,14 @@ class CheckoutRow extends StatelessWidget {
   final IconData? endIcon;
   final VoidCallback? onTapEndIcon;
 
-  const CheckoutRow(
-      {super.key, required this.title, this.subTitle, required this.icon, this.endIcon, this.onTapEndIcon,});
+  const CheckoutRow({
+    super.key,
+    required this.title,
+    this.subTitle,
+    required this.icon,
+    this.endIcon,
+    this.onTapEndIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +27,11 @@ class CheckoutRow extends StatelessWidget {
           Container(
             height: 50,
             width: 50,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: context.scheme().primary2),
-            child: Icon(
-              icon,
-              color: context.scheme().primary,
-              size: 32,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              color: context.scheme().primary2,
             ),
+            child: Icon(icon, color: context.scheme().primary, size: 32),
           ),
           const HGap(12),
           Column(
@@ -35,21 +40,26 @@ class CheckoutRow extends StatelessWidget {
             children: [
               BzText(
                 title,
-                style: context.body1Bold.copyWith(color: context.scheme().titleText),
+                style: context.body1Bold.copyWith(
+                  color: context.scheme().titleText,
+                ),
               ),
               if (subTitle != null)
                 BzText(
                   subTitle!,
-                  style: context.body2Regular.copyWith(color: context.scheme().mainText),
+                  style: context.body2Regular.copyWith(
+                    color: context.scheme().mainText,
+                  ),
                 ),
             ],
           ),
           const Spacer(),
           if (endIcon != null)
             BzGestureDetector(
-                inkwellPadding: const EdgeInsets.all(8),
-                onTap: () => onTapEndIcon != null ? onTapEndIcon!.call() : {},
-                child: Icon(endIcon, size: 22),),
+              inkwellPadding: const EdgeInsets.all(8),
+              onTap: () => onTapEndIcon != null ? onTapEndIcon!.call() : {},
+              child: Icon(endIcon, size: 22),
+            ),
         ],
       ),
     );

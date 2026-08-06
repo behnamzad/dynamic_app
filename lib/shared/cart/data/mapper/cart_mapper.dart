@@ -4,12 +4,7 @@ import 'package:dynamic_app/shared/cart/domain/entities/cart_product_entity.dart
 
 extension CartResponseDtoMapper on CartResponseDto {
   CartEntity toEntity() {
-    return CartEntity(
-      id: cartId,
-      products: products
-          .map((product) => product.toEntity())
-          .toList(growable: false),
-    );
+    return CartEntity(id: cartId, products: products.map((product) => product.toEntity()).toList(growable: false));
   }
 }
 

@@ -14,89 +14,89 @@ import 'package:loading_overlay/loading_overlay.dart';
 enum PageLoadingMode { onScreen, overlay, onScreenAndOverlay, none }
 
 class BasePageWidget extends StatefulWidget {
-  const BasePageWidget(
-      {super.key,
-      required this.child,
-      this.backgroundColor,
-      this.statusBarColor,
-      this.systemNavigationBarColor,
-      this.systemNavigationBarIconBrightness,
-      this.statusBarIconBrightness,
-      this.appBar,
-      this.onScreenLoadingModeShowCircularLoadingByState = false,
-      this.onScreenLoadingModeDescription,
-      this.onScreenLoadingModeShowFailureByState,
-      this.onScreenLoadingOnTryAgainCLick,
-      this.bottomNav,
-      this.failureMessage,
-      this.resizeToAvoidBottomInset = true,
-      this.floatingActionButton,
-      this.topLoadingMargin = 0,
-      this.appBarAreaHeight,})
-      : pageLoadingMode = PageLoadingMode.none;
+  const BasePageWidget({
+    super.key,
+    required this.child,
+    this.backgroundColor,
+    this.statusBarColor,
+    this.systemNavigationBarColor,
+    this.systemNavigationBarIconBrightness,
+    this.statusBarIconBrightness,
+    this.appBar,
+    this.onScreenLoadingModeShowCircularLoadingByState = false,
+    this.onScreenLoadingModeDescription,
+    this.onScreenLoadingModeShowFailureByState,
+    this.onScreenLoadingOnTryAgainCLick,
+    this.bottomNav,
+    this.failureMessage,
+    this.resizeToAvoidBottomInset = true,
+    this.floatingActionButton,
+    this.topLoadingMargin = 0,
+    this.appBarAreaHeight,
+  }) : pageLoadingMode = PageLoadingMode.none;
 
-  const BasePageWidget.withOverlayLoading(
-      {super.key,
-      required this.child,
-      this.backgroundColor,
-      this.statusBarColor,
-      this.systemNavigationBarColor,
-      this.systemNavigationBarIconBrightness,
-      this.statusBarIconBrightness,
-      this.appBar,
-      this.onScreenLoadingModeDescription,
-      this.onScreenLoadingModeShowCircularLoadingByState = false,
-      this.onScreenLoadingModeShowFailureByState = false,
-      this.onScreenLoadingOnTryAgainCLick,
-      this.bottomNav,
-      this.failureMessage,
-      this.resizeToAvoidBottomInset = true,
-      this.floatingActionButton,
-      this.topLoadingMargin = 0,
-      this.appBarAreaHeight,})
-      : pageLoadingMode = PageLoadingMode.overlay;
+  const BasePageWidget.withOverlayLoading({
+    super.key,
+    required this.child,
+    this.backgroundColor,
+    this.statusBarColor,
+    this.systemNavigationBarColor,
+    this.systemNavigationBarIconBrightness,
+    this.statusBarIconBrightness,
+    this.appBar,
+    this.onScreenLoadingModeDescription,
+    this.onScreenLoadingModeShowCircularLoadingByState = false,
+    this.onScreenLoadingModeShowFailureByState = false,
+    this.onScreenLoadingOnTryAgainCLick,
+    this.bottomNav,
+    this.failureMessage,
+    this.resizeToAvoidBottomInset = true,
+    this.floatingActionButton,
+    this.topLoadingMargin = 0,
+    this.appBarAreaHeight,
+  }) : pageLoadingMode = PageLoadingMode.overlay;
 
-  const BasePageWidget.withOnScreenLoading(
-      {super.key,
-      required this.child,
-      this.backgroundColor,
-      this.statusBarColor,
-      this.systemNavigationBarColor,
-      this.systemNavigationBarIconBrightness,
-      this.statusBarIconBrightness,
-      this.appBar,
-      this.onScreenLoadingModeDescription,
-      this.onScreenLoadingOnTryAgainCLick,
-      required this.onScreenLoadingModeShowCircularLoadingByState,
-      required this.onScreenLoadingModeShowFailureByState,
-      this.bottomNav,
-      this.failureMessage,
-      this.resizeToAvoidBottomInset = true,
-      this.floatingActionButton,
-      this.topLoadingMargin = 0,
-      this.appBarAreaHeight,})
-      : pageLoadingMode = PageLoadingMode.onScreen;
+  const BasePageWidget.withOnScreenLoading({
+    super.key,
+    required this.child,
+    this.backgroundColor,
+    this.statusBarColor,
+    this.systemNavigationBarColor,
+    this.systemNavigationBarIconBrightness,
+    this.statusBarIconBrightness,
+    this.appBar,
+    this.onScreenLoadingModeDescription,
+    this.onScreenLoadingOnTryAgainCLick,
+    required this.onScreenLoadingModeShowCircularLoadingByState,
+    required this.onScreenLoadingModeShowFailureByState,
+    this.bottomNav,
+    this.failureMessage,
+    this.resizeToAvoidBottomInset = true,
+    this.floatingActionButton,
+    this.topLoadingMargin = 0,
+    this.appBarAreaHeight,
+  }) : pageLoadingMode = PageLoadingMode.onScreen;
 
-  const BasePageWidget.withOnScreenAndOverLayLoading(
-      {super.key,
-      required this.child,
-      this.backgroundColor,
-      this.statusBarColor,
-      this.systemNavigationBarColor,
-      this.systemNavigationBarIconBrightness,
-      this.statusBarIconBrightness,
-      this.appBar,
-      this.onScreenLoadingModeDescription,
-      required this.onScreenLoadingModeShowCircularLoadingByState,
-      required this.onScreenLoadingModeShowFailureByState,
-      this.onScreenLoadingOnTryAgainCLick,
-      this.bottomNav,
-      this.failureMessage,
-      this.resizeToAvoidBottomInset = true,
-      this.floatingActionButton,
-      this.topLoadingMargin = 0,
-      this.appBarAreaHeight,})
-      : pageLoadingMode = PageLoadingMode.onScreenAndOverlay;
+  const BasePageWidget.withOnScreenAndOverLayLoading({
+    super.key,
+    required this.child,
+    this.backgroundColor,
+    this.statusBarColor,
+    this.systemNavigationBarColor,
+    this.systemNavigationBarIconBrightness,
+    this.statusBarIconBrightness,
+    this.appBar,
+    this.onScreenLoadingModeDescription,
+    required this.onScreenLoadingModeShowCircularLoadingByState,
+    required this.onScreenLoadingModeShowFailureByState,
+    this.onScreenLoadingOnTryAgainCLick,
+    this.bottomNav,
+    this.failureMessage,
+    this.resizeToAvoidBottomInset = true,
+    this.floatingActionButton,
+    this.topLoadingMargin = 0,
+    this.appBarAreaHeight,
+  }) : pageLoadingMode = PageLoadingMode.onScreenAndOverlay;
 
   final Widget child;
   final Widget? bottomNav;
@@ -160,9 +160,7 @@ class _BasePageWidgetState extends State<BasePageWidget> {
                 )
               : null,
           bottomNavigationBar: widget.bottomNav,
-          body: SafeArea(
-            child: _getMainWidget(context),
-          ),
+          body: SafeArea(child: _getMainWidget(context)),
         ),
       ),
     );
@@ -218,9 +216,7 @@ class _BasePageWidgetState extends State<BasePageWidget> {
               const SizedBox(height: 24),
               BzText(
                 widget.onScreenLoadingModeDescription ?? ss.fetchingData,
-                style: context.body1Regular.copyWith(
-                  color: context.scheme().mainText,
-                ),
+                style: context.body1Regular.copyWith(color: context.scheme().mainText),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 56),
@@ -229,10 +225,11 @@ class _BasePageWidgetState extends State<BasePageWidget> {
         );
       } else if (widget.onScreenLoadingModeShowFailureByState == true) {
         return BzRetryWidget(
-            message: widget.failureMessage,
-            onRetryClick: () {
-              if (widget.onScreenLoadingOnTryAgainCLick != null) widget.onScreenLoadingOnTryAgainCLick!();
-            },);
+          message: widget.failureMessage,
+          onRetryClick: () {
+            if (widget.onScreenLoadingOnTryAgainCLick != null) widget.onScreenLoadingOnTryAgainCLick!();
+          },
+        );
       } else {
         return widget.child;
       }

@@ -15,12 +15,7 @@ class CartProductEntity {
     required this.price,
   });
 
-  CartProductEntity copyWith({
-    String? productName,
-    String? imageUrl,
-    int? quantity,
-    int? price,
-  }) {
+  CartProductEntity copyWith({String? productName, String? imageUrl, int? quantity, int? price}) {
     return CartProductEntity(
       productId: productId,
       categoryId: categoryId,

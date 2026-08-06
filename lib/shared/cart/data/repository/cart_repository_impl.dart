@@ -28,17 +28,12 @@ class CartRepositoryImpl implements CartRepository {
         _cartManager.setCart(cart);
         return Result.success(cart);
       },
-      error: (error) => Result.failure(
-        ResultException(code: error.code, errorMessage: error.message),
-      ),
+      error: (error) => Result.failure(ResultException(code: error.code, errorMessage: error.message)),
     );
   }
 
   @override
-  Future<Result<CartProductEntity>> addProduct({
-    required ProductEntity entity,
-    required int quantity,
-  }) async {
+  Future<Result<CartProductEntity>> addProduct({required ProductEntity entity, required int quantity}) async {
     final currentProduct = _cartManager.findProduct(entity.id);
     final updatedQuantity = (currentProduct?.quantity ?? 0) + quantity;
     final response = await _dataSource.addProduct(
@@ -55,9 +50,7 @@ class CartRepositoryImpl implements CartRepository {
         _cartManager.addOrUpdateProduct(product);
         return Result.success(product);
       },
-      error: (error) => Result.failure(
-        ResultException(code: error.code, errorMessage: error.message),
-      ),
+      error: (error) => Result.failure(ResultException(code: error.code, errorMessage: error.message)),
     );
   }
 
@@ -65,24 +58,17 @@ class CartRepositoryImpl implements CartRepository {
   Future<Result<void>> removeProduct(int productId) async {
     final currentProduct = _cartManager.findProduct(productId);
     final currentQuantity = currentProduct?.quantity ?? 1;
-    final response = await _dataSource.removeProduct(
-      productId,
-      currentQuantity: currentQuantity,
-    );
+    final response = await _dataSource.removeProduct(productId, currentQuantity: currentQuantity);
     return response.when(
       completed: (_, __) {
         if (currentProduct != null && currentQuantity > 1) {
-          _cartManager.addOrUpdateProduct(
-            currentProduct.copyWith(quantity: currentQuantity - 1),
-          );
+          _cartManager.addOrUpdateProduct(currentProduct.copyWith(quantity: currentQuantity - 1));
         } else {
           _cartManager.removeProduct(productId);
         }
         return const Result.success(null);
       },
-      error: (error) => Result.failure(
-        ResultException(code: error.code, errorMessage: error.message),
-      ),
+      error: (error) => Result.failure(ResultException(code: error.code, errorMessage: error.message)),
     );
   }
 }

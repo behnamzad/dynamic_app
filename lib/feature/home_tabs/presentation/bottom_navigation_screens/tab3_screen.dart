@@ -1,5 +1,5 @@
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
-import 'package:dynamic_app/feature/cart/presentation/cart_page.dart';
+import 'package:dynamic_app/feature/search/presentation/search_page.dart';
 
 @RoutePage()
 class Tab3Screen extends StatelessWidget {
@@ -7,6 +7,6 @@ class Tab3Screen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CartPage().wrappedRoute(context);
+    return const SearchPage().wrappedRoute(context);
   }
 }

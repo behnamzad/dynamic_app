@@ -1,3 +1,4 @@
+import 'package:dynamic_app/shared/product/data/models/brand/brand_dto.dart';
 import 'package:dynamic_app/shared/product/data/models/product/product_dto.dart';
 
 class ProductOfCategoryResponse {
@@ -47,7 +48,7 @@ class Data {
   final int? parentId;
   final String? color;
   final String? title;
-  final List<BrandElement>? brands;
+  final List<BrandDto>? brands;
   final List<ProductDto>? products;
   final Url? url;
 
@@ -66,7 +67,7 @@ class Data {
     title: json['title']?.toString(),
     brands: json['brands'] == null
         ? null
-        : _list(json['brands'], BrandElement.fromJson),
+        : _list(json['brands'], BrandDto.fromJson),
     products: json['products'] == null
         ? null
         : _list(json['products'], ProductDto.fromJson),
@@ -80,34 +81,6 @@ class Data {
     'brands': brands?.map((value) => value.toJson()).toList(),
     'products': products?.map((value) => value.toJson()).toList(),
     'url': url?.toJson(),
-  };
-}
-
-class BrandElement {
-  final int id;
-  final String titleFa;
-  final String titleEn;
-  final String image;
-
-  const BrandElement({
-    required this.id,
-    required this.titleFa,
-    required this.titleEn,
-    required this.image,
-  });
-
-  factory BrandElement.fromJson(Map<String, dynamic> json) => BrandElement(
-    id: _int(json['id']),
-    titleFa: _string(json['title_fa']),
-    titleEn: _string(json['title_en']),
-    image: _string(json['image']),
-  );
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'title_fa': titleFa,
-    'title_en': titleEn,
-    'image': image,
   };
 }
 

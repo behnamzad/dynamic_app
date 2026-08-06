@@ -1,5 +1,6 @@
 import 'package:dynamic_app/core/config/strings.dart';
 import 'package:dynamic_app/shared/product/data/models/product/product_dto.dart';
+import 'package:dynamic_app/shared/product/domain/entities/brand_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 extension ProductMapperX on ProductDto {
@@ -138,7 +139,7 @@ extension ProductMapperX on ProductDto {
   }
 
   BrandEntity _mapBrand() {
-    return BrandEntity(id: brand.id, enTitle: brand.titleEn ?? '', faTitle: brand.titleFa);
+    return BrandEntity(id: brand.id, titleEn: brand.titleEn ?? '', titleFa: brand.titleFa);
   }
 
   ProductColorEntity? _mapSelectedColor(Variant? variant) {

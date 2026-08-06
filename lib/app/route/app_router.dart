@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dynamic_app/feature/cart/presentation/cart_page.dart';
-import 'package:dynamic_app/feature/cart/presentation/check_out_page.dart';
+import 'package:dynamic_app/feature/checkout_cart/presentation/bloc/checkout_cart_bloc.dart';
+import 'package:dynamic_app/feature/checkout_cart/presentation/check_out_page.dart';
+import 'package:dynamic_app/feature/checkout_cart/presentation/order_review_page.dart';
 import 'package:dynamic_app/feature/home_shop/presentation/home_shop_page.dart';
 import 'package:dynamic_app/feature/home_tabs/home_page.dart';
 import 'package:dynamic_app/feature/home_tabs/presentation/bottom_navigation_screens/tab1_screen.dart';
@@ -9,10 +11,11 @@ import 'package:dynamic_app/feature/home_tabs/presentation/bottom_navigation_scr
 import 'package:dynamic_app/feature/home_tabs/presentation/bottom_navigation_screens/tab4_screen.dart';
 import 'package:dynamic_app/feature/login/presentation/login_page.dart';
 import 'package:dynamic_app/feature/product_info/presentation/product_info_page.dart';
-import 'package:dynamic_app/feature/product_list/presentation/product_list_page.dart';
+import 'package:dynamic_app/feature/search/presentation/bloc/search_bloc.dart';
+import 'package:dynamic_app/feature/search/presentation/product_list_page.dart';
 import 'package:dynamic_app/feature/splash/presentation/splash_page.dart';
-import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 import 'package:dynamic_app/shared/category/domain/entities/category_entity.dart';
+import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -46,5 +49,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(path: '/ProductInfoPage', page: ProductInfoPageRoute.page),
     AutoRoute(path: '/CartPage', page: CartPageRoute.page),
     AutoRoute(path: '/CheckOutPage', page: CheckOutPageRoute.page),
+    AutoRoute(path: '/OrderReviewPage', page: OrderReviewPageRoute.page),
   ];
 }

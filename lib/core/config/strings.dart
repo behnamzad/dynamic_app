@@ -43,7 +43,8 @@ class Strings {
 
   String questionCount(int count) => '$count پرسش';
 
-  String satisfaction(int percent, String performance) => '$percent٪ رضایت | $performance';
+  String satisfaction(int percent, String performance) =>
+      '$percent٪ رضایت | $performance';
 
   String buyersOpinionCount(int count) => '(بر اساس نظر $count خریدار)';
 
@@ -66,6 +67,14 @@ class Strings {
   String get home => 'خانه';
 
   String get search => 'جستجو';
+
+  String get searchHint => 'جستجوی محصول یا برند';
+
+  String get searchStartMessage => 'نام محصول یا برند موردنظر را جستجو کنید';
+
+  String get searchEmptyMessage => 'نتیجه‌ای برای این جستجو پیدا نشد';
+
+  String get brands => 'برندها';
 
   String get cart => 'سبد خرید';
 
@@ -111,6 +120,61 @@ class Strings {
 
   String get addAddress => 'افزودن آدرس';
 
+  String get deleteAddress => 'حذف آدرس';
+
+  String get deleteAddressQuestion => 'این آدرس حذف شود؟';
+
+  String get addressAdded => 'آدرس اضافه شد.';
+
+  String get addressDeleted => 'آدرس حذف شد.';
+
+  String get noAddress => 'آدرسی ثبت نشده است. یک آدرس اضافه کنید.';
+
+  String get addressFieldsRequired => 'تمام بخش‌های آدرس را کامل کنید.';
+
+  String get addressRequiredForOrder => 'برای ثبت سفارش یک آدرس انتخاب کنید.';
+
+  String get province => 'استان';
+
+  String get city => 'شهر';
+
+  String get addressLine => 'ادامه آدرس';
+
+  String get cancel => 'انصراف';
+
+  String get saveAddress => 'ثبت آدرس';
+
+  String get delete => 'حذف';
+
+  String get orders => 'سفارش‌ها';
+
+  String get noOrders => 'هنوز سفارشی ثبت نشده است.';
+
+  String get paid => 'پرداخت‌شده';
+
+  String get unpaid => 'پرداخت‌نشده';
+
+  String get orderStatusProcessing => 'در حال آماده‌سازی';
+
+  String get orderStatusShipping => 'در حال ارسال';
+
+  String get orderStatusDelivered => 'ارسال‌شده';
+
+  String get orderStatusCancelled => 'لغوشده';
+
+  String get finalOrderReview => 'بازبینی نهایی سفارش';
+
+  String get orderPaymentSuccess => 'پرداخت انجام شد و سفارش ثبت گردید.';
+
+  String get checkoutDeliveryWindow => 'شنبه یک فروردین - ۱۴ الی ۱۸';
+
+  String provinceAndCity(String province, String city) => '$province، $city';
+
+  String fullAddress(String province, String city, String addressLine) =>
+      '$province، $city - $addressLine';
+
+  String orderProductsCount(int count) => 'محصولات سفارش ($count کالا)';
+
   String get orderSummery => 'سفارش شما';
 
   String get discount => 'تخفیف';
@@ -137,7 +201,8 @@ class Strings {
 
   String get password => 'رمز ورود';
 
-  String get usernameAndPasswordInputError => 'نام کاربری و رمز را به صورت کامل وارد نمایید';
+  String get usernameAndPasswordInputError =>
+      'نام کاربری و رمز را به صورت کامل وارد نمایید';
 
   String get usernameInputError => 'نام کاربری را وارد نمایید';
 
@@ -193,7 +258,8 @@ class Strings {
 
   String get hello => 'سلام';
 
-  String get productNotProvided => 'محصول یا شناسه محصول به صفحه ارسال نشده است.';
+  String get productNotProvided =>
+      'محصول یا شناسه محصول به صفحه ارسال نشده است.';
 
   String get loginSuccess => 'ورود با موفقیت انجام شد.';
 
@@ -211,7 +277,8 @@ class Strings {
 
   String get emptyLoginInputs => 'ایمیل و رمز عبور را وارد کن.';
 
-  String get emptyRegisterInputs => 'ایمیل، نام کاربری، رمز عبور، سن و جنسیت را کامل وارد کن.';
+  String get emptyRegisterInputs =>
+      'ایمیل، نام کاربری، رمز عبور، سن و جنسیت را کامل وارد کن.';
 
   String get emptyGender => 'جنسیت را انتخاب کن.';
 
@@ -229,7 +296,8 @@ class Strings {
 
   String get serverConnectionError => 'خطا در اتصال به سرور';
 
-  String get paymentTimeoutError => 'خطا در انجام تراکنش! لطفاً قبل از تکرار تراکنش، موجودی حساب خود را بررسی کنید.';
+  String get paymentTimeoutError =>
+      'خطا در انجام تراکنش! لطفاً قبل از تکرار تراکنش، موجودی حساب خود را بررسی کنید.';
 
   String get timeoutError => 'پاسخی در زمان مناسب از سمت سرور دریافت نشد';
 
@@ -253,13 +321,17 @@ class Strings {
 
   String tomanAmount(String value) => '$value تومان';
 
-  String hundredAmount(String value, String currency) => '$value $hundred $currency';
+  String hundredAmount(String value, String currency) =>
+      '$value $hundred $currency';
 
-  String thousandAmount(String value, String currency) => '$value $thousand $currency';
+  String thousandAmount(String value, String currency) =>
+      '$value $thousand $currency';
 
-  String millionAmount(String value, String currency) => '$value $million $currency';
+  String millionAmount(String value, String currency) =>
+      '$value $million $currency';
 
-  String billionAmount(String value, String currency) => '$value $billion $currency';
+  String billionAmount(String value, String currency) =>
+      '$value $billion $currency';
 
   String yearsOld(num value) => '$value ساله';
 
@@ -294,7 +366,18 @@ class Strings {
     'نوزده',
   ];
 
-  List<String> get persianNumberTens => const ['', '', 'بیست', 'سی', 'چهل', 'پنجاه', 'شصت', 'هفتاد', 'هشتاد', 'نود'];
+  List<String> get persianNumberTens => const [
+    '',
+    '',
+    'بیست',
+    'سی',
+    'چهل',
+    'پنجاه',
+    'شصت',
+    'هفتاد',
+    'هشتاد',
+    'نود',
+  ];
 
   List<String> get persianNumberHundreds => const [
     '',
@@ -331,7 +414,8 @@ class Strings {
 
   String get supermarketShipping => '۲ ارسال سوپرمارکت';
 
-  String get fastTehranShipping => 'ارسال سریع و رایگان دیجی‌کالا (فقط تهران و کرج)';
+  String get fastTehranShipping =>
+      'ارسال سریع و رایگان دیجی‌کالا (فقط تهران و کرج)';
 
   String get fastDigikalaShipping => 'ارسال سریع دیجی‌کالا';
 
@@ -354,11 +438,13 @@ class Strings {
 
   String get borujerd => 'بروجرد';
 
-  String get sampleBorujerdAddress => 'خیابان تختی، خیابان زرپرور، کوچه شوق، پلاک ۳';
+  String get sampleBorujerdAddress =>
+      'خیابان تختی، خیابان زرپرور، کوچه شوق، پلاک ۳';
 
   String get tehran => 'تهران';
 
-  String get sampleTehranAddress => 'خیابان جمهوری، خیابان سعدی، کوچه احمدی، پلاک ۱۸';
+  String get sampleTehranAddress =>
+      'خیابان جمهوری، خیابان سعدی، کوچه احمدی، پلاک ۱۸';
 
   String get sampleFirstName => 'بهنام';
 

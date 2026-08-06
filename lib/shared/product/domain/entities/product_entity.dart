@@ -1,3 +1,4 @@
+import 'package:dynamic_app/shared/product/domain/entities/brand_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_specification_entity.dart';
 
 export 'package:dynamic_app/shared/product/domain/entities/product_specification_entity.dart';
@@ -108,13 +109,6 @@ class ProductEntity {
 
 // ====================== Entity های کمکی ======================
 
-class BrandEntity {
-  final int id;
-  final String faTitle;
-  final String enTitle;
-
-  const BrandEntity({required this.id, required this.faTitle,required this.enTitle});
-}
 
 class SellerEntity {
   final String name;

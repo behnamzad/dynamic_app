@@ -1,5 +1,6 @@
 import 'package:dynamic_app/core/config/strings.dart';
-import 'package:dynamic_app/shared/address/domain/entities/address_entity.dart';
+import 'package:dynamic_app/shared/orders/domain/entities/address_entity.dart';
+import 'package:dynamic_app/shared/product/domain/entities/brand_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 class MockData {
@@ -14,7 +15,7 @@ class MockData {
           titleEn:
               'Apple iPhone 17 Pro Max ZAA Single SIM + eSim Storage 256GB And RAM 12GB Mobile Phone - Not Activated',
           categoryTitle: ss.mobilePhone,
-          brand: BrandEntity(id: 0, faTitle: '', enTitle: ''),
+          brand: const BrandEntity(id: 0, titleFa: '', titleEn: ''),
 
           // Images
           images: [
@@ -52,10 +53,22 @@ class MockData {
           // Colors
           colors: [
             ProductColorEntity(id: '17', title: ss.orange, hexColor: '#FFA501'),
-            const ProductColorEntity(id: '42', title: '42', hexColor: '#000000'),
-            const ProductColorEntity(id: '12', title: '12', hexColor: '#000000'),
+            const ProductColorEntity(
+              id: '42',
+              title: '42',
+              hexColor: '#000000',
+            ),
+            const ProductColorEntity(
+              id: '12',
+              title: '12',
+              hexColor: '#000000',
+            ),
           ],
-          selectedColor: ProductColorEntity(id: '17', title: ss.orange, hexColor: '#FFA501'),
+          selectedColor: ProductColorEntity(
+            id: '17',
+            title: ss.orange,
+            hexColor: '#FFA501',
+          ),
 
           // Storages (در JSON نبود)
           storages: [],
@@ -74,9 +87,23 @@ class MockData {
             price: 3659990000,
             originalPrice: 3659990000,
             discountPercent: null,
-            color: ProductColorEntity(id: '17', title: ss.orange, hexColor: '#FFA501'),
-            themes: [ProductThemeEntity(title: ss.orange, type: 'colored', isMain: true)],
-            seller: SellerEntity(name: ss.digikala, satisfactionPercent: 100, performance: ss.excellent),
+            color: ProductColorEntity(
+              id: '17',
+              title: ss.orange,
+              hexColor: '#FFA501',
+            ),
+            themes: [
+              ProductThemeEntity(
+                title: ss.orange,
+                type: 'colored',
+                isMain: true,
+              ),
+            ],
+            seller: SellerEntity(
+              name: ss.digikala,
+              satisfactionPercent: 100,
+              performance: ss.excellent,
+            ),
             digiplus: DigiplusEntity(
               services: [
                 ss.freeDigikalaShipping,
@@ -88,7 +115,11 @@ class MockData {
               isJetEligible: true,
               fastShippingText: ss.fastDigikalaShipping,
             ),
-            insurance: const InsuranceEntity(title: 'digitalInsurance', price: 60390000, selected: false),
+            insurance: const InsuranceEntity(
+              title: 'digitalInsurance',
+              price: 60390000,
+              selected: false,
+            ),
             badges: [
               VariantBadgeEntity(
                 text: ss.onlyOneItemLeft,
@@ -113,7 +144,11 @@ class MockData {
           ],
 
           // Insurance (از mainVariant)
-          insurance: const InsuranceEntity(title: 'digitalInsurance', price: 60390000, selected: false),
+          insurance: const InsuranceEntity(
+            title: 'digitalInsurance',
+            price: 60390000,
+            selected: false,
+          ),
 
           // Breadcrumbs
           breadcrumbs: [],
@@ -145,9 +180,23 @@ class MockData {
   List<AddressEntity> addressList() {
     List<AddressEntity> list = [];
 
-    list.add(AddressEntity(province: ss.lorestan, city: ss.borujerd, exactAddress: ss.sampleBorujerdAddress));
+    list.add(
+      AddressEntity(
+        id: 'mock-1',
+        province: ss.lorestan,
+        city: ss.borujerd,
+        addressLine: ss.sampleBorujerdAddress,
+      ),
+    );
 
-    list.add(AddressEntity(province: ss.tehran, city: ss.tehran, exactAddress: ss.sampleTehranAddress));
+    list.add(
+      AddressEntity(
+        id: 'mock-2',
+        province: ss.tehran,
+        city: ss.tehran,
+        addressLine: ss.sampleTehranAddress,
+      ),
+    );
 
     return list;
   }

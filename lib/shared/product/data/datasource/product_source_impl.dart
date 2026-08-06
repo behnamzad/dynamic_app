@@ -3,8 +3,10 @@ import 'package:dynamic_app/di/di_const.dart';
 import 'package:dynamic_app/infrastructure/network/dio_caller.dart';
 import 'package:dynamic_app/shared/product/data/models/category/category_response.dart';
 import 'package:dynamic_app/shared/product/data/models/product/product_response.dart';
+import 'package:dynamic_app/shared/product/data/models/product_by_brand/product_by_brand_response.dart';
 import 'package:dynamic_app/shared/product/data/models/product_of_category/product_of_category_response.dart';
 import 'package:dynamic_app/shared/product/data/models/product_specifications/product_specifications_dto.dart';
+import 'package:dynamic_app/shared/product/data/models/search/search_response.dart';
 
 import 'product_date_source.dart';
 
@@ -15,18 +17,24 @@ class ProductDateSourceImpl implements ProductDateSource {
   ProductDateSourceImpl({@Named(DiConst.dioDigikala) required this.dioCaller});
 
   @override
-  Future<ApiResponse<ProductResponse>> search({required String query, int? page}) {
+  Future<ApiResponse<SearchResponse>> search({
+    required String query,
+    int? page,
+  }) {
     return dioCaller.get(
       'search/',
       queryParameters: {'q': query, if (page != null) 'page': page},
-      fromJson: ProductResponse.fromJson,
+      fromJson: SearchResponse.fromJson,
     );
   }
 
   @override
-  Future<ApiResponse<ProductResponse>> getProduct({required int id})  {
-      return dioCaller.get('product/', queryParameters: {'id': id}, fromJson: ProductResponse.fromJson);
-
+  Future<ApiResponse<ProductResponse>> getProduct({required int id}) {
+    return dioCaller.get(
+      'product/',
+      queryParameters: {'id': id},
+      fromJson: ProductResponse.fromJson,
+    );
   }
 
   @override
@@ -35,8 +43,10 @@ class ProductDateSourceImpl implements ProductDateSource {
   }
 
   @override
-  Future<ApiResponse<ProductOfCategoryResponse>> getProductByCategory({required int categoryId, int? page}) async {
-
+  Future<ApiResponse<ProductOfCategoryResponse>> getProductByCategory({
+    required int categoryId,
+    int? page,
+  }) async {
     return dioCaller.get(
       'category/',
       queryParameters: {'id': categoryId, if (page != null) 'page': page},
@@ -45,8 +55,25 @@ class ProductDateSourceImpl implements ProductDateSource {
   }
 
   @override
-  Future<ApiResponse<ProductSpecificationDto>> getProductSpecifications({required int id}) {
-    return dioCaller.get('product/specifications/', queryParameters: {'id': id}, fromJson: CategoryResponse.fromJson);
+  Future<ApiResponse<ProductByBrandResponse>> getProductByBrand({
+    required int brandId,
+    int? page,
+  }) {
+    return dioCaller.get(
+      'brand/',
+      queryParameters: {'id': brandId, if (page != null) 'page': page},
+      fromJson: ProductByBrandResponse.fromJson,
+    );
+  }
+
+  @override
+  Future<ApiResponse<ProductSpecificationDto>> getProductSpecifications({
+    required int id,
+  }) {
+    return dioCaller.get(
+      'product/specifications/',
+      queryParameters: {'id': id},
+      fromJson: CategoryResponse.fromJson,
+    );
   }
 }
-

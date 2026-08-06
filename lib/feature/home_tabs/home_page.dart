@@ -1,5 +1,7 @@
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
+import 'package:dynamic_app/feature/dialog/bottom_sheet_util.dart';
 import 'package:dynamic_app/feature/home_tabs/presentation/bloc/home_bloc.dart';
+import 'package:dynamic_app/feature/home_tabs/presentation/bottom_sheet/home_exit_bottom_sheet_content_widget.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget implements AutoRouteWrapper {
@@ -19,6 +21,7 @@ class HomePage extends StatefulWidget implements AutoRouteWrapper {
 class _HomePageState extends BaseState<HomePage> {
   late final ValueNotifier<bool> _hideTabsValueNotifier;
   late TabsRouter tabsRouter;
+  bool _isExitBottomSheetOpen = false;
   int homeTabIndex = 3;
   int searchTabIndex = 2;
   int cartTabIndex = 1;
@@ -33,6 +36,12 @@ class _HomePageState extends BaseState<HomePage> {
   int currentIndex = 1;
 
   @override
+  void dispose() {
+    _hideTabsValueNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {
@@ -40,27 +49,27 @@ class _HomePageState extends BaseState<HomePage> {
       },
       builder: (context, state) {
         return AutoTabsRouter(
-          routes: const [
-            Tab1ScreenRoute(),
-            Tab2ScreenRoute(),
-            Tab3ScreenRoute(),
-            Tab4ScreenRoute(),
-          ],
-          transitionBuilder: (context, child, animation) => FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+          routes: const [Tab1ScreenRoute(), Tab2ScreenRoute(), Tab3ScreenRoute(), Tab4ScreenRoute()],
+          transitionBuilder: (context, child, animation) => FadeTransition(opacity: animation, child: child),
           builder: (context, child) {
             tabsRouter = AutoTabsRouter.of(context);
 
-            return Scaffold(
+            return PopScope<Object?>(
+              canPop: false,
+              onPopInvokedWithResult: (didPop, result) {
+                if (didPop) return;
+                _handleBack(context);
+              },
+              child: Scaffold(
                 body: child,
                 bottomNavigationBar: ValueListenableBuilder(
                   valueListenable: _hideTabsValueNotifier,
                   builder: (BuildContext context, bool value, Widget? child) {
                     return value ? const SizedBox() : buildBottomNavigationBar(context, tabsRouter, [0]);
                   },
-                ),);
+                ),
+              ),
+            );
           },
         );
       },
@@ -94,25 +103,34 @@ class _HomePageState extends BaseState<HomePage> {
               },
               destinations: [
                 NavigationDestination(
-                  icon: _navigationBarIcon(icon: Icons.person_rounded, isSelected: tabsRouter.activeIndex == meTabIndex),
+                  icon: _navigationBarIcon(
+                    icon: Icons.person_rounded,
+                    isSelected: tabsRouter.activeIndex == meTabIndex,
+                  ),
                   tooltip: ss.personal,
                   label: ss.personal,
                 ),
                 NavigationDestination(
                   icon: _navigationBarIcon(
-                      icon: Icons.shopping_bag_rounded, isSelected: tabsRouter.activeIndex == cartTabIndex,),
+                    icon: Icons.shopping_bag_rounded,
+                    isSelected: tabsRouter.activeIndex == cartTabIndex,
+                  ),
                   tooltip: ss.cart,
                   label: ss.cart,
                 ),
                 NavigationDestination(
                   icon: _navigationBarIcon(
-                      icon: Icons.search_rounded, isSelected: tabsRouter.activeIndex == searchTabIndex,),
+                    icon: Icons.search_rounded,
+                    isSelected: tabsRouter.activeIndex == searchTabIndex,
+                  ),
                   tooltip: ss.search,
                   label: ss.search,
                 ),
                 NavigationDestination(
-                  icon:
-                      _navigationBarIcon(icon: Icons.home_rounded, isSelected: tabsRouter.activeIndex == homeTabIndex),
+                  icon: _navigationBarIcon(
+                    icon: Icons.home_rounded,
+                    isSelected: tabsRouter.activeIndex == homeTabIndex,
+                  ),
                   tooltip: ss.home,
                   label: ss.home,
                 ),
@@ -124,35 +142,30 @@ class _HomePageState extends BaseState<HomePage> {
     );
   }
 
-  Widget _navigationBarIcon({
-    required IconData icon,
-    required bool isSelected,
-  }) {
+  Widget _navigationBarIcon({required IconData icon, required bool isSelected}) {
     return Stack(
       alignment: Alignment.center,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 6, right: 6),
-          child: Icon(
-            icon,
-            color: isSelected ? context.scheme().primaryBold : context.scheme().mainText,
-            size: 28,
-          ),
+          child: Icon(icon, color: isSelected ? context.scheme().primaryBold : context.scheme().mainText, size: 28),
         ),
       ],
     );
   }
 
-  redCircleBadgeWidget() {
-    return Container(
-      height: 12,
-      width: 12,
-      decoration: BoxDecoration(
-          color: context.scheme().error,
-          borderRadius: BorderRadius.circular(100),
-          border: Border.all(
-              strokeAlign: BorderSide.strokeAlignOutside, color: context.scheme().mainBackground1, width: 2,),),
-    );
-  }
+  Future<void> _handleBack(BuildContext context) async {
+    if (tabsRouter.activeIndex != homeTabIndex) {
+      tabsRouter.setActiveIndex(homeTabIndex);
+      return;
+    }
 
+    if (_isExitBottomSheetOpen) return;
+    _isExitBottomSheetOpen = true;
+    try {
+      await bsUtil.openBottomSheet(context, contentChild: const HomeExitBottomSheetContentWidget());
+    } finally {
+      _isExitBottomSheetOpen = false;
+    }
+  }
 }

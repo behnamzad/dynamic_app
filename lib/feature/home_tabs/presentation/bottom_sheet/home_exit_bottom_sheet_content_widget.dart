@@ -15,15 +15,19 @@ class HomeExitBottomSheetContentWidget extends StatelessWidget {
         Container(
           width: 62,
           height: 62,
-          decoration: BoxDecoration(color: context.scheme().mainBackground3, borderRadius: BorderRadius.circular(100)),
-          child: Icon(
-            Icons.logout,
-            color: context.scheme().mainText,
-            size: 30,
+          decoration: BoxDecoration(
+            color: context.scheme().mainBackground3,
+            borderRadius: BorderRadius.circular(100),
           ),
+          child: Icon(Icons.logout, color: context.scheme().mainText, size: 30),
         ),
         const SizedBox(height: 26),
-        BzText('ss.exitDes', style: context.title2Medium.copyWith(color: context.scheme().mainText)),
+        BzText(
+          ss.exitDescription,
+          style: context.title2Medium.copyWith(
+            color: context.scheme().mainText,
+          ),
+        ),
         const SizedBox(height: 36),
         SizedBox(
           height: 50,
