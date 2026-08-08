@@ -1,0 +1,78 @@
+/// نام پایدار همه رویدادها؛ producerها برای ثبت و Python برای تشخیص نوع رفتار از wireName استفاده می‌کنند.
+enum BehaviorEventType {
+  sessionStart('session_start'),
+  sessionEnd('session_end'),
+  appForeground('app_foreground'),
+  appBackground('app_background'),
+  screenEnter('screen_enter'),
+  screenExit('screen_exit'),
+  backNavigation('back_navigation'),
+  tabChanged('tab_changed'),
+  routeChanged('route_changed'),
+  uiExposure('ui_exposure'),
+  bannerImpression('banner_impression'),
+  bannerClick('banner_click'),
+  productImpression('product_impression'),
+  productClick('product_click'),
+  productDetailView('product_detail_view'),
+  productViewEnd('product_view_end'),
+  productRevisit('product_revisit'),
+  productDescriptionView('product_description_view'),
+  productReviewsView('product_reviews_view'),
+  productGalleryOpen('product_gallery_open'),
+  productImageView('product_image_view'),
+  productImageSwipe('product_image_swipe'),
+  productScrollDepth('product_scroll_depth'),
+  productVariantSelected('product_variant_selected'),
+  productQuantityChanged('product_quantity_changed'),
+  productShared('product_shared'),
+  categoryImpression('category_impression'),
+  categoryClick('category_click'),
+  categoryView('category_view'),
+  categoryViewEnd('category_view_end'),
+  brandImpression('brand_impression'),
+  brandClick('brand_click'),
+  brandView('brand_view'),
+  brandViewEnd('brand_view_end'),
+  filterChanged('filter_changed'),
+  sortChanged('sort_changed'),
+  searchSubmitted('search_submitted'),
+  searchResultsImpression('search_results_impression'),
+  searchResultClick('search_result_click'),
+  searchRefined('search_refined'),
+  searchNoResults('search_no_results'),
+  cartAdd('cart_add'),
+  cartRemove('cart_remove'),
+  cartQuantityChanged('cart_quantity_changed'),
+  cartAbandoned('cart_abandoned'),
+  checkoutStarted('checkout_started'),
+  checkoutStepViewed('checkout_step_viewed'),
+  checkoutStepCompleted('checkout_step_completed'),
+  paymentAttempted('payment_attempted'),
+  purchaseSucceeded('purchase_succeeded'),
+  purchaseFailed('purchase_failed'),
+  recommendationRequested('recommendation_requested'),
+  recommendationImpression('recommendation_impression'),
+  recommendationClick('recommendation_click'),
+  recommendationDismissed('recommendation_dismissed'),
+  recommendationCartAdd('recommendation_cart_add'),
+  recommendationPurchase('recommendation_purchase'),
+  ratingSubmitted('rating_submitted'),
+  liked('liked'),
+  disliked('disliked'),
+  favoriteAdded('favorite_added'),
+  favoriteRemoved('favorite_removed'),
+  reviewSubmitted('review_submitted');
+
+  const BehaviorEventType(this.wireName);
+
+  final String wireName;
+
+  /// مقدار ذخیره‌شده در دیتابیس را هنگام خواندن مجدد به enum تبدیل می‌کند.
+  static BehaviorEventType fromWireName(String value) {
+    return values.firstWhere(
+      (BehaviorEventType type) => type.wireName == value,
+      orElse: () => throw ArgumentError.value(value, 'value', 'Unknown behavior event type'),
+    );
+  }
+}

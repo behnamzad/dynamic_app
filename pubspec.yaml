@@ -30,6 +30,8 @@ dependencies:
   injectable:
   shamsi_date: ^1.1.1
   shared_preferences:
+  sqflite:
+  path:
   supabase_flutter: ^2.0.0
   encrypt:
   get_it:

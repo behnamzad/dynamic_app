@@ -1,0 +1,96 @@
+import 'dart:async';
+
+import 'package:dynamic_app/core/local/user/user_manager.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event.dart';
+import 'package:dynamic_app/shared/behavior/domain/manager/behavior_logger.dart';
+import 'package:dynamic_app/shared/behavior/domain/repository/behavior_event_repository.dart';
+import 'package:dynamic_app/shared/behavior/domain/repository/behavior_event_uploader.dart';
+import 'package:injectable/injectable.dart';
+
+/// خلاصه یک چرخه sync؛ lifecycle یا ابزارهای عیب‌یابی از تعداد انتخاب و تأیید استفاده می‌کنند.
+class BehaviorSyncResult {
+  const BehaviorSyncResult({required this.selectedCount, required this.acknowledgedCount, this.skippedReason});
+
+  final int selectedCount;
+  final int acknowledgedCount;
+  final String? skippedReason;
+
+  bool get wasSkipped => skippedReason != null;
+}
+
+/// زمان‌بندی و هماهنگی sync؛ pendingها را batch می‌کند و فقط IDهای تأییدشده را synced می‌زند.
+@lazySingleton
+class BehaviorSyncCoordinator {
+  BehaviorSyncCoordinator(this._repository, this._uploader, this._logger, this._userManager);
+
+  static const defaultInterval = Duration(seconds: 60);
+  static const defaultMaxRows = 200;
+  static const defaultMaxBytes = 256 * 1024;
+
+  final BehaviorEventRepository _repository;
+  final BehaviorEventUploader _uploader;
+  final BehaviorLogger _logger;
+  final UserManager _userManager;
+
+  Timer? _timer;
+  bool _isSyncing = false;
+
+  bool get isRunning => _timer?.isActive ?? false;
+
+  /// در مرحله اتصال lifecycle اجرا می‌شود و sync دوره‌ای ۶۰ ثانیه‌ای را آغاز می‌کند.
+  void start({Duration interval = defaultInterval}) {
+    if (isRunning) return;
+    unawaited(syncNow());
+    _timer = Timer.periodic(interval, (Timer timer) => unawaited(syncNow()));
+  }
+
+  void stop() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  /// یک batch محدود را فوراً ارسال می‌کند؛ خطاها را ثبت و eventها را pending نگه می‌دارد.
+  Future<BehaviorSyncResult> syncNow({int maxRows = defaultMaxRows, int maxBytes = defaultMaxBytes}) async {
+    if (_isSyncing) {
+      return const BehaviorSyncResult(selectedCount: 0, acknowledgedCount: 0, skippedReason: 'sync_already_running');
+    }
+    final String? userId = _userManager.currentUserId;
+    if (userId == null) {
+      return const BehaviorSyncResult(selectedCount: 0, acknowledgedCount: 0, skippedReason: 'no_authenticated_user');
+    }
+
+    _isSyncing = true;
+    try {
+      await _logger.attributeAnonymousHistoryToCurrentUser();
+      final List<BehaviorEvent> batch = await _repository.getPendingBatch(
+        userId: userId,
+        maxRows: maxRows,
+        maxBytes: maxBytes,
+      );
+      if (batch.isEmpty) {
+        return const BehaviorSyncResult(selectedCount: 0, acknowledgedCount: 0);
+      }
+
+      final Set<String> selectedIds = batch.map((BehaviorEvent event) => event.eventId).toSet();
+      final DateTime attemptedAt = DateTime.now().toUtc();
+      try {
+        final Set<String> acknowledgedIds = await _uploader.upload(batch);
+        final Set<String> validAcknowledgements = acknowledgedIds.intersection(selectedIds);
+        await _repository.markSynced(validAcknowledgements, DateTime.now().toUtc());
+        final Set<String> unacknowledged = selectedIds.difference(validAcknowledgements);
+        if (unacknowledged.isNotEmpty) {
+          await _repository.markSyncFailed(unacknowledged, 'Server did not acknowledge these event IDs', attemptedAt);
+        }
+        return BehaviorSyncResult(selectedCount: selectedIds.length, acknowledgedCount: validAcknowledgements.length);
+      } catch (error) {
+        await _repository.markSyncFailed(selectedIds, error.toString(), attemptedAt);
+        return BehaviorSyncResult(selectedCount: selectedIds.length, acknowledgedCount: 0);
+      }
+    } finally {
+      _isSyncing = false;
+    }
+  }
+
+  @disposeMethod
+  void dispose() => stop();
+}
