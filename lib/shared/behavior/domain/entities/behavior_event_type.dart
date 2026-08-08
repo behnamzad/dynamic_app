@@ -19,6 +19,7 @@ enum BehaviorEventType {
   productRevisit('product_revisit'),
   productDescriptionView('product_description_view'),
   productReviewsView('product_reviews_view'),
+  productReviewsViewEnd('product_reviews_view_end'),
   productGalleryOpen('product_gallery_open'),
   productImageView('product_image_view'),
   productImageSwipe('product_image_swipe'),
@@ -72,7 +73,11 @@ enum BehaviorEventType {
   static BehaviorEventType fromWireName(String value) {
     return values.firstWhere(
       (BehaviorEventType type) => type.wireName == value,
-      orElse: () => throw ArgumentError.value(value, 'value', 'Unknown behavior event type'),
+      orElse: () => throw ArgumentError.value(
+        value,
+        'value',
+        'Unknown behavior event type',
+      ),
     );
   }
 }

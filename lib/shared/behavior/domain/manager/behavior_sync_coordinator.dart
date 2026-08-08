@@ -5,6 +5,7 @@ import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event.dart'
 import 'package:dynamic_app/shared/behavior/domain/manager/behavior_logger.dart';
 import 'package:dynamic_app/shared/behavior/domain/repository/behavior_event_repository.dart';
 import 'package:dynamic_app/shared/behavior/domain/repository/behavior_event_uploader.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 /// خلاصه یک چرخه sync؛ lifecycle یا ابزارهای عیب‌یابی از تعداد انتخاب و تأیید استفاده می‌کنند.
@@ -23,8 +24,8 @@ class BehaviorSyncResult {
 class BehaviorSyncCoordinator {
   BehaviorSyncCoordinator(this._repository, this._uploader, this._logger, this._userManager);
 
-  static const defaultInterval = Duration(seconds: 60);
-  static const defaultMaxRows = 200;
+  static const defaultInterval = Duration(seconds: 20);
+  static const defaultMaxRows = 100;
   static const defaultMaxBytes = 256 * 1024;
 
   final BehaviorEventRepository _repository;
@@ -40,11 +41,14 @@ class BehaviorSyncCoordinator {
   /// در مرحله اتصال lifecycle اجرا می‌شود و sync دوره‌ای ۶۰ ثانیه‌ای را آغاز می‌کند.
   void start({Duration interval = defaultInterval}) {
     if (isRunning) return;
+    _debugLog('SyncCoordinator started; interval= ${interval.inSeconds}s');
     unawaited(syncNow());
     _timer = Timer.periodic(interval, (Timer timer) => unawaited(syncNow()));
   }
 
   void stop() {
+    _debugLog('SyncCoordinator: sync_stopped');
+
     _timer?.cancel();
     _timer = null;
   }
@@ -52,10 +56,12 @@ class BehaviorSyncCoordinator {
   /// یک batch محدود را فوراً ارسال می‌کند؛ خطاها را ثبت و eventها را pending نگه می‌دارد.
   Future<BehaviorSyncResult> syncNow({int maxRows = defaultMaxRows, int maxBytes = defaultMaxBytes}) async {
     if (_isSyncing) {
+      _debugLog('skipped: sync_already_running');
       return const BehaviorSyncResult(selectedCount: 0, acknowledgedCount: 0, skippedReason: 'sync_already_running');
     }
     final String? userId = _userManager.currentUserId;
     if (userId == null) {
+      _debugLog('skipped: no_authenticated_user');
       return const BehaviorSyncResult(selectedCount: 0, acknowledgedCount: 0, skippedReason: 'no_authenticated_user');
     }
 
@@ -68,10 +74,12 @@ class BehaviorSyncCoordinator {
         maxBytes: maxBytes,
       );
       if (batch.isEmpty) {
+        _debugLog('completed: no pending events for the authenticated user');
         return const BehaviorSyncResult(selectedCount: 0, acknowledgedCount: 0);
       }
 
       final Set<String> selectedIds = batch.map((BehaviorEvent event) => event.eventId).toSet();
+      _debugLog('uploading ${selectedIds.length} pending event(s)');
       final DateTime attemptedAt = DateTime.now().toUtc();
       try {
         final Set<String> acknowledgedIds = await _uploader.upload(batch);
@@ -81,8 +89,10 @@ class BehaviorSyncCoordinator {
         if (unacknowledged.isNotEmpty) {
           await _repository.markSyncFailed(unacknowledged, 'Server did not acknowledge these event IDs', attemptedAt);
         }
+        _debugLog('completed: selected=${selectedIds.length}, acknowledged=${validAcknowledgements.length}');
         return BehaviorSyncResult(selectedCount: selectedIds.length, acknowledgedCount: validAcknowledgements.length);
       } catch (error) {
+        _debugLog('failed: $error');
         await _repository.markSyncFailed(selectedIds, error.toString(), attemptedAt);
         return BehaviorSyncResult(selectedCount: selectedIds.length, acknowledgedCount: 0);
       }
@@ -93,4 +103,10 @@ class BehaviorSyncCoordinator {
 
   @disposeMethod
   void dispose() => stop();
+
+  void _debugLog(String message) {
+    if (kDebugMode) {
+      debugPrint('[BehaviorSync] $message');
+    }
+  }
 }

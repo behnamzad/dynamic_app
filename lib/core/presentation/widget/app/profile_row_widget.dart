@@ -1,6 +1,9 @@
+import 'package:dynamic_app/core/config/configs.dart';
 import 'package:dynamic_app/core/local/user/user.dart';
 import 'package:dynamic_app/core/presentation/widget/app/avatar_widget.dart';
+import 'package:dynamic_app/core/util/common_bloc_imports.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
+import 'package:dynamic_app/shared/behavior/data/datasource/behavior_local_data_source.dart';
 
 class ProfileRowWidget extends StatelessWidget {
   final AppUser user;
@@ -25,7 +28,15 @@ class ProfileRowWidget extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          as.hoshopLogo.svg(height: 64, width: 64),
+          BzGestureDetector(
+            onLongPress: inject<Configs>().allowToDeleteLocalLogs
+                ? () async {
+                    int deletedRow = await inject<BehaviorLocalDataSource>().deleteAllEvents();
+                    inject<Logger>().e('deletedRow => $deletedRow');
+                  }
+                : () {},
+            child: as.hoshopLogo.svg(height: 64, width: 64),
+          ),
         ],
       ),
     );

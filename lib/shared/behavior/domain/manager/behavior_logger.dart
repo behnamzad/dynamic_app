@@ -12,9 +12,14 @@ import 'package:uuid/uuid.dart';
 /// ورودی مرکزی ثبت رفتار؛ producerها draft می‌دهند و logger آن را فقط در دیتابیس محلی ذخیره می‌کند.
 @lazySingleton
 class BehaviorLogger {
-  BehaviorLogger(this._repository, this._sessionManager, this._userManager, this._packageInfo);
+  BehaviorLogger(
+    this._repository,
+    this._sessionManager,
+    this._userManager,
+    this._packageInfo,
+  );
 
-  static const currentSchemaVersion = 1;
+  static const currentSchemaVersion = 2;
 
   final BehaviorEventRepository _repository;
   final BehaviorSessionManager _sessionManager;
@@ -28,7 +33,9 @@ class BehaviorLogger {
     BehaviorEventCatalog.validateDraft(draft);
     final DateTime now = DateTime.now().toUtc();
     final DateTime occurredAt = (draft.occurredAt ?? now).toUtc();
-    final String sessionId = await _sessionManager.ensureActiveSession(now: occurredAt);
+    final String sessionId = await _sessionManager.ensureActiveSession(
+      now: occurredAt,
+    );
     final String? authenticatedUserId = _userManager.currentUserId;
     final BehaviorEvent event = BehaviorEvent(
       eventId: _uuid.v4(),
@@ -62,6 +69,24 @@ class BehaviorLogger {
     return event.eventId;
   }
 
+  /// UI producers use this entry point so telemetry never delays or breaks the
+  /// interaction that produced it. Validation/storage failures remain visible
+  /// in debug builds while the application flow continues normally.
+  void recordNonBlocking(BehaviorEventDraft draft) {
+    _recordIgnoringFailure(draft);
+  }
+
+  Future<void> _recordIgnoringFailure(BehaviorEventDraft draft) async {
+    try {
+      await record(draft);
+    } catch (error, stackTrace) {
+      debugPrint(
+        'Behavior event ${draft.type.wireName} was not recorded: $error',
+      );
+      debugPrintStack(stackTrace: stackTrace);
+    }
+  }
+
   /// پس از login، eventهای ناشناس و هنوز pending همین نصب را به کاربر فعلی منتسب می‌کند.
   Future<void> attributeAnonymousHistoryToCurrentUser() async {
     final String? userId = _userManager.currentUserId;
@@ -69,7 +94,10 @@ class BehaviorLogger {
       return;
     }
     await _sessionManager.ensureActiveSession();
-    await _repository.attributePendingAnonymousEvents(anonymousId: _sessionManager.anonymousId, userId: userId);
+    await _repository.attributePendingAnonymousEvents(
+      anonymousId: _sessionManager.anonymousId,
+      userId: userId,
+    );
   }
 
   String get _platformName => kIsWeb ? 'web' : defaultTargetPlatform.name;

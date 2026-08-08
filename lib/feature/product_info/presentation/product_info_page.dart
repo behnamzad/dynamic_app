@@ -4,6 +4,11 @@ import 'package:dynamic_app/core/presentation/widget/bz_slider_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/feature/product_info/presentation/bloc/product_info_bloc.dart';
 import 'package:dynamic_app/feature/product_info/presentation/widget/comment_card_widget.dart';
+import 'package:dynamic_app/shared/behavior/data/mapper/product_behavior_snapshot_mapper.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_payload.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_type.dart';
+import 'package:dynamic_app/shared/behavior/domain/factory/behavior_event_draft_factory.dart';
+import 'package:dynamic_app/shared/behavior/domain/manager/behavior_logger.dart';
 import 'package:dynamic_app/shared/cart/domain/manager/cart_manager.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
@@ -26,12 +31,35 @@ class ProductInfoPage extends StatefulWidget implements AutoRouteWrapper {
 class _ProductInfoPageState extends State<ProductInfoPage> {
   late ProductEntity _product;
   late CarouselSliderController _carouselSliderController;
+  late final BehaviorLogger _behaviorLogger;
+  DateTime? _detailViewedAt;
+  bool _detailViewRecorded = false;
+  int _lastImageIndex = 0;
+  final Set<int> _recordedScrollDepths = <int>{};
+  int? _quantityBeforeCartAction;
+  bool? _pendingCartActionIsAdd;
 
   @override
   void initState() {
     _product = widget.product;
     _carouselSliderController = CarouselSliderController();
+    _behaviorLogger = inject<BehaviorLogger>();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (_detailViewRecorded) {
+      _behaviorLogger.recordNonBlocking(
+        BehaviorEventDraftFactory.product(
+          type: BehaviorEventType.productViewEnd,
+          product: _product.toBehaviorSnapshot(),
+          sourceScreen: 'product_detail',
+          durationMs: DateTime.now().difference(_detailViewedAt!).inMilliseconds,
+        ),
+      );
+    }
+    super.dispose();
   }
 
   @override
@@ -43,15 +71,19 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
         }
         if (state.status.isLoaded) {
           _product = state.productEntity!;
+          _recordDetailViewOnce();
         }
         switch (state.cartActionStatus) {
           case CartActionStatus.added:
+            _recordCartResult(succeeded: true);
             showToastSuccess(ss.productAddedToCart);
           case CartActionStatus.removed:
+            _recordCartResult(succeeded: true);
             if (!state.isInCart) {
               showToastSuccess(ss.productRemovedFromCart);
             }
           case CartActionStatus.failed:
+            _recordCartResult(succeeded: false);
             showToastError(state.errorMessage ?? ss.cartOperationError);
           case CartActionStatus.initial:
           case CartActionStatus.loading:
@@ -75,9 +107,17 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
   Widget _body(BuildContext context, ProductInfoState state) {
     return Stack(
       children: [
-        ListView(
-          padding: const EdgeInsets.only(bottom: 100),
-          children: [_topBar(context), _breadcrumb(context), _productImage(context), _productInfoCard(context, state)],
+        NotificationListener<ScrollNotification>(
+          onNotification: _onProductScroll,
+          child: ListView(
+            padding: const EdgeInsets.only(bottom: 100),
+            children: [
+              _topBar(context),
+              _breadcrumb(context),
+              _productImage(context),
+              _productInfoCard(context, state),
+            ],
+          ),
         ),
         Align(alignment: Alignment.bottomCenter, child: _addToCart(context, state)),
       ],
@@ -151,8 +191,9 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
             viewportFraction: 1,
             indicatorIntoSlider: false,
             controller: _carouselSliderController,
+            autoPlay: false,
             showIndicator: true,
-            onPageChanged: (int index) {},
+            onPageChanged: (int index) => _recordImageChange(index, images.length),
           ),
         ),
       ],
@@ -467,7 +508,7 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
               ...comments.map((ProductCommentEntity comment) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 10),
-                  child: CommentCardWidget(comment: comment),
+                  child: CommentCardWidget(comment: comment, product: _product),
                 );
               }),
             ],
@@ -521,6 +562,8 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
                       showLoading: state.cartActionStatus.isLoading,
                       enabled: _product.available && !state.cartActionStatus.isLoading,
                       onPressed: () {
+                        _quantityBeforeCartAction = quantity;
+                        _pendingCartActionIsAdd = true;
                         context.read<ProductInfoBloc>().add(ProductInfoEvent.addToCart(_product));
                       },
                     ),
@@ -565,6 +608,8 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
                 onPressed: isLoading
                     ? null
                     : () {
+                        _quantityBeforeCartAction = quantity;
+                        _pendingCartActionIsAdd = false;
                         context.read<ProductInfoBloc>().add(ProductInfoEvent.removeFromCart(_product.id));
                       },
                 icon: Icon(
@@ -586,6 +631,8 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
                 onPressed: isLoading
                     ? null
                     : () {
+                        _quantityBeforeCartAction = quantity;
+                        _pendingCartActionIsAdd = true;
                         context.read<ProductInfoBloc>().add(ProductInfoEvent.addToCart(_product));
                       },
                 icon: Icon(Icons.add_rounded, color: isLoading ? color.withValues(alpha: 0.45) : color, size: 28),
@@ -603,5 +650,106 @@ class _ProductInfoPageState extends State<ProductInfoPage> {
     final int? colorValue = int.tryParse(normalizedColor, radix: 16);
 
     return Color(colorValue ?? 0xFF000000);
+  }
+
+  void _recordDetailViewOnce() {
+    if (_detailViewRecorded) return;
+    _detailViewRecorded = true;
+    _detailViewedAt = DateTime.now();
+    _behaviorLogger.recordNonBlocking(
+      BehaviorEventDraftFactory.product(
+        type: BehaviorEventType.productDetailView,
+        product: _product.toBehaviorSnapshot(),
+        sourceScreen: 'product_detail',
+        payload: const ProductBehaviorPayload(displaySource: 'product_list'),
+      ),
+    );
+    if (_product.images.isNotEmpty) {
+      _behaviorLogger.recordNonBlocking(
+        BehaviorEventDraftFactory.product(
+          type: BehaviorEventType.productImageView,
+          product: _product.toBehaviorSnapshot(),
+          sourceScreen: 'product_detail',
+          payload: ProductBehaviorPayload(imageIndex: 0, imageCount: _product.images.length, distinctImagesViewed: 1),
+        ),
+      );
+    }
+  }
+
+  void _recordImageChange(int index, int imageCount) {
+    if (index == _lastImageIndex) return;
+    final direction = index > _lastImageIndex ? 'next' : 'previous';
+    _lastImageIndex = index;
+    final payload = ProductBehaviorPayload(imageIndex: index, imageCount: imageCount, swipeDirection: direction);
+    _behaviorLogger.recordNonBlocking(
+      BehaviorEventDraftFactory.product(
+        type: BehaviorEventType.productImageSwipe,
+        product: _product.toBehaviorSnapshot(),
+        sourceScreen: 'product_detail',
+        payload: payload,
+      ),
+    );
+    _behaviorLogger.recordNonBlocking(
+      BehaviorEventDraftFactory.product(
+        type: BehaviorEventType.productImageView,
+        product: _product.toBehaviorSnapshot(),
+        sourceScreen: 'product_detail',
+        payload: payload,
+      ),
+    );
+  }
+
+  bool _onProductScroll(ScrollNotification notification) {
+    if (!_detailViewRecorded || notification.metrics.axis != Axis.vertical) {
+      return false;
+    }
+    final double maxExtent = notification.metrics.maxScrollExtent;
+    if (maxExtent <= 0) return false;
+
+    final double contentExtent = maxExtent + notification.metrics.viewportDimension;
+    final double visibleBottom =
+        notification.metrics.pixels.clamp(0.0, maxExtent) + notification.metrics.viewportDimension;
+    final double depthPercent = (visibleBottom / contentExtent) * 100;
+    for (final int threshold in const <int>[25, 50, 75, 100]) {
+      if (depthPercent < threshold || !_recordedScrollDepths.add(threshold)) {
+        continue;
+      }
+      _behaviorLogger.recordNonBlocking(
+        BehaviorEventDraftFactory.product(
+          type: BehaviorEventType.productScrollDepth,
+          product: _product.toBehaviorSnapshot(),
+          sourceScreen: 'product_detail',
+          payload: ProductBehaviorPayload(scrollDepthPercent: threshold.toDouble()),
+        ),
+      );
+    }
+    return false;
+  }
+
+  void _recordCartResult({required bool succeeded}) {
+    final quantityBefore = _quantityBeforeCartAction;
+    final isAdd = _pendingCartActionIsAdd;
+    if (quantityBefore == null || isAdd == null) return;
+    final quantityAfter = succeeded ? inject<CartManager>().findProduct(_product.id)?.quantity ?? 0 : quantityBefore;
+    final eventType = isAdd
+        ? (quantityBefore == 0 ? BehaviorEventType.cartAdd : BehaviorEventType.cartQuantityChanged)
+        : (quantityBefore == 1 ? BehaviorEventType.cartRemove : BehaviorEventType.cartQuantityChanged);
+    final cart = inject<CartManager>().cart;
+    _behaviorLogger.recordNonBlocking(
+      BehaviorEventDraftFactory.cart(
+        type: eventType,
+        product: _product.toBehaviorSnapshot(),
+        sourceScreen: 'product_detail',
+        status: succeeded ? 'succeeded' : 'failed',
+        payload: CartBehaviorPayload(
+          quantityBefore: quantityBefore,
+          quantityAfter: quantityAfter,
+          cartProductIds: cart.products.map((item) => item.productId.toString()).toList(growable: false),
+          cartProductCount: cart.products.length,
+        ),
+      ),
+    );
+    _quantityBeforeCartAction = null;
+    _pendingCartActionIsAdd = null;
   }
 }

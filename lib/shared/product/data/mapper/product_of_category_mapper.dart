@@ -7,14 +7,26 @@ import 'package:dynamic_app/shared/product/domain/entities/search_result_entity.
 
 extension ProductOfCategoryMapper on ProductOfCategoryResponse {
   SearchResultEntity toEntity() {
+    final List<BrandEntity> brands = result
+        .expand((item) => item.data.brands ?? const <BrandDto>[])
+        .map(
+          (brand) => BrandEntity(
+            id: brand.id,
+            titleFa: brand.titleFa,
+            titleEn: brand.titleEn,
+            image: brand.image,
+          ),
+        )
+        .toList(growable: false);
     return SearchResultEntity(
-      brands: result
-          .expand((item) => item.data.brands ?? const <BrandDto>[])
-          .map((brand) => BrandEntity(id: brand.id, titleFa: brand.titleFa, titleEn: brand.titleEn, image: brand.image))
-          .toList(growable: false),
+      brands: brands,
       products: result
           .expand((item) => item.data.products ?? const <ProductDto>[])
-          .map((product) => product.toEntity())
+          .map(
+            (product) => product.toEntity(
+              brandOverride: resolveProductBrand(product, brands),
+            ),
+          )
           .toList(growable: false),
     );
   }

@@ -41,7 +41,33 @@ class BehaviorEventDraftFactory {
       product: product,
       sourceScreen: sourceScreen,
       occurredAt: occurredAt,
-      payload: ProductBehaviorPayload(contentType: 'reviews', reviewCount: reviewCount, entryTrigger: entryTrigger),
+      payload: ProductBehaviorPayload(
+        contentType: 'reviews',
+        reviewCount: reviewCount,
+        entryTrigger: entryTrigger,
+      ),
+    );
+  }
+
+  /// Records the observable end of a reviews-area visit so reading dwell can
+  /// be derived without misclassifying it as the end of the product view.
+  static BehaviorEventDraft productReviewsViewEnd({
+    required BehaviorProductSnapshot product,
+    required String sourceScreen,
+    required String entryTrigger,
+    required int durationMs,
+    DateTime? occurredAt,
+  }) {
+    return BehaviorEventDraft(
+      type: BehaviorEventType.productReviewsViewEnd,
+      product: product,
+      sourceScreen: sourceScreen,
+      occurredAt: occurredAt,
+      durationMs: durationMs,
+      payload: ProductBehaviorPayload(
+        contentType: 'reviews',
+        entryTrigger: entryTrigger,
+      ),
     );
   }
 
@@ -89,6 +115,7 @@ class BehaviorEventDraftFactory {
     required String sourceScreen,
     required CartBehaviorPayload payload,
     BehaviorProductSnapshot product = const BehaviorProductSnapshot(),
+    String? status,
     DateTime? occurredAt,
   }) {
     return BehaviorEventDraft(
@@ -96,6 +123,7 @@ class BehaviorEventDraftFactory {
       product: product,
       sourceScreen: sourceScreen,
       payload: payload,
+      status: status,
       occurredAt: occurredAt,
     );
   }

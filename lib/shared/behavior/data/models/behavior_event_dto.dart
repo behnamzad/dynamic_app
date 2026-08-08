@@ -95,13 +95,10 @@ class BehaviorEventDto {
     });
   }
 
-  int get serializedRemoteBytes =>
-      utf8.encode(jsonEncode(toRemoteMap())).length;
+  int get serializedRemoteBytes => utf8.encode(jsonEncode(toRemoteMap())).length;
 
   factory BehaviorEventDto.fromLocalMap(Map<String, Object?> map) {
-    final Map<String, dynamic> subjectJson = _jsonMap(
-      map['subject_snapshot_json'],
-    );
+    final Map<String, dynamic> subjectJson = _jsonMap(map['subject_snapshot_json']);
     final Map<String, dynamic> payloadJson = _jsonMap(map['payload_json']);
     final Map<String, dynamic> contextJson = _jsonMap(map['context_json']);
     return BehaviorEventDto(
@@ -111,12 +108,8 @@ class BehaviorEventDto {
         anonymousId: map['anonymous_id']!.toString(),
         sessionId: map['session_id']!.toString(),
         type: BehaviorEventType.fromWireName(map['event_type']!.toString()),
-        eventTimestamp: DateTime.parse(
-          map['event_timestamp']!.toString(),
-        ).toUtc(),
-        clientGeneratedAt: DateTime.parse(
-          map['client_generated_at']!.toString(),
-        ).toUtc(),
+        eventTimestamp: DateTime.parse(map['event_timestamp']!.toString()).toUtc(),
+        clientGeneratedAt: DateTime.parse(map['client_generated_at']!.toString()).toUtc(),
         appVersion: map['app_version']!.toString(),
         schemaVersion: (map['schema_version'] as num).toInt(),
         isAuthenticated: (map['is_authenticated'] as num).toInt() == 1,
@@ -130,9 +123,7 @@ class BehaviorEventDto {
         position: (map['position'] as num?)?.toInt(),
         status: map['event_status']?.toString(),
       ),
-      syncStatus: BehaviorSyncStatus.fromWireName(
-        map['sync_status']!.toString(),
-      ),
+      syncStatus: BehaviorSyncStatus.fromWireName(map['sync_status']!.toString()),
       syncAttemptCount: (map['sync_attempt_count'] as num?)?.toInt() ?? 0,
       lastSyncAttemptAt: _date(map['last_sync_attempt_at']),
       lastSyncError: map['last_sync_error']?.toString(),
@@ -148,8 +139,7 @@ class BehaviorEventDto {
     return decoded is Map ? Map<String, dynamic>.from(decoded) : {};
   }
 
-  static DateTime? _date(Object? value) =>
-      value == null ? null : DateTime.tryParse(value.toString())?.toUtc();
+  static DateTime? _date(Object? value) => value == null ? null : DateTime.tryParse(value.toString())?.toUtc();
 
   /// فیلدهای بدون مقدار را پیش از ارسال حذف می‌کند تا payload شبکه فقط داده واقعی داشته باشد.
   static Map<String, dynamic> _removeNullValues(Map<String, dynamic> source) {
@@ -162,11 +152,7 @@ class BehaviorEventDto {
       } else if (value is List) {
         result[entry.key] = value
             .where((dynamic item) => item != null)
-            .map(
-              (dynamic item) => item is Map
-                  ? _removeNullValues(Map<String, dynamic>.from(item))
-                  : item,
-            )
+            .map((dynamic item) => item is Map ? _removeNullValues(Map<String, dynamic>.from(item)) : item)
             .toList(growable: false);
       } else {
         result[entry.key] = value;

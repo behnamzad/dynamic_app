@@ -3,6 +3,11 @@ import 'package:dynamic_app/core/presentation/widget/bz_retry_widget.dart';
 import 'package:dynamic_app/core/presentation/widget/bz_shimmer_loading_widget.dart';
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/feature/search/presentation/bloc/search_bloc.dart';
+import 'package:dynamic_app/shared/behavior/data/mapper/product_behavior_snapshot_mapper.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_payload.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_type.dart';
+import 'package:dynamic_app/shared/behavior/domain/factory/behavior_event_draft_factory.dart';
+import 'package:dynamic_app/shared/behavior/domain/manager/behavior_logger.dart';
 import 'package:dynamic_app/shared/category/domain/entities/category_entity.dart';
 
 class HorizontalProductList extends StatefulWidget implements AutoRouteWrapper {
@@ -16,7 +21,9 @@ class HorizontalProductList extends StatefulWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
     key: ValueKey('horizontal-product-list-${categoryEntity.id}'),
-    create: (_) => inject<SearchBloc>()..add(SearchEvent.getProductByCategory(entity: categoryEntity)),
+    create: (_) =>
+        inject<SearchBloc>()
+          ..add(SearchEvent.getProductByCategory(entity: categoryEntity)),
     child: this,
   );
 }
@@ -25,6 +32,14 @@ class _HorizontalProductListState extends State<HorizontalProductList>
     with AutomaticKeepAliveClientMixin<HorizontalProductList> {
   static const double _headerHeight = 52;
   static const double _sectionHeight = _headerHeight + Dimen.productCardHeight;
+  late final BehaviorLogger _behaviorLogger;
+  bool _categoryImpressionRecorded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _behaviorLogger = inject<BehaviorLogger>();
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -48,6 +63,22 @@ class _HorizontalProductListState extends State<HorizontalProductList>
 
   Widget _loadedBody(BuildContext context, SearchState state) {
     final products = state.result!.products.take(10).toList(growable: false);
+    if (!_categoryImpressionRecorded) {
+      _categoryImpressionRecorded = true;
+      _behaviorLogger.recordNonBlocking(
+        BehaviorEventDraftFactory.categoryOrBrand(
+          type: BehaviorEventType.categoryImpression,
+          product: widget.categoryEntity.toBehaviorSnapshot(),
+          sourceScreen: 'home_shop',
+          payload: CategoryBrandBehaviorPayload(
+            displaySource: 'home_category_section',
+            visibleProductIds: products
+                .map((product) => product.id.toString())
+                .toList(growable: false),
+          ),
+        ),
+      );
+    }
 
     return Column(
       children: [
@@ -59,18 +90,44 @@ class _HorizontalProductListState extends State<HorizontalProductList>
               children: [
                 BzText(
                   widget.categoryEntity.name,
-                  style: context.body2Bold.copyWith(color: context.scheme().titleText),
+                  style: context.body2Bold.copyWith(
+                    color: context.scheme().titleText,
+                  ),
                 ),
                 const Spacer(),
                 BzGestureDetector(
-                  onTap: () => context.pushRoute(
-                    ProductListPageRoute(categoryEntity: widget.categoryEntity, searchBloc: context.read<SearchBloc>()),
-                  ),
+                  onTap: () {
+                    _behaviorLogger.recordNonBlocking(
+                      BehaviorEventDraftFactory.categoryOrBrand(
+                        type: BehaviorEventType.categoryClick,
+                        product: widget.categoryEntity.toBehaviorSnapshot(),
+                        sourceScreen: 'home_shop',
+                        payload: const CategoryBrandBehaviorPayload(
+                          displaySource: 'home_category_section',
+                        ),
+                      ),
+                    );
+                    context.pushRoute(
+                      ProductListPageRoute(
+                        categoryEntity: widget.categoryEntity,
+                        searchBloc: context.read<SearchBloc>(),
+                      ),
+                    );
+                  },
                   child: Row(
                     children: [
-                      BzText(ss.seeMore, style: context.body3Medium.copyWith(color: context.scheme().mainText)),
+                      BzText(
+                        ss.seeMore,
+                        style: context.body3Medium.copyWith(
+                          color: context.scheme().mainText,
+                        ),
+                      ),
                       const HGap(4),
-                      Icon(Icons.arrow_forward_ios, size: 14, color: context.scheme().titleText),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 14,
+                        color: context.scheme().titleText,
+                      ),
                     ],
                   ),
                 ),
@@ -85,7 +142,11 @@ class _HorizontalProductListState extends State<HorizontalProductList>
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: products.length,
-              itemBuilder: (context, index) => ProductWidget.card(entity: products[index]),
+              itemBuilder: (context, index) => ProductWidget.card(
+                entity: products[index],
+                sourceScreen: 'home_category_section',
+                position: index,
+              ),
             ),
           ),
         ),
@@ -102,9 +163,19 @@ class _HorizontalProductListState extends State<HorizontalProductList>
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: Row(
               children: [
-                BzShimmerLoadingWidget(height: 18, width: 90, isLoading: true, child: SizedBox.shrink()),
+                BzShimmerLoadingWidget(
+                  height: 18,
+                  width: 90,
+                  isLoading: true,
+                  child: SizedBox.shrink(),
+                ),
                 Spacer(),
-                BzShimmerLoadingWidget(height: 18, width: 70, isLoading: true, child: SizedBox.shrink()),
+                BzShimmerLoadingWidget(
+                  height: 18,
+                  width: 70,
+                  isLoading: true,
+                  child: SizedBox.shrink(),
+                ),
               ],
             ),
           ),
@@ -134,8 +205,9 @@ class _HorizontalProductListState extends State<HorizontalProductList>
 
   Widget _failedLoad(BuildContext context) {
     return BzRetryWidget(
-      onRetryClick: () =>
-          context.read<SearchBloc>().add(SearchEvent.getProductByCategory(entity: widget.categoryEntity)),
+      onRetryClick: () => context.read<SearchBloc>().add(
+        SearchEvent.getProductByCategory(entity: widget.categoryEntity),
+      ),
     );
   }
 }

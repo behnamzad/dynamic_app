@@ -6,6 +6,10 @@ import 'package:dynamic_app/feature/checkout_cart/presentation/widget/add_addres
 import 'package:dynamic_app/feature/checkout_cart/presentation/widget/address_widget.dart';
 import 'package:dynamic_app/feature/checkout_cart/presentation/widget/checkout_row.dart';
 import 'package:dynamic_app/feature/dialog/bottom_sheet_util.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_payload.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_type.dart';
+import 'package:dynamic_app/shared/behavior/domain/factory/behavior_event_draft_factory.dart';
+import 'package:dynamic_app/shared/behavior/domain/manager/behavior_logger.dart';
 import 'package:dynamic_app/shared/orders/domain/entities/address_entity.dart';
 
 @RoutePage()
@@ -162,7 +166,20 @@ class CheckOutPage extends StatelessWidget implements AutoRouteWrapper {
         child: BzButton.submit(
           text: ss.confirmAndContinue,
           enabled: state.selectedAddress != null && state.cart.products.isNotEmpty,
-          onPressed: () => context.pushRoute(OrderReviewPageRoute(checkoutCartBloc: context.read<CheckoutCartBloc>())),
+          onPressed: () {
+            inject<BehaviorLogger>().recordNonBlocking(
+              BehaviorEventDraftFactory.checkout(
+                type: BehaviorEventType.checkoutStepCompleted,
+                sourceScreen: 'checkout_address',
+                payload: const CheckoutBehaviorPayload(
+                  stepName: 'address_and_delivery',
+                  stepIndex: 0,
+                  outcome: 'completed',
+                ),
+              ),
+            );
+            context.pushRoute(OrderReviewPageRoute(checkoutCartBloc: context.read<CheckoutCartBloc>()));
+          },
         ),
       ),
     );

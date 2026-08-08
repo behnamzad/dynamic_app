@@ -2,6 +2,11 @@ import 'package:dynamic_app/core/presentation/widget/app/cart_product_widget.dar
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/core/util/extension/string_ext.dart';
 import 'package:dynamic_app/feature/cart/presentation/bloc/cart_bloc.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_payload.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_type.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_product_snapshot.dart';
+import 'package:dynamic_app/shared/behavior/domain/factory/behavior_event_draft_factory.dart';
+import 'package:dynamic_app/shared/behavior/domain/manager/behavior_logger.dart';
 import 'package:dynamic_app/shared/orders/domain/entities/order_entity.dart';
 
 @RoutePage()
@@ -171,6 +176,31 @@ class _CartPageState extends State<CartPage> {
         child: BzButton.submit(
           text: ss.continueToByProcess,
           onPressed: () async {
+            final products = state.cart.products;
+            inject<BehaviorLogger>().recordNonBlocking(
+              BehaviorEventDraftFactory.checkout(
+                type: BehaviorEventType.checkoutStarted,
+                sourceScreen: 'cart',
+                payload: CheckoutBehaviorPayload(
+                  stepName: 'address_and_delivery',
+                  stepIndex: 0,
+                  productIds: products.map((product) => product.productId.toString()).toList(growable: false),
+                  productSnapshots: products
+                      .map(
+                        (product) => BehaviorProductSnapshot(
+                          productId: product.productId.toString(),
+                          productName: product.productName,
+                          productTitle: product.productName,
+                          categoryId: product.categoryId.toString(),
+                        ),
+                      )
+                      .toList(growable: false),
+                  quantities: <String, int>{
+                    for (final product in products) product.productId.toString(): product.quantity,
+                  },
+                ),
+              ),
+            );
             await context.pushRoute(const CheckOutPageRoute());
             if (context.mounted) {
               context.read<CartBloc>().add(const CartEvent.initialize());

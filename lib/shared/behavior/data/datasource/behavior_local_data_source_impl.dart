@@ -95,4 +95,10 @@ class BehaviorLocalDataSourceImpl implements BehaviorLocalDataSource {
       whereArgs: [anonymousId, 'pending'],
     );
   }
+
+  @override
+  Future<int> deleteAllEvents() async {
+    final Database database = _behaviorDatabase.database;
+    return database.delete(BehaviorDatabase.eventsTable);
+  }
 }

@@ -27,9 +27,7 @@ class BehaviorDatabase {
     if (existing != null && existing.isOpen) {
       return Future.value();
     }
-    return _initializationFuture ??= _open().whenComplete(
-      () => _initializationFuture = null,
-    );
+    return _initializationFuture ??= _open().whenComplete(() => _initializationFuture = null);
   }
 
   Future<void> _open() async {
@@ -37,8 +35,9 @@ class BehaviorDatabase {
     _database = await openDatabase(
       path.join(databasesPath, databaseName),
       version: databaseVersion,
-      onConfigure: (Database database) =>
-          database.execute('PRAGMA journal_mode = WAL'),
+      onConfigure: (Database database) async {
+        await database.rawQuery('PRAGMA journal_mode = WAL');
+      },
       onCreate: _createSchema,
       onUpgrade: _upgradeSchema,
     );
@@ -88,18 +87,12 @@ class BehaviorDatabase {
         created_at TEXT NOT NULL
       )
     ''');
-    await database.execute(
-      'CREATE INDEX idx_behavior_events_pending ON $eventsTable(sync_status, created_at)',
-    );
-    await database.execute(
-      'CREATE INDEX idx_behavior_events_user_time ON $eventsTable(user_id, event_timestamp)',
-    );
+    await database.execute('CREATE INDEX idx_behavior_events_pending ON $eventsTable(sync_status, created_at)');
+    await database.execute('CREATE INDEX idx_behavior_events_user_time ON $eventsTable(user_id, event_timestamp)');
     await database.execute(
       'CREATE INDEX idx_behavior_events_session_time ON $eventsTable(session_id, event_timestamp)',
     );
-    await database.execute(
-      'CREATE INDEX idx_behavior_events_type_time ON $eventsTable(event_type, event_timestamp)',
-    );
+    await database.execute('CREATE INDEX idx_behavior_events_type_time ON $eventsTable(event_type, event_timestamp)');
     await database.execute(
       'CREATE INDEX idx_behavior_events_product_time ON $eventsTable(product_id, event_timestamp)',
     );
@@ -108,11 +101,7 @@ class BehaviorDatabase {
     );
   }
 
-  Future<void> _upgradeSchema(
-    Database database,
-    int oldVersion,
-    int newVersion,
-  ) async {
+  Future<void> _upgradeSchema(Database database, int oldVersion, int newVersion) async {
     // مهاجرت‌های آینده افزایشی و نسخه‌بندی‌شده‌اند و معنای رویدادهای خام را بازنویسی نمی‌کنند.
   }
 }

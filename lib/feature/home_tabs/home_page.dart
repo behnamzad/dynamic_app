@@ -2,6 +2,10 @@ import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/feature/dialog/bottom_sheet_util.dart';
 import 'package:dynamic_app/feature/home_tabs/presentation/bloc/home_bloc.dart';
 import 'package:dynamic_app/feature/home_tabs/presentation/bottom_sheet/home_exit_bottom_sheet_content_widget.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_payload.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_type.dart';
+import 'package:dynamic_app/shared/behavior/domain/factory/behavior_event_draft_factory.dart';
+import 'package:dynamic_app/shared/behavior/domain/manager/behavior_logger.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget implements AutoRouteWrapper {
@@ -14,7 +18,10 @@ class HomePage extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider(create: (_) => inject<HomeBloc>()..add(const HomeEvent.initial()), child: this);
+    return BlocProvider(
+      create: (_) => inject<HomeBloc>()..add(const HomeEvent.initial()),
+      child: this,
+    );
   }
 }
 
@@ -49,8 +56,14 @@ class _HomePageState extends BaseState<HomePage> {
       },
       builder: (context, state) {
         return AutoTabsRouter(
-          routes: const [Tab1ScreenRoute(), Tab2ScreenRoute(), Tab3ScreenRoute(), Tab4ScreenRoute()],
-          transitionBuilder: (context, child, animation) => FadeTransition(opacity: animation, child: child),
+          routes: const [
+            Tab1ScreenRoute(),
+            Tab2ScreenRoute(),
+            Tab3ScreenRoute(),
+            Tab4ScreenRoute(),
+          ],
+          transitionBuilder: (context, child, animation) =>
+              FadeTransition(opacity: animation, child: child),
           builder: (context, child) {
             tabsRouter = AutoTabsRouter.of(context);
 
@@ -65,7 +78,9 @@ class _HomePageState extends BaseState<HomePage> {
                 bottomNavigationBar: ValueListenableBuilder(
                   valueListenable: _hideTabsValueNotifier,
                   builder: (BuildContext context, bool value, Widget? child) {
-                    return value ? const SizedBox() : buildBottomNavigationBar(context, tabsRouter, [0]);
+                    return value
+                        ? const SizedBox()
+                        : buildBottomNavigationBar(context, tabsRouter, [0]);
                   },
                 ),
               ),
@@ -76,7 +91,11 @@ class _HomePageState extends BaseState<HomePage> {
     );
   }
 
-  Widget buildBottomNavigationBar(BuildContext context, TabsRouter tabsRouter, List<int>? navigationBarBadgesList) {
+  Widget buildBottomNavigationBar(
+    BuildContext context,
+    TabsRouter tabsRouter,
+    List<int>? navigationBarBadgesList,
+  ) {
     return Container(
       decoration: BoxDecoration(color: context.scheme().mainBackground1),
       child: Column(
@@ -86,9 +105,14 @@ class _HomePageState extends BaseState<HomePage> {
           NavigationBarTheme(
             data: NavigationBarThemeData(
               labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-                (Set<WidgetState> states) => states.contains(WidgetState.selected)
-                    ? context.body2Bold.copyWith(color: context.scheme().primaryBold)
-                    : context.body2Regular.copyWith(color: context.scheme().mainText),
+                (Set<WidgetState> states) =>
+                    states.contains(WidgetState.selected)
+                    ? context.body2Bold.copyWith(
+                        color: context.scheme().primaryBold,
+                      )
+                    : context.body2Regular.copyWith(
+                        color: context.scheme().mainText,
+                      ),
               ),
             ),
             child: NavigationBar(
@@ -99,6 +123,7 @@ class _HomePageState extends BaseState<HomePage> {
               height: 65,
               indicatorColor: context.scheme().primary2,
               onDestinationSelected: (index) {
+                _recordTabChange(tabsRouter.activeIndex, index);
                 tabsRouter.setActiveIndex(index);
               },
               destinations: [
@@ -142,13 +167,22 @@ class _HomePageState extends BaseState<HomePage> {
     );
   }
 
-  Widget _navigationBarIcon({required IconData icon, required bool isSelected}) {
+  Widget _navigationBarIcon({
+    required IconData icon,
+    required bool isSelected,
+  }) {
     return Stack(
       alignment: Alignment.center,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 6, right: 6),
-          child: Icon(icon, color: isSelected ? context.scheme().primaryBold : context.scheme().mainText, size: 28),
+          child: Icon(
+            icon,
+            color: isSelected
+                ? context.scheme().primaryBold
+                : context.scheme().mainText,
+            size: 28,
+          ),
         ),
       ],
     );
@@ -156,6 +190,7 @@ class _HomePageState extends BaseState<HomePage> {
 
   Future<void> _handleBack(BuildContext context) async {
     if (tabsRouter.activeIndex != homeTabIndex) {
+      _recordTabChange(tabsRouter.activeIndex, homeTabIndex);
       tabsRouter.setActiveIndex(homeTabIndex);
       return;
     }
@@ -163,9 +198,29 @@ class _HomePageState extends BaseState<HomePage> {
     if (_isExitBottomSheetOpen) return;
     _isExitBottomSheetOpen = true;
     try {
-      await bsUtil.openBottomSheet(context, contentChild: const HomeExitBottomSheetContentWidget());
+      await bsUtil.openBottomSheet(
+        context,
+        contentChild: const HomeExitBottomSheetContentWidget(),
+      );
     } finally {
       _isExitBottomSheetOpen = false;
     }
+  }
+
+  void _recordTabChange(int fromIndex, int toIndex) {
+    if (fromIndex == toIndex) return;
+    const tabNames = <String>['profile', 'cart', 'search', 'home_shop'];
+    inject<BehaviorLogger>().recordNonBlocking(
+      BehaviorEventDraftFactory.navigation(
+        type: BehaviorEventType.tabChanged,
+        sourceScreen: tabNames[fromIndex],
+        destinationScreen: tabNames[toIndex],
+        payload: NavigationBehaviorPayload(
+          routeName: tabNames[toIndex],
+          previousRouteName: tabNames[fromIndex],
+          tabId: tabNames[toIndex],
+        ),
+      ),
+    );
   }
 }

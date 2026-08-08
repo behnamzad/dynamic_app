@@ -4,17 +4,22 @@ import 'package:dynamic_app/shared/product/domain/entities/brand_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/search_result_entity.dart';
 
 extension ProductByBrandMapper on ProductByBrandResponse {
-  SearchResultEntity toEntity() => SearchResultEntity(
-    brands: [
-      BrandEntity(
-        id: result.brand.id,
-        titleFa: result.brand.titleFa,
-        titleEn: result.brand.titleEn,
-        image: result.brand.image,
-      ),
-    ],
-    products: result.products
-        .map((product) => product.toEntity())
-        .toList(growable: false),
-  );
+  SearchResultEntity toEntity() {
+    final BrandEntity brand = BrandEntity(
+      id: result.brand.id,
+      titleFa: result.brand.titleFa,
+      titleEn: result.brand.titleEn,
+      image: result.brand.image,
+    );
+    return SearchResultEntity(
+      brands: <BrandEntity>[brand],
+      products: result.products
+          .map(
+            (product) => product.toEntity(
+              brandOverride: product.brand.id > 0 ? null : brand,
+            ),
+          )
+          .toList(growable: false),
+    );
+  }
 }

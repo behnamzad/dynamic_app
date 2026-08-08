@@ -27,7 +27,8 @@ class BehaviorEventCatalog {
   const BehaviorEventCatalog._();
 
   static final Map<BehaviorEventType, BehaviorEventDefinition> definitions = {
-    for (final BehaviorEventType type in BehaviorEventType.values) type: _definitionFor(type),
+    for (final BehaviorEventType type in BehaviorEventType.values)
+      type: _definitionFor(type),
   };
 
   /// شناسه‌ها، snapshot، مقادیر منفی و کلیدهای ممنوع payload را قبل از SQLite کنترل می‌کند.
@@ -56,10 +57,18 @@ class BehaviorEventCatalog {
     }
 
     if (draft.durationMs != null && draft.durationMs! < 0) {
-      throw ArgumentError.value(draft.durationMs, 'durationMs', 'Duration cannot be negative');
+      throw ArgumentError.value(
+        draft.durationMs,
+        'durationMs',
+        'Duration cannot be negative',
+      );
     }
     if (draft.position != null && draft.position! < 0) {
-      throw ArgumentError.value(draft.position, 'position', 'Position cannot be negative');
+      throw ArgumentError.value(
+        draft.position,
+        'position',
+        'Position cannot be negative',
+      );
     }
 
     _validatePayloadKeys(draft.payload.toJson());
@@ -76,7 +85,9 @@ class BehaviorEventCatalog {
       for (final MapEntry<dynamic, dynamic> entry in value.entries) {
         final String key = entry.key.toString().toLowerCase();
         if (_forbiddenKeys.contains(key)) {
-          throw ArgumentError('Behavior telemetry must not contain forbidden field: $key');
+          throw ArgumentError(
+            'Behavior telemetry must not contain forbidden field: $key',
+          );
         }
         _validatePayloadKeys(entry.value);
       }
@@ -115,7 +126,11 @@ class BehaviorEventCatalog {
         type: type,
         family: 'product',
         description: _productDescription(type),
-        modelUses: const ['user-product features', 'interest ranking', 'purchase probability'],
+        modelUses: const [
+          'user-product features',
+          'interest ranking',
+          'purchase probability',
+        ],
         subjectRequirement: BehaviorSubjectRequirement.product,
       );
     }
@@ -142,7 +157,11 @@ class BehaviorEventCatalog {
         type: type,
         family: 'search',
         description: 'Search intent, exposure, refinement, or selection.',
-        modelUses: const ['intent features', 'category/product affinity', 'conversion attribution'],
+        modelUses: const [
+          'intent features',
+          'category/product affinity',
+          'conversion attribution',
+        ],
         subjectRequirement: type == BehaviorEventType.searchResultClick
             ? BehaviorSubjectRequirement.product
             : BehaviorSubjectRequirement.none,
@@ -152,8 +171,13 @@ class BehaviorEventCatalog {
       return BehaviorEventDefinition(
         type: type,
         family: 'conversion',
-        description: 'Cart, checkout, payment, purchase, or abandonment outcome.',
-        modelUses: const ['purchase labels', 'cart propensity', 'conversion history'],
+        description:
+            'Cart, checkout, payment, purchase, or abandonment outcome.',
+        modelUses: const [
+          'purchase labels',
+          'cart propensity',
+          'conversion history',
+        ],
         subjectRequirement: _singleProductCartEvents.contains(type)
             ? BehaviorSubjectRequirement.product
             : BehaviorSubjectRequirement.none,
@@ -163,8 +187,13 @@ class BehaviorEventCatalog {
       return BehaviorEventDefinition(
         type: type,
         family: 'recommendation',
-        description: 'Recommendation request, exposure, action, or attributed outcome.',
-        modelUses: const ['recommendation negatives', 'ranking evaluation', 'attribution'],
+        description:
+            'Recommendation request, exposure, action, or attributed outcome.',
+        modelUses: const [
+          'recommendation negatives',
+          'ranking evaluation',
+          'attribution',
+        ],
         subjectRequirement: _recommendationProductEvents.contains(type)
             ? BehaviorSubjectRequirement.product
             : BehaviorSubjectRequirement.none,
@@ -182,13 +211,20 @@ class BehaviorEventCatalog {
       type: type,
       family: 'navigation_lifecycle',
       description: 'Session, lifecycle, navigation, or UI exposure context.',
-      modelUses: const ['session features', 'sequence features', 'dwell and abandonment'],
+      modelUses: const [
+        'session features',
+        'sequence features',
+        'dwell and abandonment',
+      ],
     );
   }
 
   static String _productDescription(BehaviorEventType type) {
     if (type == BehaviorEventType.productReviewsView) {
       return 'The user deliberately opened the reviews area for the product; review text is never collected.';
+    }
+    if (type == BehaviorEventType.productReviewsViewEnd) {
+      return 'The user closed the reviews area; duration records review-reading dwell without review text.';
     }
     return 'Product exposure or engagement with an interaction-time product/category/brand snapshot.';
   }
@@ -201,6 +237,7 @@ class BehaviorEventCatalog {
     BehaviorEventType.productRevisit,
     BehaviorEventType.productDescriptionView,
     BehaviorEventType.productReviewsView,
+    BehaviorEventType.productReviewsViewEnd,
     BehaviorEventType.productGalleryOpen,
     BehaviorEventType.productImageView,
     BehaviorEventType.productImageSwipe,

@@ -4,7 +4,7 @@ import 'package:dynamic_app/shared/product/domain/entities/brand_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 extension ProductMapperX on ProductDto {
-  ProductEntity toEntity() {
+  ProductEntity toEntity({BrandEntity? brandOverride}) {
     final Variant? mainVariant = _selectMainVariant();
 
     return ProductEntity(
@@ -15,7 +15,7 @@ extension ProductMapperX on ProductDto {
       categoryTitle: categoryTitle ?? '',
 
       //Brand
-      brand: _mapBrand(),
+      brand: brandOverride ?? _mapBrand(),
 
       // Images
       images: _images(images),
@@ -89,7 +89,10 @@ extension ProductMapperX on ProductDto {
       return defaultVariant;
     }
 
-    return variants.firstWhere((Variant variant) => variant.id == defaultVariantId, orElse: () => variants.first);
+    return variants.firstWhere(
+      (Variant variant) => variant.id == defaultVariantId,
+      orElse: () => variants.first,
+    );
   }
 
   List<VariantEntity> _mapVariants() {
@@ -116,7 +119,10 @@ extension ProductMapperX on ProductDto {
       ProductSpecificationEntity(
         groupTitle: ss.specifications,
         items: attributes.map((Attribute attribute) {
-          return ProductSpecificationItemEntity(title: attribute.title, values: attribute.values);
+          return ProductSpecificationItemEntity(
+            title: attribute.title,
+            values: attribute.values,
+          );
         }).toList(),
       ),
     ];
@@ -134,12 +140,21 @@ extension ProductMapperX on ProductDto {
 
   List<ProductColorEntity> _mapColors() {
     return colors.map((c) {
-      return ProductColorEntity(id: c.id.toString(), title: c.title, hexColor: c.hexCode, available: true);
+      return ProductColorEntity(
+        id: c.id.toString(),
+        title: c.title,
+        hexColor: c.hexCode,
+        available: true,
+      );
     }).toList();
   }
 
   BrandEntity _mapBrand() {
-    return BrandEntity(id: brand.id, titleEn: brand.titleEn ?? '', titleFa: brand.titleFa);
+    return BrandEntity(
+      id: brand.id,
+      titleEn: brand.titleEn ?? '',
+      titleFa: brand.titleFa,
+    );
   }
 
   ProductColorEntity? _mapSelectedColor(Variant? variant) {
@@ -176,13 +191,19 @@ extension ProductMapperX on ProductDto {
             digiplus: mapDigiplus(v.digiplus),
             insurance: v.insurance != null ? mapInsurance(v.insurance!) : null,
             badges: v.variantBadges?.map(mapVariantBadge).toList(),
-            statistics: v.statistics != null ? mapStatistics(v.statistics!) : null,
+            statistics: v.statistics != null
+                ? mapStatistics(v.statistics!)
+                : null,
           )
         : null;
   }
 
   InsuranceEntity mapInsurance(Insurance ins) {
-    return InsuranceEntity(title: ins.title, price: ins.totalPremium, selected: false);
+    return InsuranceEntity(
+      title: ins.title,
+      price: ins.totalPremium,
+      selected: false,
+    );
   }
 
   BreadcrumbEntity mapBreadcrumb(Breadcrumb b) {
@@ -249,7 +270,11 @@ extension ProductMapperX on ProductDto {
   }
 
   VariantBadgeEntity mapVariantBadge(VariantBadge b) {
-    return VariantBadgeEntity(text: b.payload.text, textColor: b.payload.textColor, icon: b.payload.svgIcon);
+    return VariantBadgeEntity(
+      text: b.payload.text,
+      textColor: b.payload.textColor,
+      icon: b.payload.svgIcon,
+    );
   }
 
   VariantStatisticsEntity mapStatistics(Statistics s) {
@@ -262,8 +287,33 @@ extension ProductMapperX on ProductDto {
   }
 
   ProductThemeEntity mapTheme(Theme t) {
-    return ProductThemeEntity(title: t.value.title, type: t.type, isMain: t.isMain);
+    return ProductThemeEntity(
+      title: t.value.title,
+      type: t.type,
+      isMain: t.isMain,
+    );
   }
+}
+
+/// Some list endpoints return a product brand name but omit its stable ID.
+/// Resolve that incomplete snapshot from the accompanying brand dimension.
+BrandEntity? resolveProductBrand(
+  ProductDto product,
+  Iterable<BrandEntity> knownBrands,
+) {
+  if (product.brand.id > 0) return null;
+
+  final String titleFa = product.brand.titleFa.trim();
+  final String titleEn = product.brand.titleEn?.trim().toLowerCase() ?? '';
+  for (final BrandEntity brand in knownBrands) {
+    if (titleFa.isNotEmpty && brand.titleFa.trim() == titleFa) {
+      return brand;
+    }
+    if (titleEn.isNotEmpty && brand.titleEn.trim().toLowerCase() == titleEn) {
+      return brand;
+    }
+  }
+  return null;
 }
 
 List<String> _images(Images images) {

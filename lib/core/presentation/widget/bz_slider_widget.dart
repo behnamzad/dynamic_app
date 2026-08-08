@@ -17,6 +17,7 @@ class BzSlider extends StatefulWidget {
     this.activeIndicatorColor,
     this.deActiveIndicatorColor,
     this.initialPage,
+    this.autoPlay = true,
   });
 
   final List<Widget> itemList;
@@ -32,6 +33,7 @@ class BzSlider extends StatefulWidget {
   final Color? activeIndicatorColor;
   final Color? deActiveIndicatorColor;
   final int? initialPage;
+  final bool autoPlay;
 
   @override
   State<BzSlider> createState() => _BzSliderState();
@@ -60,15 +62,17 @@ class _BzSliderState extends State<BzSlider> {
             carouselController: _carouselController,
             options: CarouselOptions(
               initialPage: widget.initialPage ?? 0,
-              autoPlay: widget.itemList.length > 1 ? true : false,
+              autoPlay: widget.autoPlay && widget.itemList.length > 1,
               autoPlayAnimationDuration: const Duration(seconds: 1),
               autoPlayInterval: const Duration(seconds: 6),
               height: widget.height,
               aspectRatio: widget.aspectRatio ?? 16 / 9,
               enlargeCenterPage: true,
               scrollPhysics: const AlwaysScrollableScrollPhysics(),
-              viewportFraction: widget.viewportFraction ??
-                  (MediaQuery.of(context).size.width - 40) / MediaQuery.of(context).size.width,
+              viewportFraction:
+                  widget.viewportFraction ??
+                  (MediaQuery.of(context).size.width - 40) /
+                      MediaQuery.of(context).size.width,
               padEnds: true,
               clipBehavior: Clip.none,
               enlargeFactor: widget.enlargeFactor,
@@ -92,7 +96,10 @@ class _BzSliderState extends State<BzSlider> {
                   borderRadius: BorderRadius.circular(12),
                   color: context.scheme().secondary,
                 ),
-                child: _indicatorIconIntoSlider(context, widget.indicatorMargin),
+                child: _indicatorIconIntoSlider(
+                  context,
+                  widget.indicatorMargin,
+                ),
               ),
             ),
         ],
@@ -105,15 +112,17 @@ class _BzSliderState extends State<BzSlider> {
             carouselController: _carouselController,
             options: CarouselOptions(
               initialPage: widget.initialPage ?? 0,
-              autoPlay: widget.itemList.length > 1 ? true : false,
+              autoPlay: widget.autoPlay && widget.itemList.length > 1,
               autoPlayAnimationDuration: const Duration(seconds: 1),
               autoPlayInterval: const Duration(seconds: 6),
               height: widget.height,
               aspectRatio: widget.aspectRatio ?? 16 / 9,
               enlargeCenterPage: true,
               scrollPhysics: const AlwaysScrollableScrollPhysics(),
-              viewportFraction: widget.viewportFraction ??
-                  (MediaQuery.of(context).size.width - 40) / MediaQuery.of(context).size.width,
+              viewportFraction:
+                  widget.viewportFraction ??
+                  (MediaQuery.of(context).size.width - 40) /
+                      MediaQuery.of(context).size.width,
               padEnds: true,
               clipBehavior: Clip.none,
               enlargeFactor: widget.enlargeFactor,
@@ -127,7 +136,8 @@ class _BzSliderState extends State<BzSlider> {
             ),
             items: widget.itemList,
           ),
-          if (widget.showIndicator) _indicatorIcon(context, widget.indicatorMargin),
+          if (widget.showIndicator)
+            _indicatorIcon(context, widget.indicatorMargin),
         ],
       );
     }
@@ -146,12 +156,14 @@ class _BzSliderState extends State<BzSlider> {
               child: Container(
                 width: _currentAccountDeposit == entry.key ? 10 : 7,
                 height: _currentAccountDeposit == entry.key ? 10 : 7,
-                margin: margin ?? const EdgeInsets.only(right: 3, left: 3, top: 14),
+                margin:
+                    margin ?? const EdgeInsets.only(right: 3, left: 3, top: 14),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: _currentAccountDeposit == entry.key
                       ? widget.activeIndicatorColor ?? context.scheme().primary
-                      : widget.deActiveIndicatorColor ?? context.scheme().buttonBorder2,
+                      : widget.deActiveIndicatorColor ??
+                            context.scheme().buttonBorder2,
                 ),
               ),
             );
@@ -174,12 +186,14 @@ class _BzSliderState extends State<BzSlider> {
               child: Container(
                 width: _currentAccountDeposit == entry.key ? 6 : 6,
                 height: _currentAccountDeposit == entry.key ? 6 : 6,
-                margin: margin ?? const EdgeInsets.only(right: 3, left: 3, top: 14),
+                margin:
+                    margin ?? const EdgeInsets.only(right: 3, left: 3, top: 14),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: _currentAccountDeposit == entry.key
                       ? widget.activeIndicatorColor ?? acs.mainButtonText.light
-                      : widget.deActiveIndicatorColor ?? Colors.white.withValues(alpha: 0.5),
+                      : widget.deActiveIndicatorColor ??
+                            Colors.white.withValues(alpha: 0.5),
                 ),
               ),
             );

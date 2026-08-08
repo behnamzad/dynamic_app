@@ -83,6 +83,8 @@ class Configs {
     'assets/images/banner_2.png',
     'assets/images/banner_3.png',
   ];
+
+  bool get allowToDeleteLocalLogs => true;
 }
 
 /// cs = Config s

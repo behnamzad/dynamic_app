@@ -1,4 +1,9 @@
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
+import 'package:dynamic_app/shared/behavior/data/mapper/product_behavior_snapshot_mapper.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_payload.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_type.dart';
+import 'package:dynamic_app/shared/behavior/domain/factory/behavior_event_draft_factory.dart';
+import 'package:dynamic_app/shared/behavior/domain/manager/behavior_logger.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 enum ProductCardType { card, row }
@@ -6,16 +11,50 @@ enum ProductCardType { card, row }
 class ProductWidget extends StatefulWidget {
   final ProductEntity entity;
   final ProductCardType productCardType;
+  final String sourceScreen;
+  final int? position;
+  final String? searchQuery;
 
-  const ProductWidget.card({super.key, required this.entity}) : productCardType = ProductCardType.card;
+  const ProductWidget.card({
+    super.key,
+    required this.entity,
+    this.sourceScreen = 'product_list',
+    this.position,
+    this.searchQuery,
+  }) : productCardType = ProductCardType.card;
 
-  const ProductWidget.row({super.key, required this.entity}) : productCardType = ProductCardType.row;
+  const ProductWidget.row({
+    super.key,
+    required this.entity,
+    this.sourceScreen = 'product_list',
+    this.position,
+    this.searchQuery,
+  }) : productCardType = ProductCardType.row;
 
   @override
   State<ProductWidget> createState() => _ProductWidgetState();
 }
 
 class _ProductWidgetState extends State<ProductWidget> {
+  late final BehaviorLogger _behaviorLogger;
+
+  @override
+  void initState() {
+    super.initState();
+    _behaviorLogger = inject<BehaviorLogger>();
+    _recordImpression();
+  }
+
+  @override
+  void didUpdateWidget(covariant ProductWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.entity.id != widget.entity.id ||
+        oldWidget.sourceScreen != widget.sourceScreen ||
+        oldWidget.position != widget.position) {
+      _recordImpression();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.productCardType == ProductCardType.card ? _card(context) : _row(context);
@@ -30,7 +69,7 @@ class _ProductWidgetState extends State<ProductWidget> {
         child: BzGestureDetector(
           borderRadius: Dimen.defaultBorderRadius,
           inkwellPadding: EdgeInsets.zero,
-          onTap: () => context.pushRoute(ProductInfoPageRoute(product: widget.entity)),
+          onTap: () => _openProduct(context),
           child: Stack(
             children: [
               Column(
@@ -92,7 +131,7 @@ class _ProductWidgetState extends State<ProductWidget> {
     return BzGestureDetector(
       inkwellPadding: EdgeInsets.zero,
       borderRadius: BorderRadius.zero,
-      onTap: () => context.pushRoute(ProductInfoPageRoute(product: widget.entity)),
+      onTap: () => _openProduct(context),
       child: Column(
         children: [
           Padding(
@@ -171,5 +210,47 @@ class _ProductWidgetState extends State<ProductWidget> {
         ],
       ),
     );
+  }
+
+  void _recordImpression() {
+    _behaviorLogger.recordNonBlocking(
+      BehaviorEventDraftFactory.product(
+        type: BehaviorEventType.productImpression,
+        product: widget.entity.toBehaviorSnapshot(),
+        sourceScreen: widget.sourceScreen,
+        position: widget.position,
+        payload: ProductBehaviorPayload(displaySource: widget.sourceScreen, displayRank: widget.position),
+      ),
+    );
+  }
+
+  void _openProduct(BuildContext context) {
+    final snapshot = widget.entity.toBehaviorSnapshot();
+    _behaviorLogger.recordNonBlocking(
+      BehaviorEventDraftFactory.product(
+        type: BehaviorEventType.productClick,
+        product: snapshot,
+        sourceScreen: widget.sourceScreen,
+        position: widget.position,
+        payload: ProductBehaviorPayload(displaySource: widget.sourceScreen, displayRank: widget.position),
+      ),
+    );
+    final query = widget.searchQuery?.trim();
+    if (query != null && query.isNotEmpty) {
+      _behaviorLogger.recordNonBlocking(
+        BehaviorEventDraftFactory.search(
+          type: BehaviorEventType.searchResultClick,
+          sourceScreen: widget.sourceScreen,
+          product: snapshot,
+          payload: SearchBehaviorPayload(
+            query: query,
+            normalizedQuery: query.toLowerCase(),
+            selectedProductId: widget.entity.id.toString(),
+            selectedResultRank: widget.position,
+          ),
+        ),
+      );
+    }
+    context.pushRoute(ProductInfoPageRoute(product: widget.entity));
   }
 }
