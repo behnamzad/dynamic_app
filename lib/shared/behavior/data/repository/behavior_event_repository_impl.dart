@@ -17,6 +17,12 @@ class BehaviorEventRepositoryImpl implements BehaviorEventRepository {
   }
 
   @override
+  Future<List<BehaviorEvent>> getUserHistory(String userId) async {
+    final List<BehaviorEventDto> rows = await _localDataSource.getUserHistory(userId);
+    return List<BehaviorEvent>.unmodifiable(rows.map((BehaviorEventDto row) => row.event));
+  }
+
+  @override
   Future<List<BehaviorEvent>> getPendingBatch({
     required String userId,
     required int maxRows,

@@ -22,6 +22,18 @@ class BehaviorLocalDataSourceImpl implements BehaviorLocalDataSource {
   }
 
   @override
+  Future<List<BehaviorEventDto>> getUserHistory(String userId) async {
+    final Database database = _behaviorDatabase.database;
+    final List<Map<String, Object?>> rows = await database.query(
+      BehaviorDatabase.eventsTable,
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'event_timestamp ASC, event_id ASC',
+    );
+    return rows.map(BehaviorEventDto.fromLocalMap).toList(growable: false);
+  }
+
+  @override
   Future<List<BehaviorEventDto>> getPending({required String userId, required int limit}) async {
     final Database database = _behaviorDatabase.database;
     final List<Map<String, Object?>> rows = await database.query(

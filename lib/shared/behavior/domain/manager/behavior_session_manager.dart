@@ -20,17 +20,11 @@ class BehaviorSessionManager {
   DateTime? _sessionStartedAt;
   DateTime? _lastActivityAt;
 
-  String get anonymousId =>
-      _anonymousId ??
-      (throw StateError('BehaviorSessionManager is not initialized'));
+  String get anonymousId => _anonymousId ?? (throw StateError('BehaviorSessionManager is not initialized'));
 
-  String get currentSessionId =>
-      _sessionId ??
-      (throw StateError('BehaviorSessionManager is not initialized'));
+  String get currentSessionId => _sessionId ?? (throw StateError('BehaviorSessionManager is not initialized'));
 
-  DateTime get sessionStartedAt =>
-      _sessionStartedAt ??
-      (throw StateError('BehaviorSessionManager is not initialized'));
+  DateTime get sessionStartedAt => _sessionStartedAt ?? (throw StateError('BehaviorSessionManager is not initialized'));
 
   /// زمان آخرین تعامل نشست را برای محاسبه مدت و ثبت session_end در اختیار lifecycle می‌گذارد.
   DateTime? get lastActivityAt => _lastActivityAt;
@@ -72,10 +66,7 @@ class BehaviorSessionManager {
     _lastActivityAt = currentTime;
     await Future.wait([
       _preferences.setString(_sessionIdKey, _sessionId!),
-      _preferences.setString(
-        _sessionStartedAtKey,
-        currentTime.toIso8601String(),
-      ),
+      _preferences.setString(_sessionStartedAtKey, currentTime.toIso8601String()),
       _preferences.setString(_lastActivityAtKey, currentTime.toIso8601String()),
     ]);
     return _sessionId!;
@@ -85,10 +76,7 @@ class BehaviorSessionManager {
     if (!hasActiveSession) return;
     final DateTime currentTime = (now ?? DateTime.now()).toUtc();
     _lastActivityAt = currentTime;
-    await _preferences.setString(
-      _lastActivityAtKey,
-      currentTime.toIso8601String(),
-    );
+    await _preferences.setString(_lastActivityAtKey, currentTime.toIso8601String());
   }
 
   Future<void> endSession({DateTime? now}) async {
@@ -97,9 +85,6 @@ class BehaviorSessionManager {
     }
     _sessionId = null;
     _sessionStartedAt = null;
-    await Future.wait([
-      _preferences.remove(_sessionIdKey),
-      _preferences.remove(_sessionStartedAtKey),
-    ]);
+    await Future.wait([_preferences.remove(_sessionIdKey), _preferences.remove(_sessionStartedAtKey)]);
   }
 }

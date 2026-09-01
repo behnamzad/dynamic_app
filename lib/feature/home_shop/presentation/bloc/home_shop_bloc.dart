@@ -31,7 +31,7 @@ class HomeShopBloc extends Bloc<HomeShopEvent, HomeShopState> {
             status: HomeShopStatus.loaded,
             categoryList: categories,
             // todo change it to 4 later
-            categoryForHorizontalProductLis: categories.take(1).toList(growable: false),
+            categoryForHorizontalProductLis: categories.take(4).toList(growable: false),
           ),
         );
       case Failure<CartEntity>(error: final error):

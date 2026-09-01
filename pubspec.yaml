@@ -46,6 +46,7 @@ dependencies:
   package_info_plus:
   pointycastle:
   uuid:
+  tflite_flutter: ^0.12.1
   auto_route: 9.2.0
   loading_overlay: ^0.4.3
   sprintf: ^7.0.0
@@ -86,3 +87,4 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/ml/

@@ -5,14 +5,28 @@ abstract interface class BehaviorEventRepository {
   /// ثبت‌کننده رفتار از این متد برای ذخیره پایدار و صرفاً محلی استفاده می‌کند.
   Future<void> record(BehaviorEvent event);
 
+  /// فیچر prediction سابقه همان کاربر را برای ساخت ورودی مدل می‌خواند.
+  Future<List<BehaviorEvent>> getUserHistory(String userId);
+
   /// هماهنگ‌کننده همگام‌سازی با این متد بسته‌ای محدود به تعداد و حجم می‌سازد.
-  Future<List<BehaviorEvent>> getPendingBatch({required String userId, required int maxRows, required int maxBytes});
+  Future<List<BehaviorEvent>> getPendingBatch({
+    required String userId,
+    required int maxRows,
+    required int maxBytes,
+  });
 
   Future<void> markSynced(Set<String> acknowledgedEventIds, DateTime syncedAt);
 
-  Future<void> markSyncFailed(Set<String> eventIds, String error, DateTime attemptedAt);
+  Future<void> markSyncFailed(
+    Set<String> eventIds,
+    String error,
+    DateTime attemptedAt,
+  );
 
   Future<int> pendingCount();
 
-  Future<void> attributePendingAnonymousEvents({required String anonymousId, required String userId});
+  Future<void> attributePendingAnonymousEvents({
+    required String anonymousId,
+    required String userId,
+  });
 }

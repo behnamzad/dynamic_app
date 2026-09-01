@@ -5,6 +5,9 @@ abstract interface class BehaviorLocalDataSource {
   /// رویداد تازه را با وضعیت درانتظار داخل SQLite درج می‌کند.
   Future<void> insert(BehaviorEventDto event);
 
+  /// تمام سابقه محلی کاربر را برای inference به ترتیب زمان می‌خواند.
+  Future<List<BehaviorEventDto>> getUserHistory(String userId);
+
   /// قدیمی‌ترین رویدادهای درانتظار کاربر را برای ساخت بسته می‌خواند.
   Future<List<BehaviorEventDto>> getPending({
     required String userId,

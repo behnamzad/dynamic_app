@@ -50,3 +50,18 @@ app.*.map.json
 *.freezed.dart
 lib/generated
 *.config.dart
+
+# Python / local ML pipeline
+.venv/
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+ml/data/
+ml/artifacts/
+ml/reports/generated/
+
+# A selected model is copied here only for local Flutter runs.
+assets/ml/*
+!assets/ml/.gitkeep

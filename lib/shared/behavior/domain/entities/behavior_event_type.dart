@@ -73,11 +73,7 @@ enum BehaviorEventType {
   static BehaviorEventType fromWireName(String value) {
     return values.firstWhere(
       (BehaviorEventType type) => type.wireName == value,
-      orElse: () => throw ArgumentError.value(
-        value,
-        'value',
-        'Unknown behavior event type',
-      ),
+      orElse: () => throw ArgumentError.value(value, 'value', 'Unknown behavior event type'),
     );
   }
 }
