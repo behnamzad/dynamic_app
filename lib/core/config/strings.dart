@@ -33,6 +33,18 @@ class Strings {
 
   String get seeMore => 'مشاهده بیشتر';
 
+  String get alternativeProductsForYou => 'محصولات مرتبط برای شما';
+
+  String get aiRecommendedProducts => 'پیشنهادهای هوشاپ برای شما';
+
+  String get aiRecommendedProductsDescription => 'مدل هوش مصنوعی این محصولات مرتبط را بر اساس احتمال خرید برای شما مرتب کرده است.';
+
+  String get aiProductDetails => 'پیشنهاد هوشاپ برای بررسی بیشتر';
+
+  String get aiSuggestedAction => 'پیشنهاد هوش مصنوعی';
+
+  String get aiAnalyzingTitle => 'هوشاپ در حال بررسی پیشنهادها برای شماست...';
+
   String get question => 'پرسش و پاسخ';
 
   String get review => 'دیدگاه';
@@ -43,8 +55,7 @@ class Strings {
 
   String questionCount(int count) => '$count پرسش';
 
-  String satisfaction(int percent, String performance) =>
-      '$percent٪ رضایت | $performance';
+  String satisfaction(int percent, String performance) => '$percent٪ رضایت | $performance';
 
   String buyersOpinionCount(int count) => '(بر اساس نظر $count خریدار)';
 
@@ -170,8 +181,7 @@ class Strings {
 
   String provinceAndCity(String province, String city) => '$province، $city';
 
-  String fullAddress(String province, String city, String addressLine) =>
-      '$province، $city - $addressLine';
+  String fullAddress(String province, String city, String addressLine) => '$province، $city - $addressLine';
 
   String orderProductsCount(int count) => 'محصولات سفارش ($count کالا)';
 
@@ -201,8 +211,7 @@ class Strings {
 
   String get password => 'رمز ورود';
 
-  String get usernameAndPasswordInputError =>
-      'نام کاربری و رمز را به صورت کامل وارد نمایید';
+  String get usernameAndPasswordInputError => 'نام کاربری و رمز را به صورت کامل وارد نمایید';
 
   String get usernameInputError => 'نام کاربری را وارد نمایید';
 
@@ -258,8 +267,7 @@ class Strings {
 
   String get hello => 'سلام';
 
-  String get productNotProvided =>
-      'محصول یا شناسه محصول به صفحه ارسال نشده است.';
+  String get productNotProvided => 'محصول یا شناسه محصول به صفحه ارسال نشده است.';
 
   String get loginSuccess => 'ورود با موفقیت انجام شد.';
 
@@ -277,8 +285,7 @@ class Strings {
 
   String get emptyLoginInputs => 'ایمیل و رمز عبور را وارد کن.';
 
-  String get emptyRegisterInputs =>
-      'ایمیل، نام کاربری، رمز عبور، سن و جنسیت را کامل وارد کن.';
+  String get emptyRegisterInputs => 'ایمیل، نام کاربری، رمز عبور، سن و جنسیت را کامل وارد کن.';
 
   String get emptyGender => 'جنسیت را انتخاب کن.';
 
@@ -296,8 +303,7 @@ class Strings {
 
   String get serverConnectionError => 'خطا در اتصال به سرور';
 
-  String get paymentTimeoutError =>
-      'خطا در انجام تراکنش! لطفاً قبل از تکرار تراکنش، موجودی حساب خود را بررسی کنید.';
+  String get paymentTimeoutError => 'خطا در انجام تراکنش! لطفاً قبل از تکرار تراکنش، موجودی حساب خود را بررسی کنید.';
 
   String get timeoutError => 'پاسخی در زمان مناسب از سمت سرور دریافت نشد';
 
@@ -321,17 +327,13 @@ class Strings {
 
   String tomanAmount(String value) => '$value تومان';
 
-  String hundredAmount(String value, String currency) =>
-      '$value $hundred $currency';
+  String hundredAmount(String value, String currency) => '$value $hundred $currency';
 
-  String thousandAmount(String value, String currency) =>
-      '$value $thousand $currency';
+  String thousandAmount(String value, String currency) => '$value $thousand $currency';
 
-  String millionAmount(String value, String currency) =>
-      '$value $million $currency';
+  String millionAmount(String value, String currency) => '$value $million $currency';
 
-  String billionAmount(String value, String currency) =>
-      '$value $billion $currency';
+  String billionAmount(String value, String currency) => '$value $billion $currency';
 
   String yearsOld(num value) => '$value ساله';
 
@@ -366,18 +368,7 @@ class Strings {
     'نوزده',
   ];
 
-  List<String> get persianNumberTens => const [
-    '',
-    '',
-    'بیست',
-    'سی',
-    'چهل',
-    'پنجاه',
-    'شصت',
-    'هفتاد',
-    'هشتاد',
-    'نود',
-  ];
+  List<String> get persianNumberTens => const ['', '', 'بیست', 'سی', 'چهل', 'پنجاه', 'شصت', 'هفتاد', 'هشتاد', 'نود'];
 
   List<String> get persianNumberHundreds => const [
     '',
@@ -414,8 +405,7 @@ class Strings {
 
   String get supermarketShipping => '۲ ارسال سوپرمارکت';
 
-  String get fastTehranShipping =>
-      'ارسال سریع و رایگان دیجی‌کالا (فقط تهران و کرج)';
+  String get fastTehranShipping => 'ارسال سریع و رایگان دیجی‌کالا (فقط تهران و کرج)';
 
   String get fastDigikalaShipping => 'ارسال سریع دیجی‌کالا';
 
@@ -438,13 +428,11 @@ class Strings {
 
   String get borujerd => 'بروجرد';
 
-  String get sampleBorujerdAddress =>
-      'خیابان تختی، خیابان زرپرور، کوچه شوق، پلاک ۳';
+  String get sampleBorujerdAddress => 'خیابان تختی، خیابان زرپرور، کوچه شوق، پلاک ۳';
 
   String get tehran => 'تهران';
 
-  String get sampleTehranAddress =>
-      'خیابان جمهوری، خیابان سعدی، کوچه احمدی، پلاک ۱۸';
+  String get sampleTehranAddress => 'خیابان جمهوری، خیابان سعدی، کوچه احمدی، پلاک ۱۸';
 
   String get sampleFirstName => 'بهنام';
 

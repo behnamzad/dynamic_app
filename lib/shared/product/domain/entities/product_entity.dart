@@ -65,9 +65,6 @@ class ProductEntity {
   final List<ProductCommentEntity> comments;
   final List<ProductQuestionEntity> questions;
 
-  // Related
-  final List<ProductEntity> relatedProducts;
-
   const ProductEntity({
     required this.id,
     required this.categoryId,
@@ -101,7 +98,6 @@ class ProductEntity {
     required this.videos,
     required this.comments,
     required this.questions,
-    this.relatedProducts = const [],
   });
 
 

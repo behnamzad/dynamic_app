@@ -22,6 +22,8 @@ class Assets {
 
   AssetSvg get hoshopLogo => getAssetSvg('ic_hoshop', assetNameDark: 'ic_hoshop');
 
+  AssetSvg get hoshadOutlineIcon => getAssetSvg('ic_hoshad_outline');
+
   ThemeService get themeService => inject<ThemeService>();
 
   BzAssetImage get hoshopNamed => getAssetImage('hoshop_named_img');

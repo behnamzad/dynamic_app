@@ -1,4 +1,5 @@
 import 'package:dynamic_app/core/local/user/user_manager.dart';
+import 'package:dynamic_app/core/util/common_bloc_imports.dart';
 import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event.dart';
 import 'package:dynamic_app/shared/behavior/domain/manager/behavior_session_manager.dart';
 import 'package:dynamic_app/shared/behavior/domain/repository/behavior_event_repository.dart';
@@ -9,7 +10,6 @@ import 'package:dynamic_app/shared/prediction/domain/entities/prediction_model_i
 import 'package:dynamic_app/shared/prediction/domain/entities/product_prediction.dart';
 import 'package:dynamic_app/shared/prediction/domain/repository/prediction_repository.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
-import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: PredictionRepository)
 class PredictionRepositoryImpl implements PredictionRepository {
@@ -28,71 +28,43 @@ class PredictionRepositoryImpl implements PredictionRepository {
   final BehaviorSessionManager _sessionManager;
 
   @override
-  Future<ProductPrediction> predictPurchase(
-    ProductEntity product, {
-    int displayPosition = 0,
-  }) async {
-    final PredictionArtifacts artifacts = await _modelDataSource
-        .loadArtifacts();
+  Future<ProductPrediction> predictPurchase(ProductEntity product, {int displayPosition = 0}) async {
+    final PredictionArtifacts artifacts = await _modelDataSource.loadArtifacts();
     final PredictionInputContext context = await _buildInputContext(artifacts);
-    return _predict(
+    ProductPrediction productPrediction = await _predict(
       product: PredictionProduct.fromEntity(product),
       context: context,
       artifacts: artifacts,
       displayPosition: displayPosition,
     );
+    inject<Logger>().i('PREDICT PURCHASE FOR ${product.titleFa} => \n ${productPrediction.purchasePercent}');
+    return productPrediction;
   }
 
   @override
-  Future<List<String>> getRelatedProductIds(
-    ProductEntity product, {
-    int limit = 12,
-  }) async {
+  Future<List<String>> getRelatedProductIds(ProductEntity product, {int limit = 12}) async {
     if (limit <= 0) return const <String>[];
-    final PredictionArtifacts artifacts = await _modelDataSource
-        .loadArtifacts();
-    final List<RelatedProductCandidate> candidates = _relatedCandidates(
-      product,
-      artifacts,
-    );
-    return candidates
-        .take(limit)
-        .map((RelatedProductCandidate item) => item.productId)
-        .toList(growable: false);
+    final PredictionArtifacts artifacts = await _modelDataSource.loadArtifacts();
+    final List<RelatedProductCandidate> candidates =
+        artifacts.relatedProducts[product.id.toString()] ?? const <RelatedProductCandidate>[];
+    return candidates.take(limit).map((RelatedProductCandidate item) => item.productId).toList(growable: false);
   }
 
   @override
-  Future<List<ProductPrediction>> getPersonalizedRelatedProducts(
+  Future<List<ProductPrediction>> getRelatedProductsByPurchaseProbability(
     ProductEntity product, {
     int limit = 12,
   }) async {
     if (limit <= 0) return const <ProductPrediction>[];
-    final PredictionArtifacts artifacts = await _modelDataSource
-        .loadArtifacts();
+    final List<String> relatedProductIds = await getRelatedProductIds(product);
+    final PredictionArtifacts artifacts = await _modelDataSource.loadArtifacts();
     final PredictionInputContext context = await _buildInputContext(artifacts);
-    final List<RelatedProductCandidate> candidates = _relatedCandidates(
-      product,
-      artifacts,
-    );
-    final Map<String, ProductEntity> entityCandidates = <String, ProductEntity>{
-      for (final ProductEntity item in product.relatedProducts)
-        item.id.toString(): item,
-    };
     final List<ProductPrediction> predictions = <ProductPrediction>[];
-    for (int index = 0; index < candidates.length; index++) {
-      final RelatedProductCandidate candidate = candidates[index];
-      final PredictionProduct? predictionProduct =
-          artifacts.catalog[candidate.productId] ??
-          _predictionProduct(entityCandidates[candidate.productId]);
+    for (int index = 0; index < relatedProductIds.length; index++) {
+      final PredictionProduct? predictionProduct = artifacts.catalog[relatedProductIds[index]];
       if (predictionProduct == null) continue;
       predictions.add(
-        await _predict(
-          product: predictionProduct,
-          context: context,
-          artifacts: artifacts,
-          displayPosition: index,
-          relatedScore: candidate.score,
-        ),
+        await _predict(product: predictionProduct, context: context, artifacts: artifacts, displayPosition: index),
       );
     }
     predictions.sort(_comparePredictions);
@@ -100,12 +72,9 @@ class PredictionRepositoryImpl implements PredictionRepository {
   }
 
   @override
-  Future<List<ProductPrediction>> rankProducts(
-    List<ProductEntity> products,
-  ) async {
+  Future<List<ProductPrediction>> rankProducts(List<ProductEntity> products) async {
     if (products.isEmpty) return const <ProductPrediction>[];
-    final PredictionArtifacts artifacts = await _modelDataSource
-        .loadArtifacts();
+    final PredictionArtifacts artifacts = await _modelDataSource.loadArtifacts();
     final PredictionInputContext context = await _buildInputContext(artifacts);
     final List<ProductPrediction> predictions = <ProductPrediction>[];
     for (int index = 0; index < products.length; index++) {
@@ -124,23 +93,19 @@ class PredictionRepositoryImpl implements PredictionRepository {
 
   @override
   Future<PredictionModelInfo> getModelInfo() async {
-    final PredictionArtifacts artifacts = await _modelDataSource
-        .loadArtifacts();
+    final PredictionArtifacts artifacts = await _modelDataSource.loadArtifacts();
     return PredictionModelInfo(
       modelVersion: artifacts.modelVersion,
       inputSchemaVersion: artifacts.inputSchemaVersion,
       inputCount: artifacts.featureNames.length,
       decisionThreshold: artifacts.decisionThreshold,
+      personalizationThresholds: artifacts.personalizationThresholds,
     );
   }
 
-  Future<PredictionInputContext> _buildInputContext(
-    PredictionArtifacts artifacts,
-  ) async {
+  Future<PredictionInputContext> _buildInputContext(PredictionArtifacts artifacts) async {
     final String userId = _currentUserId;
-    final List<BehaviorEvent> events = await _behaviorRepository.getUserHistory(
-      userId,
-    );
+    final List<BehaviorEvent> events = await _behaviorRepository.getUserHistory(userId);
     return _inputBuilder.buildContext(
       events: events,
       eventWeightByTypeName: artifacts.eventWeights,
@@ -151,8 +116,7 @@ class PredictionRepositoryImpl implements PredictionRepository {
     );
   }
 
-  String get _currentUserId =>
-      _userManager.currentUserId ?? _sessionManager.anonymousId;
+  String get _currentUserId => _userManager.currentUserId ?? _sessionManager.anonymousId;
 
   Future<ProductPrediction> _predict({
     required PredictionProduct product,
@@ -169,10 +133,7 @@ class PredictionRepositoryImpl implements PredictionRepository {
     );
     final List<double> normalizedInput = artifacts.normalize(rawFeatureVector);
     final double rawProbability = await _modelDataSource.run(normalizedInput);
-    final double probability = artifacts
-        .calibrate(rawProbability)
-        .clamp(0.0, 1.0)
-        .toDouble();
+    final double probability = artifacts.calibrate(rawProbability).clamp(0.0, 1.0).toDouble();
     return ProductPrediction(
       productId: product.productId,
       purchaseProbability: probability,
@@ -182,35 +143,10 @@ class PredictionRepositoryImpl implements PredictionRepository {
     );
   }
 
-  List<RelatedProductCandidate> _relatedCandidates(
-    ProductEntity product,
-    PredictionArtifacts artifacts,
-  ) {
-    final List<RelatedProductCandidate>? learned =
-        artifacts.relatedProducts[product.id.toString()];
-    if (learned != null && learned.isNotEmpty) return learned;
-    return product.relatedProducts
-        .map(
-          (ProductEntity item) =>
-              RelatedProductCandidate(productId: item.id.toString(), score: 0),
-        )
-        .toList(growable: false);
-  }
-
-  PredictionProduct? _predictionProduct(ProductEntity? product) {
-    return product == null ? null : PredictionProduct.fromEntity(product);
-  }
-
   int _comparePredictions(ProductPrediction left, ProductPrediction right) {
-    final int probabilityOrder = right.purchaseProbability.compareTo(
-      left.purchaseProbability,
-    );
+    final int probabilityOrder = right.purchaseProbability.compareTo(left.purchaseProbability);
     if (probabilityOrder != 0) return probabilityOrder;
-    final int relatedOrder = (right.relatedScore ?? 0).compareTo(
-      left.relatedScore ?? 0,
-    );
-    return relatedOrder != 0
-        ? relatedOrder
-        : left.productId.compareTo(right.productId);
+    final int relatedOrder = (right.relatedScore ?? 0).compareTo(left.relatedScore ?? 0);
+    return relatedOrder != 0 ? relatedOrder : left.productId.compareTo(right.productId);
   }
 }

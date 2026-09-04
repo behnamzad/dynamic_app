@@ -72,9 +72,6 @@ extension ProductMapperX on ProductDto {
 
       // Questions
       questions: _mapQuestions(questions),
-
-      // Related
-      relatedProducts: [],
     );
   }
 

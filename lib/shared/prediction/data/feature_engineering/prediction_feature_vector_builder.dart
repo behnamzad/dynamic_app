@@ -16,10 +16,7 @@ class _PredictionFeatureVectorBuilder {
     };
   }
 
-  Map<String, double> _buildProductBehaviorFeatures(
-    PredictionInputContext context,
-    PredictionProduct product,
-  ) {
+  Map<String, double> _buildProductBehaviorFeatures(PredictionInputContext context, PredictionProduct product) {
     final _UserBehaviorHistory history = context._behaviorHistory;
     const _BehaviorTargetScope productScope = _BehaviorTargetScope.product;
     final double impressions = history.lifetimeEventCount(
@@ -27,21 +24,13 @@ class _PredictionFeatureVectorBuilder {
       product.productId,
       BehaviorEventType.productImpression,
     );
-    final double clicks = history.lifetimeEventCount(
-      productScope,
-      product.productId,
-      BehaviorEventType.productClick,
-    );
+    final double clicks = history.lifetimeEventCount(productScope, product.productId, BehaviorEventType.productClick);
     final double views = history.lifetimeEventCount(
       productScope,
       product.productId,
       BehaviorEventType.productDetailView,
     );
-    final double cartAdds = history.lifetimeEventCount(
-      productScope,
-      product.productId,
-      BehaviorEventType.cartAdd,
-    );
+    final double cartAdds = history.lifetimeEventCount(productScope, product.productId, BehaviorEventType.cartAdd);
 
     return <String, double>{
       'product_impressions_lifetime': impressions,
@@ -79,9 +68,7 @@ class _PredictionFeatureVectorBuilder {
         context.predictionTime,
         30,
       ),
-      'product_dwell_seconds_lifetime': history.lifetimeProductDwellSeconds(
-        product.productId,
-      ),
+      'product_dwell_seconds_lifetime': history.lifetimeProductDwellSeconds(product.productId),
       'product_click_through_rate': clicks / math.max(1, impressions),
       'product_cart_view_rate': cartAdds / math.max(1, views),
       'hours_since_product_interaction': _hoursSinceLastProductInteraction(
@@ -132,40 +119,23 @@ class _PredictionFeatureVectorBuilder {
         context.predictionTime,
         7,
       ),
-      'category_affinity_lifetime': history.lifetimeInterestScore(
-        categoryScope,
-        product.categoryId,
-      ),
+      'category_affinity_lifetime': history.lifetimeInterestScore(categoryScope, product.categoryId),
       'category_affinity_30d': history.interestScoreInLastDays(
         categoryScope,
         product.categoryId,
         context.predictionTime,
         30,
       ),
-      'brand_affinity_lifetime': history.lifetimeInterestScore(
-        brandScope,
-        product.brandId,
-      ),
-      'brand_affinity_30d': history.interestScoreInLastDays(
-        brandScope,
-        product.brandId,
-        context.predictionTime,
-        30,
-      ),
+      'brand_affinity_lifetime': history.lifetimeInterestScore(brandScope, product.brandId),
+      'brand_affinity_30d': history.interestScoreInLastDays(brandScope, product.brandId, context.predictionTime, 30),
     };
   }
 
-  Map<String, double> _buildSessionTimeAndProfileFeatures(
-    PredictionInputContext context,
-    int displayPosition,
-  ) {
+  Map<String, double> _buildSessionTimeAndProfileFeatures(PredictionInputContext context, int displayPosition) {
     final double hourAngle = 2 * math.pi * context.predictionTime.hour / 24;
     return <String, double>{
-      'session_event_count': context._behaviorHistory.eventCountForSession(
-        context.currentSessionId,
-      ),
-      'user_event_count_lifetime': context._behaviorHistory.totalEventCount
-          .toDouble(),
+      'session_event_count': context._behaviorHistory.eventCountForSession(context.currentSessionId),
+      'user_event_count_lifetime': context._behaviorHistory.totalEventCount.toDouble(),
       'display_position': displayPosition.toDouble(),
       'hour_sin': math.sin(hourAngle),
       'hour_cos': math.cos(hourAngle),
@@ -176,17 +146,10 @@ class _PredictionFeatureVectorBuilder {
     };
   }
 
-  double _hoursSinceLastProductInteraction(
-    _UserBehaviorHistory history,
-    String productId,
-    DateTime predictionTime,
-  ) {
-    final DateTime? lastInteractionAt = history.lastProductInteractionAt(
-      productId,
-    );
+  double _hoursSinceLastProductInteraction(_UserBehaviorHistory history, String productId, DateTime predictionTime) {
+    final DateTime? lastInteractionAt = history.lastProductInteractionAt(productId);
     if (lastInteractionAt == null) return 24 * 365;
-    final double elapsedHours =
-        predictionTime.difference(lastInteractionAt).inSeconds / 3600;
+    final double elapsedHours = predictionTime.difference(lastInteractionAt).inSeconds / 3600;
     return math.min(24 * 365, math.max(0, elapsedHours)).toDouble();
   }
 }

@@ -4,20 +4,11 @@ import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 /// قرارداد قابل‌تعویض prediction؛ Manager فقط این رابط را می‌شناسد.
 abstract interface class PredictionRepository {
-  Future<ProductPrediction> predictPurchase(
-    ProductEntity product, {
-    int displayPosition = 0,
-  });
+  Future<ProductPrediction> predictPurchase(ProductEntity product, {int displayPosition = 0});
 
-  Future<List<String>> getRelatedProductIds(
-    ProductEntity product, {
-    int limit = 12,
-  });
+  Future<List<String>> getRelatedProductIds(ProductEntity product, {int limit = 12});
 
-  Future<List<ProductPrediction>> getPersonalizedRelatedProducts(
-    ProductEntity product, {
-    int limit = 12,
-  });
+  Future<List<ProductPrediction>> getRelatedProductsByPurchaseProbability(ProductEntity product, {int limit = 12});
 
   Future<List<ProductPrediction>> rankProducts(List<ProductEntity> products);
 

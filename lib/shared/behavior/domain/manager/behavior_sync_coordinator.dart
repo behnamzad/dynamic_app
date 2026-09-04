@@ -38,7 +38,7 @@ class BehaviorSyncCoordinator {
 
   bool get isRunning => _timer?.isActive ?? false;
 
-  /// در مرحله اتصال lifecycle اجرا می‌شود و sync دوره‌ای ۶۰ ثانیه‌ای را آغاز می‌کند.
+  /// در مرحله اتصال lifecycle اجرا می‌شود و sync دوره‌ای 20 ثانیه‌ای را آغاز می‌کند.
   void start({Duration interval = defaultInterval}) {
     if (isRunning) return;
     _debugLog('SyncCoordinator started; interval= ${interval.inSeconds}s');
@@ -78,23 +78,30 @@ class BehaviorSyncCoordinator {
         return const BehaviorSyncResult(selectedCount: 0, acknowledgedCount: 0);
       }
 
-      final Set<String> selectedIds = batch.map((BehaviorEvent event) => event.eventId).toSet();
-      _debugLog('uploading ${selectedIds.length} pending event(s)');
+      final Set<String> batchEventIds = batch.map((BehaviorEvent event) => event.eventId).toSet();
+      _debugLog('uploading ${batchEventIds.length} pending event(s)');
       final DateTime attemptedAt = DateTime.now().toUtc();
       try {
-        final Set<String> acknowledgedIds = await _uploader.upload(batch);
-        final Set<String> validAcknowledgements = acknowledgedIds.intersection(selectedIds);
-        await _repository.markSynced(validAcknowledgements, DateTime.now().toUtc());
-        final Set<String> unacknowledged = selectedIds.difference(validAcknowledgements);
-        if (unacknowledged.isNotEmpty) {
-          await _repository.markSyncFailed(unacknowledged, 'Server did not acknowledge these event IDs', attemptedAt);
+        final Set<String> serverConfirmedEventIds = await _uploader.upload(batch);
+        final Set<String> confirmedBatchEventIds = serverConfirmedEventIds.intersection(batchEventIds);
+        await _repository.markSynced(confirmedBatchEventIds, DateTime.now().toUtc());
+        final Set<String> unconfirmedBatchEventIds = batchEventIds.difference(confirmedBatchEventIds);
+        if (unconfirmedBatchEventIds.isNotEmpty) {
+          await _repository.markSyncFailed(
+            unconfirmedBatchEventIds,
+            'Server did not acknowledge these event IDs',
+            attemptedAt,
+          );
         }
-        _debugLog('completed: selected=${selectedIds.length}, acknowledged=${validAcknowledgements.length}');
-        return BehaviorSyncResult(selectedCount: selectedIds.length, acknowledgedCount: validAcknowledgements.length);
+        _debugLog('completed: selected=${batchEventIds.length}, acknowledged=${confirmedBatchEventIds.length}');
+        return BehaviorSyncResult(
+          selectedCount: batchEventIds.length,
+          acknowledgedCount: confirmedBatchEventIds.length,
+        );
       } catch (error) {
         _debugLog('failed: $error');
-        await _repository.markSyncFailed(selectedIds, error.toString(), attemptedAt);
-        return BehaviorSyncResult(selectedCount: selectedIds.length, acknowledgedCount: 0);
+        await _repository.markSyncFailed(batchEventIds, error.toString(), attemptedAt);
+        return BehaviorSyncResult(selectedCount: batchEventIds.length, acknowledgedCount: 0);
       }
     } finally {
       _isSyncing = false;

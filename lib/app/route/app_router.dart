@@ -14,6 +14,7 @@ import 'package:dynamic_app/feature/product_info/presentation/product_info_page.
 import 'package:dynamic_app/feature/search/presentation/bloc/search_bloc.dart';
 import 'package:dynamic_app/feature/search/presentation/product_list_page.dart';
 import 'package:dynamic_app/feature/splash/presentation/splash_page.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/recommendation_attribution.dart';
 import 'package:dynamic_app/shared/category/domain/entities/category_entity.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 import 'package:flutter/material.dart';

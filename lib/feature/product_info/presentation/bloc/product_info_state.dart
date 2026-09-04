@@ -1,32 +1,16 @@
 part of 'product_info_bloc.dart';
 
-enum Status {
+enum ProductLoadStatus {
   initial,
   loading,
   loaded,
   failed;
 
-  bool get isInitial => this == Status.initial;
+  bool get isLoading => this == ProductLoadStatus.loading;
 
-  bool get isLoading => this == Status.loading;
+  bool get isLoaded => this == ProductLoadStatus.loaded;
 
-  bool get isLoaded => this == Status.loaded;
-
-  bool get isFailed => this == Status.failed;
-}
-enum SpecificationStatus {
-  initial,
-  loading,
-  loaded,
-  failed;
-
-  bool get isInitial => this == SpecificationStatus.initial;
-
-  bool get isLoading => this == SpecificationStatus.loading;
-
-  bool get isLoaded => this == SpecificationStatus.loaded;
-
-  bool get isFailed => this == SpecificationStatus.failed;
+  bool get isFailed => this == ProductLoadStatus.failed;
 }
 
 enum CartActionStatus {
@@ -39,16 +23,28 @@ enum CartActionStatus {
   bool get isLoading => this == CartActionStatus.loading;
 }
 
+enum PersonalizationStatus {
+  initial,
+  loading,
+  ready,
+  unavailable;
+
+  bool get isReady => this == PersonalizationStatus.ready;
+}
+
 @freezed
 class ProductInfoState with _$ProductInfoState {
   factory ProductInfoState.initial({
-    @Default(Status.initial) Status status,
-    // @Default(SpecificationStatus.initial) SpecificationStatus specificationStatus,
+    @Default(ProductLoadStatus.initial) ProductLoadStatus status,
     @Default(CartActionStatus.initial) CartActionStatus cartActionStatus,
     @Default(false) bool isInCart,
     ProductEntity? productEntity,
-    // List<ProductSpecificationEntity>? productSpecificationEntityList,
-    String? infoMessage,
+    @Default(PersonalizationStatus.initial)
+    PersonalizationStatus personalizationStatus,
+    PersonalizationDecision? personalizationDecision,
+    @Default(<PersonalizedProductSuggestion>[])
+    List<PersonalizedProductSuggestion> alternativeProductSuggestions,
+    String? recommendationStrategy,
     String? errorMessage,
   }) = _Initial;
 }

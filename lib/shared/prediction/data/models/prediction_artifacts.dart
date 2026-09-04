@@ -1,14 +1,11 @@
 import 'dart:math' as math;
 
+import 'package:dynamic_app/shared/prediction/domain/entities/personalization_thresholds.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 /// شکل کوچک محصول که برای ساخت ورودی مدل کافی است.
 class PredictionProduct {
-  const PredictionProduct({
-    required this.productId,
-    required this.categoryId,
-    required this.brandId,
-  });
+  const PredictionProduct({required this.productId, required this.categoryId, required this.brandId});
 
   final String productId;
   final String categoryId;
@@ -49,6 +46,7 @@ class RelatedProductCandidate {
 class PredictionArtifacts {
   const PredictionArtifacts({
     required this.featureNames,
+    required this.featureTransforms,
     required this.eventWeights,
     required this.mean,
     required this.scale,
@@ -57,11 +55,13 @@ class PredictionArtifacts {
     required this.decisionThreshold,
     required this.modelVersion,
     required this.inputSchemaVersion,
+    required this.personalizationThresholds,
     required this.catalog,
     required this.relatedProducts,
   });
 
   final List<String> featureNames;
+  final Map<String, String> featureTransforms;
   final Map<String, double> eventWeights;
   final List<double> mean;
   final List<double> scale;
@@ -70,6 +70,7 @@ class PredictionArtifacts {
   final double decisionThreshold;
   final String modelVersion;
   final String inputSchemaVersion;
+  final PersonalizationThresholds personalizationThresholds;
   final Map<String, PredictionProduct> catalog;
   final Map<String, List<RelatedProductCandidate>> relatedProducts;
 
@@ -80,15 +81,24 @@ class PredictionArtifacts {
       throw StateError('Model input files do not match the feature count');
     }
     return List<double>.generate(values.length, (int index) {
+      final double transformedValue = _transformFeature(featureNames[index], values[index]);
       final double divisor = scale[index] == 0 ? 1 : scale[index];
-      return (values[index] - mean[index]) / divisor;
+      return (transformedValue - mean[index]) / divisor;
     }, growable: false);
+  }
+
+  double _transformFeature(String featureName, double value) {
+    return switch (featureTransforms[featureName]) {
+      null => value,
+      'log1p' => math.log(1 + math.max(0, value)),
+      'signed_log1p' => (value.isNegative ? -1.0 : 1.0) * math.log(1 + value.abs()),
+      final String transform => throw StateError('Unknown model feature transform: $transform'),
+    };
   }
 
   /// Python همین logistic calibration را بعد از خروجی خام TFLite اجرا می‌کند.
   double calibrate(double rawProbability) {
-    final double value =
-        calibrationCoefficient * rawProbability + calibrationIntercept;
+    final double value = calibrationCoefficient * rawProbability + calibrationIntercept;
     return 1 / (1 + math.exp(-value));
   }
 }

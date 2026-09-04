@@ -2,6 +2,7 @@ import 'package:dynamic_app/core/util/common_ui_imports.dart';
 import 'package:dynamic_app/shared/behavior/data/mapper/product_behavior_snapshot_mapper.dart';
 import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_payload.dart';
 import 'package:dynamic_app/shared/behavior/domain/entities/behavior_event_type.dart';
+import 'package:dynamic_app/shared/behavior/domain/entities/recommendation_attribution.dart';
 import 'package:dynamic_app/shared/behavior/domain/factory/behavior_event_draft_factory.dart';
 import 'package:dynamic_app/shared/behavior/domain/manager/behavior_logger.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
@@ -14,6 +15,7 @@ class ProductWidget extends StatefulWidget {
   final String sourceScreen;
   final int? position;
   final String? searchQuery;
+  final RecommendationAttribution? recommendationAttribution;
 
   const ProductWidget.card({
     super.key,
@@ -21,6 +23,7 @@ class ProductWidget extends StatefulWidget {
     this.sourceScreen = 'product_list',
     this.position,
     this.searchQuery,
+    this.recommendationAttribution,
   }) : productCardType = ProductCardType.card;
 
   const ProductWidget.row({
@@ -29,6 +32,7 @@ class ProductWidget extends StatefulWidget {
     this.sourceScreen = 'product_list',
     this.position,
     this.searchQuery,
+    this.recommendationAttribution,
   }) : productCardType = ProductCardType.row;
 
   @override
@@ -235,6 +239,27 @@ class _ProductWidgetState extends State<ProductWidget> {
         payload: ProductBehaviorPayload(displaySource: widget.sourceScreen, displayRank: widget.position),
       ),
     );
+    final RecommendationAttribution? attribution = widget.recommendationAttribution;
+    if (attribution != null) {
+      _behaviorLogger.recordNonBlocking(
+        BehaviorEventDraftFactory.recommendation(
+          type: BehaviorEventType.recommendationClick,
+          product: snapshot,
+          sourceScreen: widget.sourceScreen,
+          position: widget.position,
+          payload: RecommendationBehaviorPayload(
+            requestId: attribution.requestId,
+            selectedProductId: widget.entity.id.toString(),
+            displayRank: attribution.displayRank,
+            displaySlot: attribution.displaySlot,
+            strategy: attribution.strategy,
+            modelVersion: attribution.modelVersion,
+            nextAction: 'open_product',
+            confidence: attribution.confidence,
+          ),
+        ),
+      );
+    }
     final query = widget.searchQuery?.trim();
     if (query != null && query.isNotEmpty) {
       _behaviorLogger.recordNonBlocking(
@@ -251,6 +276,6 @@ class _ProductWidgetState extends State<ProductWidget> {
         ),
       );
     }
-    context.pushRoute(ProductInfoPageRoute(product: widget.entity));
+    context.pushRoute(ProductInfoPageRoute(product: widget.entity, recommendationAttribution: attribution));
   }
 }

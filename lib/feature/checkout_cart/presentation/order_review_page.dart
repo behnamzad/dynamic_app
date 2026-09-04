@@ -25,6 +25,7 @@ class OrderReviewPage extends StatefulWidget implements AutoRouteWrapper {
 
 class _OrderReviewPageState extends State<OrderReviewPage> {
   late final BehaviorLogger _behaviorLogger;
+  List<CartProductEntity> _pendingPurchaseProducts = const <CartProductEntity>[];
 
   @override
   void initState() {
@@ -46,8 +47,9 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         if (state.feedback == CheckoutCartFeedback.orderPlaced) {
           final order = state.placedOrder;
           if (order != null) {
-            _recordPurchaseSuccess(order);
+            _recordPurchaseSuccess(order, _pendingPurchaseProducts);
           }
+          _pendingPurchaseProducts = const <CartProductEntity>[];
           showToastSuccess(ss.orderPaymentSuccess);
           context.router.popUntilRoot();
         } else if (state.feedback == CheckoutCartFeedback.error && state.errorMessage != null) {
@@ -67,6 +69,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
                 showLoading: state.actionStatus.isLoading,
                 enabled: address != null && state.cart.products.isNotEmpty,
                 onPressed: () {
+                  _pendingPurchaseProducts = List<CartProductEntity>.unmodifiable(state.cart.products);
                   _recordPaymentAttempt(state.cart.products);
                   context.read<CheckoutCartBloc>().add(
                     CheckoutCartEvent.placeOrder(deliveryWindow: ss.checkoutDeliveryWindow),
@@ -125,7 +128,7 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
     );
   }
 
-  void _recordPurchaseSuccess(OrderEntity order) {
+  void _recordPurchaseSuccess(OrderEntity order, List<CartProductEntity> purchasedCartProducts) {
     _behaviorLogger.recordNonBlocking(
       BehaviorEventDraftFactory.checkout(
         type: BehaviorEventType.purchaseSucceeded,
@@ -150,6 +153,31 @@ class _OrderReviewPageState extends State<OrderReviewPage> {
         ),
       ),
     );
+    final Set<int> purchasedProductIds = order.items.map((item) => item.productId).toSet();
+    for (final CartProductEntity product in purchasedCartProducts) {
+      final attribution = product.recommendationAttribution;
+      if (attribution == null || (purchasedProductIds.isNotEmpty && !purchasedProductIds.contains(product.productId))) {
+        continue;
+      }
+      _behaviorLogger.recordNonBlocking(
+        BehaviorEventDraftFactory.recommendation(
+          type: BehaviorEventType.recommendationPurchase,
+          product: attribution.productSnapshot,
+          sourceScreen: 'order_review',
+          position: attribution.displayRank,
+          payload: RecommendationBehaviorPayload(
+            requestId: attribution.requestId,
+            selectedProductId: product.productId.toString(),
+            displayRank: attribution.displayRank,
+            displaySlot: attribution.displaySlot,
+            strategy: attribution.strategy,
+            modelVersion: attribution.modelVersion,
+            nextAction: 'purchase',
+            confidence: attribution.confidence,
+          ),
+        ),
+      );
+    }
   }
 
   void _recordPurchaseFailure(CheckoutCartState state) {

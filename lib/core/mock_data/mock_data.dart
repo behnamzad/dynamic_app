@@ -168,9 +168,6 @@ class MockData {
 
           // Questions
           questions: [],
-
-          // Related
-          relatedProducts: [],
         ),
       );
     }
