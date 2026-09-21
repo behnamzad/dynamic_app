@@ -18,7 +18,7 @@ part 'product_info_state.dart';
 
 @injectable
 class ProductInfoBloc extends Bloc<ProductInfoEvent, ProductInfoState> {
-  static const String _recommendationStrategy = 'collaborative_purchase_probability';
+  static const String _recommendationStrategy = 'artifact_candidates_purchase_probability';
 
   final ProductRepo _productRepo;
   final CartRepository _cartRepository;
@@ -107,13 +107,20 @@ class ProductInfoBloc extends Bloc<ProductInfoEvent, ProductInfoState> {
 
     try {
       final PersonalizationDecision decision = await _personalizationManager.decisionForProduct(event.product);
+      _logger.i(
+        'PERSONALIZATION REQUEST | product=${event.product.id} | '
+        'probability=${decision.purchaseProbability.toStringAsFixed(8)} | '
+        'requested=${decision.action.wireName}',
+      );
 
       switch (decision.action) {
         case PersonalizationAction.showAlternativeProducts:
           await _showAlternativeProducts(event.product, decision, emit);
         case PersonalizationAction.highlightReviewsAndSpecifications:
+          _logFinalDecision(decision, candidateCount: 0);
           _showDecision(decision, emit);
         case PersonalizationAction.highlightAddToCartButton:
+          _logFinalDecision(decision, candidateCount: 0);
           _showDecision(decision, emit);
       }
     } catch (error, stackTrace) {
@@ -135,11 +142,23 @@ class ProductInfoBloc extends Bloc<ProductInfoEvent, ProductInfoState> {
       suggestions = const <PersonalizedProductSuggestion>[];
     }
     if (suggestions.isEmpty) {
-      _showDecision(decision.withAction(PersonalizationAction.highlightReviewsAndSpecifications), emit);
+      final PersonalizationDecision fallbackDecision = decision.withAction(
+        PersonalizationAction.highlightReviewsAndSpecifications,
+      );
+      _logFinalDecision(fallbackDecision, candidateCount: 0, fallbackReason: 'no_resolvable_alternative_products');
+      _showDecision(fallbackDecision, emit);
       return;
     }
 
+    _logFinalDecision(decision, candidateCount: suggestions.length);
     _showDecision(decision, emit, suggestions: suggestions, recommendationStrategy: _recommendationStrategy);
+  }
+
+  void _logFinalDecision(PersonalizationDecision decision, {required int candidateCount, String? fallbackReason}) {
+    _logger.i(
+      'PERSONALIZATION FINAL | final=${decision.action.wireName} | '
+      'candidates=$candidateCount | fallback=${fallbackReason ?? 'none'}',
+    );
   }
 
   void _showDecision(

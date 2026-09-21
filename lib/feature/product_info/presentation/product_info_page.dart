@@ -7,13 +7,16 @@ import 'package:dynamic_app/feature/product_info/presentation/widget/product_inf
 import 'package:dynamic_app/shared/behavior/domain/entities/recommendation_attribution.dart';
 import 'package:dynamic_app/shared/behavior/domain/manager/behavior_logger.dart';
 import 'package:dynamic_app/shared/cart/domain/manager/cart_manager.dart';
-import 'package:dynamic_app/shared/personalization/domain/entities/personalization_action.dart';
 import 'package:dynamic_app/shared/personalization/domain/entities/personalization_decision.dart';
 import 'package:dynamic_app/shared/product/domain/entities/product_entity.dart';
 
 @RoutePage()
 class ProductInfoPage extends StatefulWidget implements AutoRouteWrapper {
-  const ProductInfoPage({super.key, required this.product, this.recommendationAttribution});
+  const ProductInfoPage({
+    super.key,
+    required this.product,
+    this.recommendationAttribution,
+  });
 
   final ProductEntity product;
   final RecommendationAttribution? recommendationAttribution;
@@ -22,7 +25,10 @@ class ProductInfoPage extends StatefulWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider(
       create: (_) => inject<ProductInfoBloc>()
-        ..init(productId: product.id, personalizationEnabled: recommendationAttribution == null),
+        ..init(
+          productId: product.id,
+          personalizationEnabled: recommendationAttribution == null,
+        ),
       child: this,
     );
   }
@@ -31,13 +37,10 @@ class ProductInfoPage extends StatefulWidget implements AutoRouteWrapper {
   State<ProductInfoPage> createState() => _ProductInfoPageState();
 }
 
-class _ProductInfoPageState extends State<ProductInfoPage> with SingleTickerProviderStateMixin {
+class _ProductInfoPageState extends State<ProductInfoPage> {
   late ProductEntity _product;
   late final CarouselSliderController _imageSliderController;
   late final ProductInfoBehaviorTracker _behaviorTracker;
-  late final AnimationController _cartButtonAnimationController;
-  late final Animation<double> _cartButtonScale;
-  bool _cartButtonHintPlayed = false;
 
   // region Setup and lifecycle
 
@@ -52,27 +55,11 @@ class _ProductInfoPageState extends State<ProductInfoPage> with SingleTickerProv
       initialProduct: _product,
       incomingRecommendation: widget.recommendationAttribution,
     );
-    _cartButtonAnimationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 650));
-    _cartButtonScale = TweenSequence<double>(<TweenSequenceItem<double>>[
-      TweenSequenceItem<double>(
-        tween: Tween<double>(begin: 1, end: 1.06).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 35,
-      ),
-      TweenSequenceItem<double>(
-        tween: Tween<double>(begin: 1.06, end: 0.97).chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 30,
-      ),
-      TweenSequenceItem<double>(
-        tween: Tween<double>(begin: 0.97, end: 1).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 35,
-      ),
-    ]).animate(_cartButtonAnimationController);
   }
 
   @override
   void dispose() {
     _behaviorTracker.recordPageClosed();
-    _cartButtonAnimationController.dispose();
     super.dispose();
   }
 
@@ -86,19 +73,20 @@ class _ProductInfoPageState extends State<ProductInfoPage> with SingleTickerProv
       listenWhen: _shouldHandleStateChange,
       listener: _handleStateChange,
       builder: (BuildContext context, ProductInfoState state) {
-        final int cartQuantity = inject<CartManager>().findProduct(_product.id)?.quantity ?? 0;
+        final int cartQuantity =
+            inject<CartManager>().findProduct(_product.id)?.quantity ?? 0;
         return BasePageWidget.withOnScreenAndOverLayLoading(
           resizeToAvoidBottomInset: false,
           onScreenLoadingModeShowFailureByState: state.status.isFailed,
           onScreenLoadingModeShowCircularLoadingByState: state.status.isLoading,
-          onScreenLoadingOnTryAgainCLick: () =>
-              context.read<ProductInfoBloc>().add(ProductInfoEvent.init(productId: widget.product.id)),
+          onScreenLoadingOnTryAgainCLick: () => context
+              .read<ProductInfoBloc>()
+              .add(ProductInfoEvent.init(productId: widget.product.id)),
           bottomNav: state.status.isLoaded
               ? ProductCartBar(
                   product: _product,
                   state: state,
                   quantity: cartQuantity,
-                  buttonScale: _cartButtonScale,
                   onAddOne: _addOneToCart,
                   onRemoveOne: _removeOneFromCart,
                 )
@@ -118,15 +106,22 @@ class _ProductInfoPageState extends State<ProductInfoPage> with SingleTickerProv
     );
   }
 
-  bool _shouldHandleStateChange(ProductInfoState previous, ProductInfoState current) {
+  bool _shouldHandleStateChange(
+    ProductInfoState previous,
+    ProductInfoState current,
+  ) {
     return previous.status != current.status ||
         previous.cartActionStatus != current.cartActionStatus ||
-        previous.personalizationDecision?.decisionId != current.personalizationDecision?.decisionId;
+        previous.personalizationDecision?.decisionId !=
+            current.personalizationDecision?.decisionId;
   }
 
   void _handleStateChange(BuildContext context, ProductInfoState state) {
     if (state.status.isFailed && state.errorMessage != null) {
-      showToastError(state.errorMessage!, bottomPadding: Dimen.bottomToastPadding);
+      showToastError(
+        state.errorMessage!,
+        bottomPadding: Dimen.bottomToastPadding,
+      );
     }
 
     final ProductEntity? loadedProduct = state.productEntity;
@@ -167,18 +162,28 @@ class _ProductInfoPageState extends State<ProductInfoPage> with SingleTickerProv
   // region User actions
 
   void _addOneToCart(int currentQuantity) {
-    _behaviorTracker.startCartChange(currentQuantity: currentQuantity, isAdding: true);
+    _behaviorTracker.startCartChange(
+      currentQuantity: currentQuantity,
+      isAdding: true,
+    );
     context.read<ProductInfoBloc>().add(
       ProductInfoEvent.addToCart(
         _product,
-        recommendationAttribution: currentQuantity == 0 ? widget.recommendationAttribution : null,
+        recommendationAttribution: currentQuantity == 0
+            ? widget.recommendationAttribution
+            : null,
       ),
     );
   }
 
   void _removeOneFromCart(int currentQuantity) {
-    _behaviorTracker.startCartChange(currentQuantity: currentQuantity, isAdding: false);
-    context.read<ProductInfoBloc>().add(ProductInfoEvent.removeFromCart(_product.id));
+    _behaviorTracker.startCartChange(
+      currentQuantity: currentQuantity,
+      isAdding: false,
+    );
+    context.read<ProductInfoBloc>().add(
+      ProductInfoEvent.removeFromCart(_product.id),
+    );
   }
 
   // endregion
@@ -194,17 +199,6 @@ class _ProductInfoPageState extends State<ProductInfoPage> with SingleTickerProv
       suggestions: state.alternativeProductSuggestions,
       recommendationStrategy: state.recommendationStrategy,
     );
-    if (decision.action == PersonalizationAction.highlightAddToCartButton && !state.isInCart) {
-      _playCartButtonHintOnce();
-    }
-  }
-
-  void _playCartButtonHintOnce() {
-    if (_cartButtonHintPlayed || (MediaQuery.maybeOf(context)?.disableAnimations ?? false)) {
-      return;
-    }
-    _cartButtonHintPlayed = true;
-    _cartButtonAnimationController.forward(from: 0);
   }
 
   // endregion

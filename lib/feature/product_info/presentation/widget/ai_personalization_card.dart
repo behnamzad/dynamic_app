@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:dynamic_app/core/util/common_ui_imports.dart';
 
 /// ظاهر مشترک بخش‌هایی که با تصمیم مدل هوش مصنوعی تغییر کرده‌اند.
@@ -49,11 +51,10 @@ class _AiPersonalizationCardState extends State<AiPersonalizationCard> with Sing
   @override
   Widget build(BuildContext context) {
     final bool disableAnimations = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
-    final Color primary = context.scheme().primary;
     final Color white = context.scheme().mainBackground1;
     final List<Color> iconColors = <Color>[context.scheme().link, const Color(0xFFB94CFF)];
     final List<Color> borderGradientColors =
-        widget.bgGradientColors ?? [const Color(0xFF793BD7),  const Color(0xFF998EE3),const Color(0xFF3B89D7),];
+        widget.bgGradientColors ?? [const Color(0xFF793BD7), const Color(0xFF998EE3), const Color(0xFF3B89D7)];
 
     return TweenAnimationBuilder<double>(
       duration: disableAnimations ? Duration.zero : const Duration(milliseconds: 1000),
@@ -283,51 +284,81 @@ class _AiPersonalizationLoadingState extends State<AiPersonalizationLoading> wit
   }
 }
 
-/// قاب کوتاه مخصوص دکمه‌ای که مدل می‌خواهد بیشتر دیده شود.
-class AiPersonalizationButton extends StatelessWidget {
-  const AiPersonalizationButton({super.key, required this.label, required this.child});
+/// حاشیه متحرک و بی‌متن برای تأکید ظریف روی دکمه.
+class AiPersonalizationButton extends StatefulWidget {
+  const AiPersonalizationButton({super.key, required this.child});
 
-  final String label;
   final Widget child;
+
+  @override
+  State<AiPersonalizationButton> createState() => _AiPersonalizationButtonState();
+}
+
+class _AiPersonalizationButtonState extends State<AiPersonalizationButton> with SingleTickerProviderStateMixin {
+  late final AnimationController _borderController;
+
+  @override
+  void initState() {
+    super.initState();
+    _borderController = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final bool disableAnimations = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    if (disableAnimations) {
+      _borderController
+        ..stop()
+        ..value = 0.18;
+    } else if (!_borderController.isAnimating) {
+      _borderController.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _borderController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final Color primary = context.scheme().primary;
     final Color blue = context.scheme().link;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: <Widget>[
-        Container(
-          padding: const EdgeInsets.all(1.5),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: <Color>[primary, blue]),
-            borderRadius: BorderRadius.circular(17),
-            boxShadow: <BoxShadow>[BoxShadow(color: primary.withValues(alpha: 0.35), blurRadius: 18, spreadRadius: 1)],
-          ),
-          child: child,
-        ),
-        PositionedDirectional(
-          top: -12,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _borderController,
+        child: widget.child,
+        builder: (BuildContext context, Widget? child) {
+          final double pulse = (math.sin(_borderController.value * math.pi * 2) + 1) / 2;
+          return Container(
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: <Color>[primary, blue]),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: context.scheme().mainBackground1, width: 2),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 13),
-                const HGap(4),
-                BzText(label, style: context.body5Bold.copyWith(color: Colors.white)),
+              gradient: SweepGradient(
+                colors: <Color>[
+                  primary.withValues(alpha: 0.35),
+                  blue,
+                  Colors.white.withValues(alpha: 0.95),
+                  primary,
+                  primary.withValues(alpha: 0.35),
+                ],
+                stops: const <double>[0, 0.3, 0.5, 0.72, 1],
+                transform: GradientRotation(_borderController.value * math.pi * 2),
+              ),
+              borderRadius: BorderRadius.circular(50),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: primary.withValues(alpha: 0.10 + (pulse * 0.12)),
+                  blurRadius: 8 + (pulse * 6),
+                  spreadRadius: pulse * 0.6,
+                ),
               ],
             ),
-          ),
-        ),
-      ],
+            child: child,
+          );
+        },
+      ),
     );
   }
 }

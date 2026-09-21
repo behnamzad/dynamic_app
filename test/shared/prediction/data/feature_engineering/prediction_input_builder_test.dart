@@ -230,6 +230,37 @@ void main() {
       expect(firstProductFeatures['user_event_count_lifetime'], 2);
     },
   );
+
+  test('uses exported global behavior rates to distinguish products', () {
+    final PredictionInputBuilder inputBuilder = PredictionInputBuilder();
+    final PredictionInputContext context = inputBuilder.buildContext(
+      events: const <BehaviorEvent>[],
+      eventWeightByTypeName: eventWeightByTypeName,
+      currentSessionId: 'session-1',
+      userAge: null,
+      userGender: AppUserGender.unknown,
+      predictionTime: DateTime.utc(2026, 8, 25, 12),
+    );
+    const List<String> globalFeatures = <String>[
+      'global_product_click_rate',
+      'global_product_purchase_rate',
+      'global_category_purchase_rate',
+    ];
+    final List<double> values = inputBuilder.buildRawFeatureVector(
+      context: context,
+      candidateProduct: const PredictionProduct(
+        productId: '10',
+        categoryId: '20',
+        brandId: '30',
+        globalProductClickRate: 0.25,
+        globalProductPurchaseRate: 0.08,
+        globalCategoryPurchaseRate: 0.04,
+      ),
+      orderedFeatureNames: globalFeatures,
+    );
+
+    expect(values, <double>[0.25, 0.08, 0.04]);
+  });
 }
 
 Map<String, double> _buildNamedFeatureValues({

@@ -11,7 +11,6 @@ class ProductCartBar extends StatelessWidget {
     required this.product,
     required this.state,
     required this.quantity,
-    required this.buttonScale,
     required this.onAddOne,
     required this.onRemoveOne,
   });
@@ -19,7 +18,6 @@ class ProductCartBar extends StatelessWidget {
   final ProductEntity product;
   final ProductInfoState state;
   final int quantity;
-  final Animation<double> buttonScale;
   final ValueChanged<int> onAddOne;
   final ValueChanged<int> onRemoveOne;
 
@@ -31,8 +29,7 @@ class ProductCartBar extends StatelessWidget {
       text: !product.available ? ss.unavailable : ss.addToCart,
       showLoading: state.cartActionStatus.isLoading,
       enabled: product.available && !state.cartActionStatus.isLoading,
-      minSize: highlightAddToCart ? 53 : Dimen.buttonMinHeight,
-      icon: highlightAddToCart ? const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 20) : null,
+      minSize: Dimen.buttonMinHeight,
       onPressed: () => onAddOne(quantity),
     );
 
@@ -46,19 +43,16 @@ class ProductCartBar extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 flex: 2,
-                child: ScaleTransition(
-                  scale: buttonScale,
-                  child: state.isInCart && quantity > 0
-                      ? _QuantityButtons(
-                          quantity: quantity,
-                          isLoading: state.cartActionStatus.isLoading,
-                          onAddOne: onAddOne,
-                          onRemoveOne: onRemoveOne,
-                        )
-                      : highlightAddToCart
-                      ? AiPersonalizationButton(label: ss.aiSuggestedAction, child: addToCartButton)
-                      : addToCartButton,
-                ),
+                child: state.isInCart && quantity > 0
+                    ? _QuantityButtons(
+                        quantity: quantity,
+                        isLoading: state.cartActionStatus.isLoading,
+                        onAddOne: onAddOne,
+                        onRemoveOne: onRemoveOne,
+                      )
+                    : highlightAddToCart
+                    ? AiPersonalizationButton(child: addToCartButton)
+                    : addToCartButton,
               ),
               Expanded(
                 flex: 2,

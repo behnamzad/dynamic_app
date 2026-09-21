@@ -6,6 +6,7 @@ import 'package:dynamic_app/shared/behavior/domain/repository/behavior_event_rep
 import 'package:dynamic_app/shared/prediction/data/datasource/prediction_model_data_source.dart';
 import 'package:dynamic_app/shared/prediction/data/feature_engineering/prediction_input_builder.dart';
 import 'package:dynamic_app/shared/prediction/data/models/prediction_artifacts.dart';
+import 'package:dynamic_app/shared/prediction/data/repository/category_behavior_candidate_selector.dart';
 import 'package:dynamic_app/shared/prediction/domain/entities/prediction_model_info.dart';
 import 'package:dynamic_app/shared/prediction/domain/entities/product_prediction.dart';
 import 'package:dynamic_app/shared/prediction/domain/repository/prediction_repository.dart';
@@ -32,12 +33,17 @@ class PredictionRepositoryImpl implements PredictionRepository {
     final PredictionArtifacts artifacts = await _modelDataSource.loadArtifacts();
     final PredictionInputContext context = await _buildInputContext(artifacts);
     ProductPrediction productPrediction = await _predict(
-      product: PredictionProduct.fromEntity(product),
+      product: _predictionProduct(product, artifacts),
       context: context,
       artifacts: artifacts,
       displayPosition: displayPosition,
     );
-    inject<Logger>().i('PREDICT PURCHASE FOR ${product.titleFa} => \n ${productPrediction.purchasePercent}');
+    inject<Logger>().i(
+      'PURCHASE PREDICTION | product=${product.titleFa} | '
+      'probability=${productPrediction.purchaseProbability.toStringAsFixed(8)} | '
+      'percent=${productPrediction.purchasePercent.toStringAsFixed(4)}% | '
+      'model=${productPrediction.modelVersion}',
+    );
     return productPrediction;
   }
 
@@ -47,7 +53,24 @@ class PredictionRepositoryImpl implements PredictionRepository {
     final PredictionArtifacts artifacts = await _modelDataSource.loadArtifacts();
     final List<RelatedProductCandidate> candidates =
         artifacts.relatedProducts[product.id.toString()] ?? const <RelatedProductCandidate>[];
-    return candidates.take(limit).map((RelatedProductCandidate item) => item.productId).toList(growable: false);
+    if (candidates.isNotEmpty) {
+      inject<Logger>().i(
+        'RELATED CANDIDATES | product=${product.id} | source=collaborative | count=${candidates.length}',
+      );
+      return candidates.take(limit).map((RelatedProductCandidate item) => item.productId).toList(growable: false);
+    }
+
+    final List<String> categoryFallback = CategoryBehaviorCandidateSelector.select(
+      catalog: artifacts.catalog.values,
+      productId: product.id.toString(),
+      categoryId: product.categoryId.toString(),
+      limit: limit,
+    );
+    inject<Logger>().i(
+      'RELATED CANDIDATES | product=${product.id} | source=category_behavior | '
+      'reason=no_collaborative_candidates | count=${categoryFallback.length}',
+    );
+    return categoryFallback;
   }
 
   @override
@@ -80,7 +103,7 @@ class PredictionRepositoryImpl implements PredictionRepository {
     for (int index = 0; index < products.length; index++) {
       predictions.add(
         await _predict(
-          product: PredictionProduct.fromEntity(products[index]),
+          product: _predictionProduct(products[index], artifacts),
           context: context,
           artifacts: artifacts,
           displayPosition: index,
@@ -117,6 +140,11 @@ class PredictionRepositoryImpl implements PredictionRepository {
   }
 
   String get _currentUserId => _userManager.currentUserId ?? _sessionManager.anonymousId;
+
+  PredictionProduct _predictionProduct(ProductEntity product, PredictionArtifacts artifacts) {
+    final String productId = product.id.toString();
+    return PredictionProduct.fromEntity(product, behavioralPrior: artifacts.catalog[productId]);
+  }
 
   Future<ProductPrediction> _predict({
     required PredictionProduct product,
